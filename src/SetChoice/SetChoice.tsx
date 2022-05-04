@@ -2,10 +2,6 @@ import React from 'react';
 import {ChoiceBox} from "./ChoiceBox";
 import {Col, Container, Row} from "react-bootstrap";
 
-// <div className="container">
-//     {[{title: "I'm a title", content: "I'm the content"}].map((x:{title:string,content:string})=>(<div></div>)}
-//     // <ChoiceBox title={"I'm a Title"} content={"I'm the body content"}/>
-// </div>
 interface Choice {
     title: string;
     content: string;
@@ -37,8 +33,3 @@ export const SetChoice: React.FC = () => {
 }
 
 
-// const ReactFCComponent: React.FC<{title:string}> = ({children, title}) => {
-//
-//     return <div title={title}>{children}</div>
-//
-// }
