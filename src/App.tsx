@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Link, Route, Routes } from "react-router-dom";
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, ButtonToolbar } from 'react-bootstrap';
 
 function App() {
     return (
@@ -9,6 +9,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/create-or-join" element={<CreateOrJoin />} />
             </Routes>
         </div>
     );
@@ -25,7 +26,20 @@ function Login() {
                 <p className="Login-small-text">New user? <Link to="/signup">Sign up</Link></p>
             </Form>
         </>
-  );
+    );
+}
+
+function CreateOrJoin() {
+    return (
+        <>
+            <header className="CreateOrJoinHeader">Flashcard Bonanza</header>
+            <p>Welcome, [user]! What would you like to do?</p>
+            <ButtonToolbar>
+                <Button variant="dark" size="lg" className="mx-1">Host room</Button>
+                <Button variant="dark" size="lg" className="mx-1">Join room</Button>
+            </ButtonToolbar>
+        </>
+    );
 }
 
 function Signup() {
