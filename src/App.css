@@ -33,8 +33,3 @@
     font-size: 36px;
     margin-bottom: 50px;
 }
-
-.CreateOrHostButtonsWrapper {
-    display: flex;
-    flex-direction: column;
-}
