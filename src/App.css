@@ -14,21 +14,7 @@
     margin-bottom: 50px;
 }
 
-.Login-login-input {
-    font-size: 18px;
-}
-
 .Login-small-text {
     font-size: 12px;
     margin-top: 0px;
-}
-
-.Login-button {
-    background-color: black;
-    border: none;
-    color: white;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-size: 22px;
-    width: 195px;
 }
