@@ -23,3 +23,9 @@
     font-size: 36px;
     margin-bottom: 50px;
 }
+
+.Answer-card-header {
+    background: white;
+    color: black;
+    width: 60px;
+}
