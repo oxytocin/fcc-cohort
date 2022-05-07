@@ -1,11 +1,9 @@
 import React from 'react';
 import './App.css';
 import {Route, Routes} from "react-router-dom";
-import {Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
 import Login from "./Login/Login"
 import CreateOrJoin from "./CreateOrJoin/CreateOrJoin";
 import Signup from "./Signup/Signup";
-import account from "./images/account.svg";
 import {HeaderNav} from "./Header/Navigation";
 
 
