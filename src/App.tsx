@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import {Route, Routes} from "react-router-dom";
 import Login from "./Login/Login"
 import CreateOrJoin from "./CreateOrJoin/CreateOrJoin";
 import Signup from "./Signup/Signup";
 import {HeaderNav} from "./Header/Navigation";
 import InGame from "./In-Game/In-Game";
+import { Route, Routes, Link } from "react-router-dom";
 
 function App() {
     return (
