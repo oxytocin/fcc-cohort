@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Link, Route, Routes } from "react-router-dom";
 import Login from "./Login/Login";
+import OauthRedirect from "./OauthRedirect/OauthRedirect";
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
                 {/*<Route path="/" element={<Login />} />*/}
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/oauth-redirect" element={<OauthRedirect />} />
             </Routes>
         </div>
     );

@@ -12,8 +12,10 @@ const Login = () => {
 
     useEffect(() => {
             if (!externalPopup) {
+                console.log("early return")
                 return;
             }
+            console.log("got past")
 
             const timer = setInterval(() => {
                 if (!externalPopup) {
@@ -54,12 +56,11 @@ const Login = () => {
         const left = window.screenX + (window.outerWidth - width) / 2;
         const top = window.screenY + (window.outerHeight - height) / 2.5;
         const title = `WINDOW TITLE`;
-        const url = `http://127.0.0.1:8089/login/`;
+        const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com&redirect_uri=http://127.0.0.1:3000/oauth-redirect&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile`;
         const popup = window.open(url, title, `width=${width},height=${height},left=${left},top=${top}`);
         setExternalPopup(popup);
     }
     return <button onClick={connectClick}>Connect</button>
 }
-
 
 export default Login;
