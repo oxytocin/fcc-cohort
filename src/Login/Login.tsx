@@ -1,9 +1,5 @@
 import React from "react";
 
-// I looked at both of the following to do this
-// https://elvisciotti.medium.com/how-to-create-a-oauth-popup-in-react-7ab102ea48f
-// https://dev.to/dinkydani21/how-we-use-a-popup-for-google-and-outlook-oauth-oci
-
 // Curl version of how to use the bearer. basically you'll just need to add this to a header
 // curl localhost:8088/restricted -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NjE5NTcxMzZ9.RB3arc4-OyzASAaUhC2W3ReWaXAt_z2Fd3BN4aWTgEY"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
