@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 
 function OauthRedirect() {
     useEffect(() => {
@@ -9,14 +9,15 @@ function OauthRedirect() {
         fetch(url, {
             method: "POST", mode: "cors",
             body: code
-        }).then(_ => alert("done"))
+        }).then(response => response.json())
+            .then(data => console.log(data)) // This will need to be pushed into some state so it can be used in other places
     }, []);
 
     return (
         <>
-            "You signed in! You may now close this window!"        
+            "You signed in! You may now close this window!"
         </>
-   )
+    )
 }
 
 export default OauthRedirect;
