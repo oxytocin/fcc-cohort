@@ -45,7 +45,7 @@ shuffle(sampleAnswers);
 
 // Date.now's must be outside of component function so they don't re-render and restart on each state update
 const userTime = Date.now() + 10000; // <--- this number to be determined by host
-const bufferTime = Date.now() + 5000; // default buffer time between questions
+const bufferTime = userTime + 5000; // default buffer time between questions
 
 function InGame() {
 
@@ -57,6 +57,9 @@ function InGame() {
       if (completed) {
         // Render a completed state and do the following
         checkAns();
+        setDisabledState(true);
+        setIndicatorState("outline-secondary");
+        //const value = document.getElementsByTagName("value");
             //ansIndicator(); some way to disable checkboxes and outline correct answers in green, incorrect in red
             //addPoints; some way to add a point for a correct answer
         return <Completionist />;
@@ -89,9 +92,11 @@ function InGame() {
 
         for (let i = 0; i < sampleAnswers.length; i++) {
             if (!correctAns[i] === (checkedState[i])) {
+                setIndicatorState("outline-danger")
                 return console.log("incorrect")
             }
         }
+        setIndicatorState("outline-success")
         return console.log("correct!")
     };
             // NEEDS WORK, goal is to outline correct and incorrect cards and disable checkboxes
@@ -117,6 +122,9 @@ function InGame() {
       );
       setCheckedState(updatedCheckedState);
     }
+
+    const [disabledState, setDisabledState] = useState(false);
+    const [indicatorState, setIndicatorState] = useState("outline-success");
 
     console.log(checkedState)     // logs the user's selected answer choices (for verification)
 
@@ -144,8 +152,12 @@ function InGame() {
                 {sampleAnswers.map((item, i) => {
                     return(
                     <Col xs={12}>
-                        <ToggleButton id={alphabet[i]} value={item.is_correct.toString()} variant="outline-success" type="checkbox" className="w-100"
+                        <ToggleButton id={alphabet[i]} type="checkbox" className="w-100"
+                        key={i}
+                        variant={indicatorState}
+                        value={item.is_correct.toString()}
                         checked={checkedState[i]}
+                        disabled={disabledState}
                         onChange={() => handleOnChange(i)}>
                         <Card bg="dark" text="white">
                             <Card.Header as="h2" className="Answer-card-header rounded">{alphabet[i]}</Card.Header>
