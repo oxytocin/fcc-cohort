@@ -6,7 +6,7 @@ import {config} from "../Constants"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
     const connectClick = () => {
-        console.log(config.OAUTH_REDIRECT_URL)
+        console.log(process.env.NODE_ENV)
         const width = 500;
         const height = 400;
         const left = window.screenX + (window.outerWidth - width) / 2;

@@ -6,4 +6,4 @@ const dev = {
     OAUTH_REDIRECT_URL: "http://127.0.0.1:3000/oauth-redirect"
 }
 
-export const config = process.env.REACT_APP_ENVIRONMENT === "production" ? prod : dev;
+export const config = process.env.NODE_ENV === "production" ? prod : dev;
