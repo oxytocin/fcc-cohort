@@ -45,72 +45,72 @@ shuffle(sampleAnswers);
 
 // Date.now's must be outside of component function so they don't re-render and restart on each state update
 const userTime = Date.now() + 10000; // <--- this number to be determined by host
-const bufferTime = Date.now() + 5000; // default buffer time between questions
+const bufferTime = userTime + 5000; // default buffer time between questions
 
 function InGame() {
 
     const alphabet = ["A","B","C","D"]; // for assigning answer card labels
+    const correctAns = sampleAnswers.map(item => item.is_correct);
+    const ansHeader = document.getElementsByClassName("Answer-card-header");
 
-    // TIMER FUNCTION
+                                    // TIMER FUNCTIONS //
     // Renderer callback with condition
     const timer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
       if (completed) {
         // Render a completed state and do the following
         checkAns();
-            //ansIndicator(); some way to disable checkboxes and outline correct answers in green, incorrect in red
-            //addPoints; some way to add a point for a correct answer
+        setDisabledState(true);
+        displayCorrect(ansHeader);
+        setIndicatorState("outline-dark");
+                                                    //addPoints; some way to add a point for a correct answer
         return <Completionist />;
       } else {
         // Render a countdown
         return <Stack direction="horizontal">
-                <Spinner animation="grow" variant="danger" size="sm" className="mx-2"/>
+                <Spinner animation="grow" variant="secondary" size="sm" className="mx-2"/>
                 <span className="mx-auto">{seconds} sec...</span>
-                <Spinner animation="grow" variant="danger" size="sm" className="mx-2"/>
+                <Spinner animation="grow" variant="secondary" size="sm" className="mx-2"/>
             </Stack>;
       }
     };
     // Render a buffer countdown
-    const Completionist = () => <div>
-        <Countdown date={bufferTime} renderer={buffer}/>
-        </div>;
-    // What happens after buffer countdown?
+    const Completionist = () => <div><Countdown date={bufferTime} renderer={buffer}/></div>;
     const buffer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
         if (completed) {
-        // LOAD NEXT QUESTION HERE???
+                                                   // LOAD NEXT QUESTION HERE???
             return <span>next question load</span>;
         } else {
             return <span>Next Question in...{seconds}</span>;
         }
-    }
+    };
 
-    function checkAns() {
-        const correctAns = sampleAnswers.map(item => item.is_correct);
-        console.log(correctAns); // logs the is_correct values provided by the Answer array (for verification)
-
-        for (let i = 0; i < sampleAnswers.length; i++) {
+            // evaluates user's input against is_correct answer data
+    const checkAns = () => {
+        for (let i = 0; i < correctAns.length; i++) {
             if (!correctAns[i] === (checkedState[i])) {
                 return console.log("incorrect")
             }
         }
         return console.log("correct!")
     };
-            // NEEDS WORK, goal is to outline correct and incorrect cards and disable checkboxes
-//     function ansIndicator() {
-//       const wrong = document.querySelectorAll('value="false"');
-//       const right = document.querySelectorAll('value="true"');
-//       wrong.forEach(element => {
-//         element.removeAttribute('variant')
-//       })
-//       right.forEach(element => {
-//         element.removeAttribute('variant')
-//       })
-//     };
 
-            // https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
+            // changes answer cards to indicate correct answer after time expires
+    const displayCorrect = (elements: HTMLCollection) => {
+        for (let i = 0; i < elements.length; i++) {
+            const elementClass = elements[i].classList;
+            if (correctAns[i] === true) {
+                elementClass.remove("bg-light");
+                elementClass.add("bg-success");
+            }
+        };
+    };
+
+    const [disabledState, setDisabledState] = useState(false);
+    const [indicatorState, setIndicatorState] = useState("outline-secondary");
     const [checkedState, setCheckedState] = useState(
         new Array(sampleAnswers.length).fill(false)
     );
-
+            // https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
     const handleOnChange = (position: number) => {
       const updatedCheckedState = checkedState.map((item, index) =>
         index === position ? !item : item
@@ -118,6 +118,7 @@ function InGame() {
       setCheckedState(updatedCheckedState);
     }
 
+    console.log(correctAns); // logs the is_correct values provided by the Answer array (for verification only)
     console.log(checkedState)     // logs the user's selected answer choices (for verification)
 
     return (
@@ -144,11 +145,15 @@ function InGame() {
                 {sampleAnswers.map((item, i) => {
                     return(
                     <Col xs={12}>
-                        <ToggleButton id={alphabet[i]} value={item.is_correct.toString()} variant="outline-success" type="checkbox" className="w-100"
+                        <ToggleButton id={alphabet[i]} type="checkbox" className="w-100"
+                        key={i}
+                        variant={indicatorState}
+                        value={item.answer_id}
                         checked={checkedState[i]}
+                        disabled={disabledState}
                         onChange={() => handleOnChange(i)}>
                         <Card bg="dark" text="white">
-                            <Card.Header as="h2" className="Answer-card-header rounded">{alphabet[i]}</Card.Header>
+                            <Card.Header as="h2" className="Answer-card-header rounded bg-light">{alphabet[i]}</Card.Header>
                             <Card.Body>
                               <Card.Text as="h3" id="a-txt">
                                 {item.name}
