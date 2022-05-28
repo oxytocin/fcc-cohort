@@ -31,7 +31,7 @@ const sampleAnswers = [{
 function shuffle(array: {}[]) {
     let currentIndex = sampleAnswers.length,  randomIndex;
     // While there remain elements to shuffle.
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
     // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
@@ -126,8 +126,8 @@ function InGame() {
         <Container fluid="md">
             <Row className="mt-md-5 pt-5" > {/* Progress and Timer */}
                 <Col md={4}>
-                    <ProgressBar animated variant="dark" now={(3/15)*100} /> {/* replace 3/15 with {QuesNumber}/{deck.length} */}
-                    <h3 className="text-start">Question {3} of {15}</h3>
+                    <ProgressBar data-cy="progress-bar" animated variant="dark" now={(3/15)*100} /> {/* replace 3/15 with {QuesNumber}/{deck.length} */}
+                    <h3 data-cy="progress-text" className="text-start">Question {3} of {15}</h3>
                     </Col>
                 <Col md={{span:3, offset:5}}>
                     <h3 className="rounded rounded-pill bg-dark text-white">
@@ -136,7 +136,7 @@ function InGame() {
                 </Col>
             </Row>
             <Row> {/* Question Data */}
-                <h1 className="col-md-8 offset-md-2 text-break word-break">
+                <h1 data-cy="question-text" className="col-md-8 offset-md-2 text-break word-break">
                 This is a sample Question. This will serve as a starting point, ok?
                 </h1>
             </Row>
@@ -145,21 +145,24 @@ function InGame() {
                 {sampleAnswers.map((item, i) => {
                     return(
                     <Col xs={12}>
-                        <ToggleButton id={alphabet[i]} type="checkbox" className="w-100"
-                        key={i}
-                        variant={indicatorState}
-                        value={item.answer_id}
-                        checked={checkedState[i]}
-                        disabled={disabledState}
-                        onChange={() => handleOnChange(i)}>
-                        <Card bg="dark" text="white">
-                            <Card.Header as="h2" className="Answer-card-header rounded bg-light">{alphabet[i]}</Card.Header>
+                        <ToggleButton data-cy={alphabet[i]} id={alphabet[i]} type="checkbox" className="w-100"
+                            key={i}
+                            variant={indicatorState}
+                            value={item.answer_id}
+                            checked={checkedState[i]}
+                            disabled={disabledState}
+                            onChange={() => handleOnChange(i)}>
+                            <Card bg="dark" text="white">
+                            <Card.Header data-cy="card-header" as="h2" className="Answer-card-header rounded bg-light">
+                                {alphabet[i]}
+                            </Card.Header>
                             <Card.Body>
-                              <Card.Text as="h3" id="a-txt">
+                              <Card.Text data-cy="card-text" as="h3" id="a-txt">
                                 {item.name}
                               </Card.Text>
                             </Card.Body>
-                        </Card></ToggleButton>
+                        </Card>
+                        </ToggleButton>
                     </Col>
                     );
                 })}

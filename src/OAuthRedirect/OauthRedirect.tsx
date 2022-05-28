@@ -14,9 +14,9 @@ function OauthRedirect() {
     }, []);
 
     return (
-        <>
-            "You signed in! You may now close this window!"
-        </>
+        <div data-cy="auth-confirm">
+            You signed in! You may now close this window!
+        </div>
     )
 }
 
