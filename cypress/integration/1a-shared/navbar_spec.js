@@ -21,8 +21,43 @@ describe('Navbar is visible', ()=> {
         cy.get('[data-cy="nav-home"]').click()
         cy.location('pathname').should('eq', '/')
     });
+});
 
-    it('is not finished yet',  ()=> {
-        cy.get('[data-cy="nav-collapse"]').should('eq', 'finish tests, andrew')
+describe('Navbar-toggler dropdown functions correctly', ()=> {
+
+    beforeEach(() => {
+        cy.visit('/')
+    });
+    
+    it('Dropdown has clickable toggle',  ()=> {
+        cy.get('[data-cy="nav-dropdown"]')
+        .find('a').should('be.visible')
+    })
+    
+    it('Dropdown contents start hidden', ()=> {
+        cy.get('[data-cy="nav-logout"]')
+        .should('not.be.be.visible')            
+    })
+
+    it('Dropdown items show after click', ()=> {
+        cy.get('[data-cy="nav-dropdown"]')
+        .should('not.have.class', '.show')
+        
+        cy.get('[data-cy="nav-dropdown"]')
+        .find('a')
+        .click()
+        .parent().should('have.class', 'show')
+    })
+
+    it('Dropdown displays "Log Out" option', ()=> {
+        cy.get('[data-cy="nav-logout"]')
+        .should('have.text', 'Log Out')
+    })
+
+    it('Log Out button returns to home page', ()=> {
+        cy.get('[data-cy="nav-logout"]')
+        .click({force: true})
+
+        cy.location('pathname').should('eq', '/')          
     })
 });
