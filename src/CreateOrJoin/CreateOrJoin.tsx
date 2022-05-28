@@ -6,7 +6,7 @@ function CreateOrJoin() {
         <>
             <header data-cy="header" className="CreateOrJoinHeader">Flashcard Bonanza</header>
             <p data-cy="greeting">Welcome, [user]! What would you like to do?</p>
-            <ButtonToolbar>
+            <ButtonToolbar data-cy="btn-toolbar">
                 <Button data-cy="host-btn" variant="dark" size="lg" className="mx-1">Host room</Button>
                 <Button data-cy="join-btn" variant="dark" size="lg" className="mx-1">Join room</Button>
             </ButtonToolbar>
