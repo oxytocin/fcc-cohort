@@ -1,35 +1,12 @@
 import React, {useState} from 'react';
 import {ProgressBar, Container, Card, Row, Col, Spinner, Stack, ToggleButton} from 'react-bootstrap';
 import Countdown from 'react-countdown';
+import data from './in-game-data';
 
-const sampleAnswers = [{
-                     answer_id:1222,
-                     name: "FALSE 2",
-                     value: "string",
-                     is_correct:false
-                   },
-                   {
-                     answer_id:1223,
-                     name: "FALSE 1",
-                     value: "string",
-                     is_correct:false
-                   },
-                   {
-                     answer_id:1224,
-                     name: "CORRECT 1",
-                     value: "string",
-                     is_correct:true
-                   },
-                   {
-                     answer_id:1225,
-                     name: "CORRECT 2",
-                     value: "string",
-                     is_correct:true
-                   }];
-    // A way to shuffle the answers
+// A way to shuffle the answers
 //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 function shuffle(array: {}[]) {
-    let currentIndex = sampleAnswers.length,  randomIndex;
+    let currentIndex = data.Answers.length,  randomIndex;
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
     // Pick a remaining element.
@@ -41,7 +18,7 @@ function shuffle(array: {}[]) {
     };
     return array
 }
-shuffle(sampleAnswers);
+shuffle(data.Answers);
 
 // Date.now's must be outside of component function so they don't re-render and restart on each state update
 const userTime = Date.now() + 10000; // <--- this number to be determined by host
@@ -50,22 +27,22 @@ const bufferTime = userTime + 5000; // default buffer time between questions
 function InGame() {
 
     const alphabet = ["A","B","C","D"]; // for assigning answer card labels
-    const correctAns = sampleAnswers.map(item => item.is_correct);
+    const correctAns = data.Answers.map(item => item.IsCorrect);
     const ansHeader = document.getElementsByClassName("Answer-card-header");
 
-                                    // TIMER FUNCTIONS //
+    // TIMER FUNCTIONS //
     // Renderer callback with condition
     const timer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
       if (completed) {
-        // Render a completed state and do the following
+        // Render answer results and do the following //////////// STATE SHOULD NOT BE UPDATED UNDER THIS CHILD COMPONENT, NOR SHOULD IT BE UPDATED UNDER A CONDITION. but idk how exactly to do it otherwise.
         checkAns();
         setDisabledState(true);
         displayCorrect(ansHeader);
         setIndicatorState("outline-dark");
-                                                    //addPoints; some way to add a point for a correct answer
+        //addPoints; some way to add a point for a correct answer
         return <Completionist />;
       } else {
-        // Render a countdown
+        // Render the Question countdown
         return <Stack direction="horizontal">
                 <Spinner animation="grow" variant="secondary" size="sm" className="mx-2"/>
                 <span className="mx-auto">{seconds} sec...</span>
@@ -77,24 +54,26 @@ function InGame() {
     const Completionist = () => <div><Countdown date={bufferTime} renderer={buffer}/></div>;
     const buffer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
         if (completed) {
-                                                   // LOAD NEXT QUESTION HERE???
+                        ////////////// LOAD NEXT QUESTION HERE???
             return <span>next question load</span>;
         } else {
             return <span>Next Question in...{seconds}</span>;
         }
     };
 
-            // evaluates user's input against is_correct answer data
+    // evaluates user's input against IsCorrect answer data
     const checkAns = () => {
         for (let i = 0; i < correctAns.length; i++) {
             if (!correctAns[i] === (checkedState[i])) {
-                return console.log("incorrect")
+                console.log("incorrect")
+                return false
             }
         }
-        return console.log("correct!")
+        console.log("correct!")
+        return true
     };
 
-            // changes answer cards to indicate correct answer after time expires
+    // changes answer cards to indicate correct answer after time expires
     const displayCorrect = (elements: HTMLCollection) => {
         for (let i = 0; i < elements.length; i++) {
             const elementClass = elements[i].classList;
@@ -105,21 +84,22 @@ function InGame() {
         };
     };
 
+//  const [userScore, setUserScore] = useState(0);
     const [disabledState, setDisabledState] = useState(false);
     const [indicatorState, setIndicatorState] = useState("outline-secondary");
-    const [checkedState, setCheckedState] = useState(
-        new Array(sampleAnswers.length).fill(false)
-    );
-            // https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
+    const [checkedState, setCheckedState] = useState( new Array(data.Answers.length).fill(false) );
+
+//// https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
     const handleOnChange = (position: number) => {
       const updatedCheckedState = checkedState.map((item, index) =>
-        index === position ? !item : item
-      );
-      setCheckedState(updatedCheckedState);
+            index === position ? !item : item
+        );
+        setCheckedState(updatedCheckedState);
     }
 
-    console.log(correctAns); // logs the is_correct values provided by the Answer array (for verification only)
-    console.log(checkedState)     // logs the user's selected answer choices (for verification)
+    console.log("actual ans: " + correctAns);   // logs the IsCorrect Values provided by the Answer array (for verification only)
+    console.log("checked: " + checkedState);    // logs the user's selected answer choices (for verification)
+//  console.log("userScore: " + userScore)      // logs the user's score (for verification)
 
     return (
     <div className="pt-5">
@@ -137,18 +117,18 @@ function InGame() {
             </Row>
             <Row> {/* Question Data */}
                 <h1 className="col-md-8 offset-md-2 text-break word-break">
-                This is a sample Question. This will serve as a starting point, ok?
+                {data.Question}
                 </h1>
             </Row>
             {/* Answer Choices Data */}
             <Row md={2} className="mt-md-4">
-                {sampleAnswers.map((item, i) => {
+                {data.Answers.map((item, i) => {
                     return(
                     <Col xs={12}>
                         <ToggleButton id={alphabet[i]} type="checkbox" className="w-100"
                         key={i}
                         variant={indicatorState}
-                        value={item.answer_id}
+                        value={item.Id}
                         checked={checkedState[i]}
                         disabled={disabledState}
                         onChange={() => handleOnChange(i)}>
@@ -156,7 +136,7 @@ function InGame() {
                             <Card.Header as="h2" className="Answer-card-header rounded bg-light">{alphabet[i]}</Card.Header>
                             <Card.Body>
                               <Card.Text as="h3" id="a-txt">
-                                {item.name}
+                                {item.Name}
                               </Card.Text>
                             </Card.Body>
                         </Card></ToggleButton>
