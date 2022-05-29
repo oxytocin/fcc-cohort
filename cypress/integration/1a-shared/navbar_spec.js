@@ -23,6 +23,33 @@ describe('Navbar is visible', ()=> {
     });
 });
 
+describe('Navbar collapses correctly', ()=> {
+
+    beforeEach(() => {
+        cy.visit('/')
+    });
+
+    it('Navbar displays correctly on large device', ()=> {
+        cy.get('[data-cy="nav-container"]').children('button')
+        .should('not.be.visible')
+
+        cy.get('[data-cy="nav-collapse"]')
+        .should('not.be.visible')
+    });
+
+    it('Navbar displays on small device', ()=> {
+        cy.viewport(320, 480)
+
+        cy.get('[data-cy="nav-container"]').children()
+        .should('be.visible')
+
+        cy.get('[data-cy="nav-container"]').children('button')
+        .click()
+        cy.get('[data-cy="nav-collapse"]')
+        .should('be.visible')
+    })
+});
+
 describe('Navbar-toggler dropdown functions correctly', ()=> {
 
     beforeEach(() => {

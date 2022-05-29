@@ -4,7 +4,7 @@ import account from "../images/account.svg";
 
 export const HeaderNav: React.FC = () => (
     <Navbar bg="light" expand="md" fixed="top">
-        <Container>
+        <Container data-cy="nav-container">
             {/* This is the mobile element, will do a 'hamburger' button */}
             <Navbar.Brand data-cy="nav-home" href="#home">Flashcard Bonanza</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>

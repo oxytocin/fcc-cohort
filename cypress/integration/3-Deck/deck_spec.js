@@ -8,7 +8,7 @@ describe('Checks login is functioning correctly', ()=> {
     })
 
     it('is testable at least', ()=> {
-        cy.contains('Flashcard Bonanza').should('exist');
+        cy.contains('deck_tests').should('exist');
     })
 
 //    it('Brings up google sign-in', ()=> {
