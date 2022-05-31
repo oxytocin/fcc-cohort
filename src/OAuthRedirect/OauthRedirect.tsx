@@ -10,7 +10,12 @@ function OauthRedirect() {
             method: "POST", mode: "cors",
             body: code
         }).then(response => response.json())
-            .then(data => console.log(data)) // This will need to be pushed into some state so it can be used in other places
+            .then(data => {
+                // for the rest of the session, the token can be accessed with
+                // localStorage.getItem("bonanaza-token")
+                localStorage.setItem("bonanza-token", data.token);
+                window.location.href = "http://127.0.0.1:3000/create-or-join"
+            })
     }, []);
 
     return (

@@ -6,14 +6,11 @@ import {config} from "../Constants"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
     const connectClick = () => {
-        console.log(process.env.NODE_ENV)
-        const width = 500;
-        const height = 400;
-        const left = window.screenX + (window.outerWidth - width) / 2;
-        const top = window.screenY + (window.outerHeight - height) / 2.5;
-        const title = `WINDOW TITLE`;
         const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com&redirect_uri=${config.OAUTH_REDIRECT_URL}&response_type=code&scope=openid profile email`;
-        window.open(url, title, `width=${width},height=${height},left=${left},top=${top}`);
+        // rather than open a popup, we redirect to Google's authentication
+        // That way, the token can be saved and will persist in
+        // localStorage (see OauthRedirect.tsx)
+        window.location.href = url
     }
     return <button onClick={connectClick}>Connect</button>
 }
