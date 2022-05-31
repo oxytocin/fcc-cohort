@@ -1,0 +1,30 @@
+name: Cypress tests
+on:
+  push:
+    branches: 'dev'
+jobs:
+  cypress-run:
+    name: Cypress run
+    runs-on: ubuntu-20.04
+    strategy:
+      # when one test fails, DO NOT cancel the other
+      fail-fast: false
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: cyp-tags
+
+      - name: Cypress run E2E on Chrome
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm ci
+          start: npm start
+          record: true
+          browser: chrome
+        env:
+          # pass the Dashboard record key as an environment variable
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # pass GitHub token to allow accurately detecting a build vs a re-run build
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
