@@ -1,5 +1,8 @@
 name: Cypress tests
-on: [push]
+on:
+  push:
+    branches: 
+    - cyp-tags
 jobs:
   cypress-run:
     name: Cypress run
@@ -11,11 +14,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+        with:
+          ref: cyp-tags
       - name: Cypress run E2E on Chrome
         uses: cypress-io/github-action@v2
         with:
-          build: npm ci
+          build: npm run build
           start: npm start
           record: true
           browser: chrome
