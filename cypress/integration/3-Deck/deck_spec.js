@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
 
-describe('Checks login is functioning correctly', ()=> {
+describe('Checks Deck modification functionality', ()=> {
 
     beforeEach(() => {
         cy.visit('/')
@@ -11,7 +11,4 @@ describe('Checks login is functioning correctly', ()=> {
         cy.contains('deck_tests').should('exist');
     })
 
-//    it('Brings up google sign-in', ()=> {
-//        cy.get('button[value="Connect"]').click();
-//    })
 });
