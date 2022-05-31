@@ -1,8 +1,5 @@
 name: Cypress tests
-on:
-  push:
-    branches: 
-    - cyp-tags
+on: [push]
 jobs:
   cypress-run:
     name: Cypress run
