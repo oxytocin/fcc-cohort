@@ -22,7 +22,7 @@ export const SetChoice: React.FC = () => {
     return (
         <div className={"container"}>
             <Container>
-                <Row>
+                <Row data-cy="all-decks">
                         {allChoices.map(value => (
                             <ChoiceBox title={value.title} content={value.content}/>
                         ))}

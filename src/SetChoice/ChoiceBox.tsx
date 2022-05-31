@@ -7,9 +7,9 @@ export const ChoiceBox: React.FC<{ title: string, content: string }> = ({title, 
 
         <Card border="dark" style={{ width: '18rem' }} className="m-2">
             <Card.Body>
-                <Card.Title>{title}</Card.Title>
+                <Card.Title data-cy="card-title">{title}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-                <Card.Text>
+                <Card.Text data-cy="card-content">
                     {content}
                 </Card.Text>
                 <Card.Link href="#">Card Link</Card.Link>

@@ -7,17 +7,17 @@ export function NewOrExisting() {
             <Container>
                 <Row>
                     <div>
-                    <h1>As host, you choose the question set.</h1>
+                    <h1 data-cy="describe-host">As host, you choose the question set.</h1>
                     </div>
                 </Row>
                 <Row>
                     <Col>
-                        <Button variant="dark" size="lg" href="#">Create New Set</Button>
-                        <p className="font-italic">Type your own question set</p>
+                        <Button data-cy="create-btn" variant="dark" size="lg" href="#">Create New Deck</Button>
+                        <p data-cy="describe-create" className="font-italic">Type your own question set</p>
                     </Col>
                     <Col>
-                        <Button variant="dark" size="lg" href="#">Existing Set</Button>
-                        <p className="font-italic">Choose from existing sets</p>
+                        <Button data-cy="existing-btn" variant="dark" size="lg" href="#">Existing Deck</Button>
+                        <p data-cy="describe-existing" className="font-italic">Choose from existing sets</p>
                     </Col>
                 </Row>
             </Container>

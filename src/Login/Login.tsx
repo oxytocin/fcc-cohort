@@ -12,7 +12,7 @@ const Login = () => {
         // localStorage (see OauthRedirect.tsx)
         window.location.href = url
     }
-    return <button onClick={connectClick}>Connect</button>
+    return <button data-cy="connect" onClick={connectClick}>Connect</button>
 }
 
 export default Login;
