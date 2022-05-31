@@ -15,6 +15,8 @@ jobs:
       - name: Cypress run E2E on Chrome
         uses: cypress-io/github-action@v2
         with:
+          build: npm ci
+          start: npm start
           record: true
           browser: chrome
         env:
