@@ -2,6 +2,13 @@
 /// <reference types="cypress" />
 
 describe('Checks login is functioning correctly', ()=> {
+    // let oauth;
+    
+    // before(() => {
+    //     cy.fixture('fixture1').then((data)=> {
+    //         oauth = data.oauth_dev_url
+    //     })
+    // })
 
     beforeEach(() => {
         cy.visit('/')
@@ -19,17 +26,11 @@ describe('Checks login is functioning correctly', ()=> {
         cy.get('[data-cy="connect"]').should('have.text', 'Connect')
     })
 
-    it('Clicking "Connect" opens a window for Google Oauth', function () {
-        // window.open is called on click
-        // thus we can create method stub after the cy.visit
-        // but before cy.click
-        cy.window().then((win) => {
-        cy.stub(win, 'open').as('windowOpen')
-        })
+    it('Clicking "Connect" proceeds with Google Oauth', ()=> {
 
         cy.get('[data-cy="connect"]').click()
-        cy.get('@windowOpen').should('be.calledWith', "https://accounts.google.com/o/oauth2/v2/auth?client_id=849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com&redirect_uri=http://127.0.0.1:3000/oauth-redirect&response_type=code&scope=openid profile email",
-         "WINDOW TITLE", "width=500,height=400,left=518,top=169.6")
+
+        // this needs to be programmed out... need help figuring out where to store the ENV stuff (will CI have access to it?)
     })
     
 });

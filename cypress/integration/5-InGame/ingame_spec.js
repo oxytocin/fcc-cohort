@@ -4,11 +4,11 @@
 describe('Checks In-game functionality', ()=> {
 
     beforeEach(() => {
-        cy.visit('/')
+        cy.visit('/in-game')
     })
 
     it('is testable at least', ()=> {
-        cy.contains('Progress').should('exist');
+        cy.contains('Question').should('exist');
     })
 
 });
