@@ -178,7 +178,8 @@ function InGame() {
                                 {item.Name}
                               </Card.Text>
                             </Card.Body>
-                        </Card></ToggleButton>
+                        </Card>
+                        </ToggleButton>
                     </Col>
                     );
                 })}

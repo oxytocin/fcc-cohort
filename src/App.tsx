@@ -11,7 +11,7 @@ import OauthRedirect from "./OAuthRedirect/OauthRedirect";
 
 function App() {
     return (
-        <div className="App">
+        <div data-cy="app" className="App">
             <HeaderNav/>
             <Routes>
                 <Route path="/" element={<Login/>}/>
