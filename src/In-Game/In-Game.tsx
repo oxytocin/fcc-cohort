@@ -69,7 +69,7 @@ function InGame() {
         // Render the Question countdown
         return <Stack direction="horizontal">
                 <Spinner animation="grow" variant="secondary" size="sm" className="mx-2"/>
-                <span className="mx-auto">{seconds} sec...</span>
+                <span data-cy="timer" className="mx-auto">{seconds} sec...</span>
                 <Spinner animation="grow" variant="secondary" size="sm" className="mx-2"/>
             </Stack>;
       }
@@ -79,12 +79,12 @@ function InGame() {
     const buffer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
         if (completed) {
             
-            return <Button size="lg" variant="success" className="rounded-pill">Go To Summary</Button>;
+            return <Button data-cy="sum-button" size="lg" variant="success" className="rounded-pill">Go To Summary</Button>;
         } else {
             if (card === data.Cards.length - 1) {
                 return <span><Spinner animation="border" variant="light" className="mx-2"/></span>
             } else {
-                return <span>Next Question: {seconds}</span>;
+                return <span data-cy="buffer" >Next Question: {seconds}</span>;
             }
         }
     };
@@ -151,7 +151,7 @@ function InGame() {
                     </Col>
                 <Col md={{span:3, offset:5}}>
                     <h3 className="rounded rounded-pill bg-dark text-white">
-                        <Countdown data-cy="timer" key={card} date={userTime} renderer={timer}/>
+                        <Countdown key={card} date={userTime} renderer={timer}/>
                     </h3>
                 </Col>
             </Row>
