@@ -6,7 +6,7 @@ import {bonanza_token, config} from "../Constants"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
     const localToken = localStorage.getItem(bonanza_token)
-    if (localToken != undefined || localToken !== ""){
+    if (localToken != undefined && localToken !== ""){
         window.location.href = config.CREATE_OR_JOIN
     }
 
