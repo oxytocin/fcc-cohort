@@ -58,6 +58,7 @@ describe('Checks login is functioning correctly', ()=> {
         })
         })
 
+        cy.location('pathname').should('contain', '/create-or-join')
     })
     
 });
