@@ -4,6 +4,7 @@ import { defineConfig } from 'cypress'
 require('dotenv').config()
 
 export default defineConfig({
+  experimentalSessionAndOrigin: true,
   env: {
     googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN,
     googleClientId: process.env.REACT_APP_GOOGLE_CLIENTID,

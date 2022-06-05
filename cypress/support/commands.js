@@ -1,4 +1,5 @@
 Cypress.Commands.add('loginByGoogleApi', () => {
+  cy.session('oauth', ()=> {
     cy.log('Logging in to Google')
     cy.request({
       method: 'POST',
@@ -19,7 +20,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       }).then(({ body }) => {
         cy.log(body)
         const userItem = {
-          token: id_token,
+          bonanza_token: id_token,
           user: {
             googleId: body.sub,
             email: body.email,
@@ -34,5 +35,6 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       })
     })
   })
+})
 
   
