@@ -76,6 +76,16 @@ describe('Navbar-toggler dropdown functions correctly', ()=> {
         .parent().should('have.class', 'show')
     })
 
+    it('Hides "Log Out" if user is currently NOT signed in', ()=> {
+        cy.get('[data-cy="nav-logout"]').should('not.have.text', 'Log Out')
+    })
+});
+
+describe('Displays "Log Out" if user is currently signed in', ()=> {
+    beforeEach(()=> {
+        cy.loginByGoogleApi()
+    })
+
     it('Dropdown displays "Log Out" option', ()=> {
         cy.get('[data-cy="nav-logout"]')
         .should('have.text', 'Log Out')
@@ -86,5 +96,5 @@ describe('Navbar-toggler dropdown functions correctly', ()=> {
         .click({force: true})
 
         cy.location('pathname').should('eq', '/')          
-    })
-});
+    }) 
+})
