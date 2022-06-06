@@ -1,64 +1,23 @@
+// Sent to back end, re-sent to front end summary
+export const final = {
+  score: 3, // userScore after final timer is up
+  numQuestions: 4 // data.Cards.length
+}
 
-// answers directly (initial test)
-const sampleAnswers = [{
-    Id:1222,
-    Name: "FALSE 2",
-    Value: "string",
-    IsCorrect:false
-  },
-  {
-    Id:1223,
-    Name: "FALSE 1",
-    Value: "string",
-    IsCorrect:false
-  },
-  {
-    Id:1224,
-    Name: "CORRECT 1",
-    Value: "string",
-    IsCorrect:true
-  },
-  {
-    Id:1225,
-    Name: "CORRECT 2",
-    Value: "string",
-    IsCorrect:true
-  }];
-
-// Sample Question
-const card = {
-  Id: 0,
-  Question: "this is the sample data question 1?",
-  Answers: [{
-        Id: 0,
-        Name: "name1correct",
-        Value: "value2correct",
-        IsCorrect: true,
-        FlashCardId: 0
-        }, {
-        Id: 0,
-        Name: "name2correct",
-        Value: "value2correct",
-        IsCorrect: true,
-        FlashCardId: 0
-        }, {
-        Id:0,
-        Name: "name3false",
-        Value: "value3false",
-        IsCorrect: false,
-        FlashCardId: 0
-        }, {
-        Id:0,
-        Name: "name4false",
-        Value: "value4false",
-        IsCorrect: false,
-        FlashCardId: 0
-        }
-    ]
+// back end must return:
+export const testData = {
+  numQuestions: 4,
+  allScores: [
+    {user:"Guy1", score: 2},
+    {user:"Guy4", score: 1},
+    {user:"Guy2", score: 4},
+    {user:"Guy3", score: 2}
+  ]
 }
 
 // Deck data model
-const data = {
+export const data = {
+  timeLimit: 10,
   Cards: [{
     Id: 0,
     Question: "this is the sample data question 1?",
@@ -177,4 +136,3 @@ const data = {
       ]
   }]
 }
-  export default data
