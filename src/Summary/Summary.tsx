@@ -19,9 +19,9 @@ function ScoreSummary() {
     <Table data-cy="table" size="sm" striped hover responsive="sm" className="table table-secondary w-75 mx-auto">
       <thead>
         <tr data-cy="table-headers">
-          <th data-cy="user" scope="col">User</th>
-          <th data-cy="score" scope="col">Score</th>
-          <th data-cy="rank" scope="col">Rank</th>
+          <th scope="col">User</th>
+          <th scope="col">Score</th>
+          <th scope="col">Rank</th>
         </tr>
       </thead>
       <tbody data-cy="table-body">
