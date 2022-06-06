@@ -2,13 +2,6 @@
 /// <reference types="cypress" />
 
 describe('Checks login is functioning correctly', ()=> {
-    // let oauth;
-    
-    // before(() => {
-    //     cy.fixture('fixture1').then((data)=> {
-    //         oauth = data.oauth_dev_url
-    //     })
-    // })
 
     beforeEach(() => {
         cy.visit('/')
@@ -28,9 +21,17 @@ describe('Checks login is functioning correctly', ()=> {
 
     it('Clicking "Connect" proceeds with Google Oauth', ()=> {
 
-        cy.get('[data-cy="connect"]').click()
+        //cy.get('[data-cy="connect"]').click()
 
         // this needs to be programmed out... need help figuring out where to store the ENV stuff (will CI have access to it?)
+    })
+
+    it.only('Google Login is working', ()=> {
+        cy.intercept({method:'GET|POST'}).as('googleCheck')
+
+        cy.loginByGoogleApi()
+
+        cy.wait('@googleCheck')
     })
     
 });
