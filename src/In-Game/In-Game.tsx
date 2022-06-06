@@ -1,70 +1,63 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {ProgressBar, Container, Card, Row, Col, Spinner, Stack, ToggleButton, Button} from 'react-bootstrap';
 import Countdown from 'react-countdown';
-import data from './in-game-data';
+import {displayCorrect, unmarkCorrect, checkAns}from './in-game-funcs';
+import {data} from './in-game-data';
 
-// A way to shuffle the answers
-//https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-function shuffle(array: {}[]) {
-    let currentIndex = array.length,  randomIndex;
-    // While there remain elements to shuffle.
-    while (currentIndex !== 0) {
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-    };
-    return array
-}
-
-shuffle(data.Cards);
-for (let i = 0; i < data.Cards.length; i++) {
-    shuffle(data.Cards[i].Answers)
-}
-
-const timeLimit = 1000 * 10 // second number to be chosen by host in room, pass into here
+const timeLimit = 1000 * data.timeLimit
+const alphabet = ["A","B","C","D","E","F"];
+const ansHeader = document.getElementsByClassName("Answer-card-header");
 
 function InGame() {
     const [card, setCard] = useState(0) // card is the question index of the shuffled deck
+    const [userScore, setUserScore] = useState(0);
     const [userTime, setUserTime] = useState(Date.now() + timeLimit)
-    const alphabet = ["A","B","C","D"]; // for assigning answer card labels
-    const correctAns = data.Cards[card].Answers.map(item => item.IsCorrect);
-    const ansHeader = document.getElementsByClassName("Answer-card-header");
+    const [display, setDisplay] = useState({answerDisabled: false, indicator: "outline-secondary"})
+    const [checkedState, setCheckedState] = useState( new Array(data.Cards[card].Answers.length).fill(false) );
+
+    const checkedRef = useRef(checkedState) // must use Ref to relay updated information to the setTimeout function
+        checkedRef.current = checkedState;
+    const correctAns = data.Cards[card].Answers.map(item => item.IsCorrect); // user answers are checked against this
     const bufferTime = userTime + 5000; // default buffer time between questions
+
+    //// https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
+    const handleOnChange = (position: number) => {
+        const updatedCheckedState = checkedState.map((item, index) =>
+              index === position ? !item : item
+          );
+          setCheckedState(updatedCheckedState);
+      }
 
     useEffect(()=> {
         const timeIsUp = setTimeout(()=> {
-            setDisabledState(true);
-            checkAns();
-            displayCorrect(ansHeader);
-            setIndicatorState("outline-dark");
+            setDisplay({answerDisabled: true, indicator: "outline-dark"})
+            displayCorrect(ansHeader, correctAns);
+            if (checkAns(correctAns, checkedRef.current) === true) {
+                setUserScore(userScore + 1)
+            }
         }, timeLimit);
         return () => clearTimeout(timeIsUp)
-    }, [bufferTime]); // if userTime changes, this effect will fire again-- it's a good thing
+    }, [bufferTime]);
 
     useEffect(()=> {
         const next = setTimeout(()=> {
             if (card < data.Cards.length - 1) {
                 setCard(card+1)
                 setCheckedState( new Array(data.Cards[card+1].Answers.length).fill(false) )               
-                setDisabledState(false)
+                setDisplay({answerDisabled: false, indicator: "outline-secondary"})
                 setUserTime(Date.now() + timeLimit)
-                setIndicatorState("outline-secondary")
                 unmarkCorrect(ansHeader)
             } else {
-                return null // game ends here
+                return null // the state of the game shouldn't reach this line... if so it's an error
             }
         }, timeLimit+5000);
         return () => clearTimeout(next)
     }, [bufferTime])
 
-    // TIMER FUNCTIONS //
-    // Renderer callback with condition
+    // TIMER FUNCTIONS https://www.npmjs.com/package/react-countdown
     const timer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
       if (completed) {
-        return <Completionist />;
+        return <BuffTimer />; // Returns the buffer timer between questions
       } else {
         // Render the Question countdown
         return <Stack direction="horizontal">
@@ -74,13 +67,20 @@ function InGame() {
             </Stack>;
       }
     };
-    // Render a buffer countdown
-    const Completionist = () => <div><Countdown date={bufferTime} renderer={buffer}/></div>;
+
+    const BuffTimer = () => <div><Countdown date={bufferTime} renderer={buffer}/></div>;
+
     const buffer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
         if (completed) {
-            
-            return <Button data-cy="sum-button" size="lg" variant="success" className="rounded-pill">Go To Summary</Button>;
+
+                // at this point, we have run out of cards and the session is over
+                // SEND THIS TO THE BACKEND: {finalScore: userScore,
+                //                            numQuestions: data.Cards.length}
+                // SEND USER TO SUMMARY PAGE
+
+            return <span><Spinner animation="border" variant="light" className="mx-2"/></span>;
         } else {
+                // if the card count has reached the deck length display a loading spinner, else display "Next Question"
             if (card === data.Cards.length - 1) {
                 return <span><Spinner animation="border" variant="light" className="mx-2"/></span>
             } else {
@@ -89,63 +89,12 @@ function InGame() {
         }
     };
 
-    // evaluates user's input against IsCorrect answer data
-    const checkAns = () => {
-        for (let i = 0; i < correctAns.length; i++) {
-            if (!correctAns[i] === (checkedRef.current[i])) {
-                console.log("incorrect")
-                return false
-            }
-        }
-        setUserScore(userScore + 1)
-        console.log("correct!")
-        return true
-    };
-
-    // changes answer cards to indicate correct answer after time expires
-    const displayCorrect = (elements: HTMLCollection) => {
-        for (let i = 0; i < elements.length; i++) {
-            const elementClass = elements[i].classList;
-            if (correctAns[i] === true) {
-                elementClass.remove("bg-light");
-                elementClass.add("bg-success");
-            }
-        };
-    };
-    const unmarkCorrect = (elements: HTMLCollection) => {
-        for (let i = 0; i < elements.length; i++) {
-            const elementClass = elements[i].classList;
-            elementClass.add("bg-light");
-            elementClass.remove("bg-success");
-        };
-    };
-
-    const [userScore, setUserScore] = useState(0);
-    const [disabledState, setDisabledState] = useState(false);
-    const [indicatorState, setIndicatorState] = useState("outline-secondary");
-    const [checkedState, setCheckedState] = useState( new Array(data.Cards[card].Answers.length).fill(false) );
-    const checkedRef = useRef(checkedState) // must use Ref to relay updated information to the setTimeout function
-    checkedRef.current = checkedState
-
-//// https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
-    const handleOnChange = (position: number) => {
-      const updatedCheckedState = checkedState.map((item, index) =>
-            index === position ? !item : item
-        );
-        setCheckedState(updatedCheckedState);
-    }
-
-//  console.log("checkedRef: " + checkedRef.current) // logs selected answer choices passed as references for use in setTimeout
-//  console.log("actual ans: " + correctAns);   // logs the IsCorrect Values provided by the Answer array (for verification only)
-//  console.log("checked: " + checkedState);    // logs the user's selected answer choices (for verification)
-//  console.log("user Score: " + userScore)      // logs the user's score (for verification)
-
     return (
     <div className="pt-5">
         <Container fluid="md">
             <Row className="mt-md-5 pt-5" > {/* Progress and Timer */}
                 <Col md={4}>
-                    <ProgressBar data-cy="progress" animated variant="dark" now={( (card+1) / data.Cards.length)*100} /> {/* {QuesNumber}/{deck.length} */}
+                    <ProgressBar data-cy="progress" animated variant="dark" now={( (card+1) / data.Cards.length)*100} />
                     <h3 data-cy="ques-num" className="text-start">Question {card+1} of {data.Cards.length}</h3>
                     <h4 data-cy="score" className="text-start">Score: {userScore}</h4>
                     </Col>
@@ -166,16 +115,16 @@ function InGame() {
                     return(
                     <Col xs={12}>
                         <ToggleButton id={alphabet[i]} type="checkbox" className="w-100"
-                        variant={indicatorState}
-                        value={item.Id}
+                        variant={display.indicator}
+                        value={item.Value}
                         checked={checkedState[i]}
-                        disabled={disabledState}
+                        disabled={display.answerDisabled}
                         onChange={() => handleOnChange(i)}>
                         <Card bg="dark" text="white">
                             <Card.Header as="h2" className="Answer-card-header rounded bg-light">{alphabet[i]}</Card.Header>
                             <Card.Body>
                               <Card.Text as="h3" id="a-txt">
-                                {item.Name}
+                                {item.Value}
                               </Card.Text>
                             </Card.Body>
                         </Card>
