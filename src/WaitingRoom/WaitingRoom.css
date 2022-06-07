@@ -1,0 +1,11 @@
+.WaitingRoom {
+    height: 50vh;
+}
+
+.usersJoinedDiv {
+    background: black;
+}
+
+.waitingRoomText {
+    color: white;
+}

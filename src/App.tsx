@@ -9,6 +9,7 @@ import ScoreSummary from "./Summary/Summary";
 import OauthRedirect from "./OAuthRedirect/OauthRedirect";
 import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import WaitingRoom from "./WaitingRoom/WaitingRoom";
 
 function App() {
     document.title = "Flashcard Bonanza";
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/set-choice" element={<PrivateRoute><SetChoice/></PrivateRoute>}/>
                 <Route path="/in-game" element={<PrivateRoute><InGame/></PrivateRoute>}/>
                 <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
+                <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
             </Routes>
         </div>
     );
