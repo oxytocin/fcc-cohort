@@ -17,13 +17,9 @@ describe('Choose Deck Page', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
 
-        cy.intercept('/summary', (req) => {
+        cy.intercept('api/for-deck-call', {fixture: 'deckChoice.json'}).as('deckStub') // fix intercept method
 
-            //req.reply(deckChoice.allChoices) // figure out how to stub data
-
-        })
-
-        cy.visit('/summary')
+        cy.visit('/choose-a-deck-set').wait('@deckStub')
     })
 
     it.only('is testable at least', ()=> {
