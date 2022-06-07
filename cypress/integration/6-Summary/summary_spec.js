@@ -9,10 +9,6 @@ describe('Checks Summary Page display', ()=> {
         cy.visit('/summary')
     })
 
-    it('is testable at least', ()=> {
-        cy.contains('Summary').should('exist');
-    })
-
     it('Displays header "Score Summary"', ()=> {
         cy.get('[data-cy="summary"]')
         .contains('h1', 'Score Summary')
@@ -36,10 +32,10 @@ describe('Checks Summary Page display', ()=> {
         })
     })
 
-    it('Displays all non-host participants in table body', ()=> {
+    it('Displays all participants in table body', ()=> {
         cy.get('[data-cy="table-body"]').children()
         .should('have.length', 'how to collect users???')
-    })  // mock this out?
+    })  // mock this out
 
     // check that usernames are displayed in table body
     //
@@ -47,17 +43,10 @@ describe('Checks Summary Page display', ()=> {
     // check that scores are displayed in desc order
     //
 
-    it('Displays host in table footer', ()=> {
-        cy.get('[data-cy="host"]').contains('the host name')
-    })  // mock this out?
-
-    it('Displays host score', ()=> {
-        cy.get('[data-cy="host-score"').should('eq', 'the host score')
-        // mock this out?
-    })
-
     it('Displays "Return to Room" button', ()=> {
         cy.get('[data-cy="return-btn"]')
-        .contains('button', 'Return to Room')
+        .contains('button', 'Return to Room').should('exist').click()
+
+        cy.location('pathname').should('eq', 'create-or-join')
     })
 });

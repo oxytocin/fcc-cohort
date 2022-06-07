@@ -22,7 +22,7 @@ describe('Choose Deck Page', ()=> {
         cy.visit('/choose-a-deck-set').wait('@deckStub')
     })
 
-    it.only('is testable at least', ()=> {
+    it('is testable at least', ()=> {
         cy.contains('Choose a Deck...').should('exist');
     })
 
