@@ -1,0 +1,9 @@
+{
+    "numQuestions": 4,
+    "allScores": [
+      {"user":"Guy1", "score": 2},
+      {"user":"Guy4", "score": 1},
+      {"user":"Guy2", "score": 4},
+      {"user":"Guy3", "score": 2}
+    ]
+}

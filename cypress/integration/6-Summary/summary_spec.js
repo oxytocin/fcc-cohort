@@ -4,6 +4,8 @@
 describe('Checks Summary Page display', ()=> {
 
     beforeEach(() => {
+        cy.loginByGoogleApi()
+        cy.intercept('', {fixture: 'finalScores.json'}).as('scoresStub') // fix intercept method)
         cy.visit('/summary')
     })
 
