@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
+import deckChoice from '../../fixtures/deckChoice.json'
 
 describe('Cannot access if not signed in', ()=> {
 
@@ -12,29 +13,28 @@ describe('Cannot access if not signed in', ()=> {
     })
 })
 
-describe('Choose Deck (host choice)', ()=> {
+describe('Choose Deck Page', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
-        cy.visit('/new-or-existing-set') // fix pathname
+
+        cy.intercept('/summary', (req) => {
+
+            //req.reply(deckChoice.allChoices) // figure out how to stub data
+
+        })
+
+        cy.visit('/summary')
     })
 
-    it('is testable at least', ()=> {
+    it.only('is testable at least', ()=> {
         cy.contains('Choose a Deck...').should('exist');
     })
 
     describe('Page elements are displayed', ()=> {
 
-        it('Displays two button choices for deck selection', ()=> {
-            cy.get('button').should('have.length', 2)
-
-            cy.contains('Select and continue').should(($btn)=> {
-                expect($btn).to.have.text('Select and continue')
-                expect($btn).to.have.attr('button')
-                expect($btn).to.have.attr('href').equal.to('/some-new-room-path')
-            })
-
+        it('Displays Create New Deck button', ()=> {
             cy.contains('Create New Deck').should(($btn)=> {
-                expect($btn).to.have.text('Existing Deck')
+                expect($btn).to.have.text('Create New Deck')
                 expect($btn).to.have.attr('button')
                 expect($btn).to.have.attr('href').equal.to('/some-edit-deck-page')
             })
@@ -54,33 +54,36 @@ describe('Choose Deck (host choice)', ()=> {
     describe('Interact with deck page elements as host', ()=> {
         // beforeEach to mock some data in this block
 
-        it('Verify Select and Continue button path', ()=> {
-            cy.contains('Select and continue').click()
-            cy.location('pathname').should('include', '/some-room-path')
-        })
 
         it('Verify Create New Deck button path', ()=> {
             cy.contains('Create New Deck').click()
             cy.location('pathname').should('include', '/some-edit-deck-page')
         })
 
-        it('Hovering over a deck gives Delete option', ()=> {
+        it('Hovering over a deck gives options: Create Room, Edit Deck, Delete Deck', ()=> {
             // must have some data in here
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
-            cy.contains('Delete').should('be.visible')
-
-            cy.contains('Delete').click({force: true})
-
-            cy.get('[data-cy="all-decks"]').select(1).should('not.exist')
+            cy.contains('Create Room').should('be.visible')
+            cy.contains('Edit Deck').should('be.visible')
+            cy.contains('Delete Deck').should('be.visible')
         })
 
-        it('Hovering over a deck gives Edit option', ()=> {
+        it('Verify Deck Edit option', ()=> {
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
-            cy.contains('Edit this deck').should('be.visible')
-
-            cy.contains('Edit this deck').click({force: true})
-
+            cy.contains('Edit Deck').click({force: true})
             cy.location('pathname').should('include', '/some-edit-deck-page-with-this-deck-id')
+        })
+
+        it('Verify Deck Delete option', ()=> {
+            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.contains('Delete Deck').click({force: true})
+            cy.get('[data-cy="all-decks"]').select(1).should('not.exist') // need a better way to check the specific deletion -- update later
+        })
+
+        it('Verify Create Room option', ()=> {
+            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.contains('Create Room').click({force: true})
+            cy.location('pathname').should('include', '/some-room-pathname')
         })
     })
 });
