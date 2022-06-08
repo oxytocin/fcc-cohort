@@ -4,7 +4,7 @@ import deckChoice from '../../fixtures/deckChoice.json'
 
 describe('Cannot access if not signed in', ()=> {
 
-    it('Throws 404 if not signed in (Choose a Deck - as host)', ()=> {
+    it.skip('Throws 404 if not signed in (Choose a Deck - as host)', ()=> {
         cy.intercept('/set-choice').as('shouldFail')
         cy.visit('/set-choice')
 
@@ -17,9 +17,9 @@ describe('Choose Deck Page', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
 
-        cy.intercept('api/for-deck-call', {fixture: 'deckChoice.json'}).as('deckStub') // fix intercept and stub method
+//        cy.intercept('api/for-deck-call', {fixture: 'deckChoice.json'}).as('deckStub') // fix intercept and stub method
 
-        cy.visit('/set-choice').wait('@deckStub')
+        cy.visit('/set-choice')//.wait('@deckStub')
     })
 
     describe('Page elements are displayed', ()=> {
@@ -27,10 +27,13 @@ describe('Choose Deck Page', ()=> {
         it('Displays "Create New Deck" button and preview of Decks', ()=> {
             cy.contains('Choose a Deck...').should('be.visible').and('have.attr', 'button')
 
-            cy.get('[data-cy="all-decks"]').should('have.length.gt', 0)
+            cy.get('[data-cy="all-decks"]').children().should('have.length.gt', 0)
 
-            cy.get('[data-cy="all-decks"]').children()
-            .should('have.attr', "title", "content")
+            cy.get('[data-cy="card-title"]').invoke('text')
+            .should('not.be.empty')
+
+            cy.get('[data-cy="card-content"]').invoke('text')
+            .should('not.be.empty')
         })
     })
 
