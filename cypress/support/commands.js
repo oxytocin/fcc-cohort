@@ -1,3 +1,5 @@
+import {config} from "../../src/Constants"
+
 Cypress.Commands.add('loginByGoogleApi', () => {
   cy.session('oauth', ()=> {
     cy.log('Logging in to Google')
@@ -12,7 +14,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       },
     }).then(({ body }) => {
       const { access_token, id_token } = body
-  
+      console.log(body.access_token)
       cy.request({
         method: 'GET',
         url: 'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -20,7 +22,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       }).then(({ body }) => {
         cy.log(body)
         const userItem = {
-          "bonanza-token": id_token,
+          token: id_token,
           user: {
             googleId: body.sub,
             email: body.email,
@@ -29,9 +31,10 @@ Cypress.Commands.add('loginByGoogleApi', () => {
             imageUrl: body.picture,
           },
         }
-  
-        window.localStorage.setItem('googleCypress', JSON.stringify(userItem))
-        cy.visit('/')
+          // must figure out a way to ping the backend login to generate bonanza-specific token
+          // JSON.stringify(userItem) <-- original setItem here
+        window.localStorage.setItem('bonanza-token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6ZmFsc2UsImV4cCI6MTY1NTA4NDQyMiwiZmlyc3ROYW1lIjoiSm9obiIsImlkIjoyLCJsYXN0TmFtZSI6IkRvZSIsInVzZXJuYW1lIjoiZmxhc2hjYXJkLmJvbmFuemEudGVzdEBnbWFpbC5jb20ifQ.TKslas_OL-9pqJp6MmIcJ-Bg-C8RHTwpPim2P0U_G0w")
+        cy.visit('/create-or-join')
       })
     })
   })

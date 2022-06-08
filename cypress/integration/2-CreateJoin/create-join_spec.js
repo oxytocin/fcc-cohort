@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
+import jwtDecode from "jwt-decode"
+import {bonanza_token} from "../../../src/Constants"
 
 describe('Cannot access if not signed in', ()=> {
     it('Throws 404 if not signed in', ()=> {
@@ -10,7 +12,7 @@ describe('Cannot access if not signed in', ()=> {
     })
 })
 
-describe('Create or join room loads', ()=> {
+describe('Create or Join room', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
         cy.visit('/create-or-join')
@@ -20,30 +22,29 @@ describe('Create or join room loads', ()=> {
         cy.get('[data-cy="header"]').should('exist')
         .and('have.text', "Flashcard Bonanza")
 
-        const userFirstname = localStorage.getItem(googleCypress.user.givenName)
+        let token = localStorage.getItem(bonanza_token) ?? ""
+        const decoded = jwtDecode(token)
+        let user = decoded.firstName
+        //const userFirstname = localStorage.getItem(googleCypress.user.givenName)
         cy.get('[data-cy="greeting"]')
         .should('contain.text', 'Welcome')
-        .and('contain.text', userFirstname)
+        .and('contain.text', user)
 
-        cy.get('[data-cy="btn-toolbar"]').children().should('have.length', 2);
+        cy.get('[data-cy="host-btn"]').should('have.text', "Host room")
+
+        cy.get('[data-cy="join-btn"]').should('have.text', "Join room")
     })
 
     it('Display and verify Host room button', ()=> {
-        cy.get('[data-cy="host-btn"]')
-        .should('have.text', "Host room")
-
         cy.get('[data-cy="host-btn"]').click()
         cy.location('pathname').should('contain', '/set-choice')
     });
 
     it('Display and verify Join room button', ()=> {
-        cy.get('[data-cy="join-btn"]')
-        .should('have.text', "Join room")
-
-        cy.get('input').invoke('attr', 'placeholder').should('contain', 'username')
+        cy.get('input').invoke('attr', 'placeholder').should('contain', 'Room ID')
         cy.get('input').type('123456789')
 
         cy.get('[data-cy="join-btn"]').click() // need to intercept here?
-        cy.location('pathname').should('contain', '/waiting-room/123456789') // not sure about this route-wise????
+        cy.location('pathname').should('contain', '/waiting-room') //
     })
 });

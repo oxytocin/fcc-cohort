@@ -5,7 +5,7 @@ describe('Navbar not displayed if user is not logged in', ()=> {
     it('Only shows "Connect" button at home page', ()=> {
         cy.visit('/')
         cy.get('[data-cy="connect"]').should('be.visible').and('have.text', 'Log in with Google')
-        cy.get('[data-cy="nav-home"]').should('not.be.visible')
+        cy.get('[data-cy="nav-home"]').should('not.exist')
     })
 })
 
@@ -22,7 +22,7 @@ describe('Navbar is visible after login', ()=> {
         .and('have.attr', 'href').and('eq', '#home')
 
         cy.get('[data-cy="nav-home"]').click()
-        cy.location('pathname').should('contain', '#home')
+        cy.location('pathname').should('contain', '/create-or-join')
     });
 
 

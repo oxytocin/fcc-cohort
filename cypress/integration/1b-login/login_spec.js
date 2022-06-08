@@ -46,12 +46,14 @@ describe('Checks login is functioning correctly', ()=> {
             }
     
             window.localStorage.setItem('googleCypress', JSON.stringify(userItem))
+            window.localStorage.setItem('bonanza-token', JSON.stringify(userItem.token))
             expect(userItem).to.have.property('token')
             expect(userItem).to.have.property('user')
             cy.visit('/')
         })
         })
 
+        cy.visit('/create-or-join')
         cy.location('pathname').should('contain', '/create-or-join')
     })
     
