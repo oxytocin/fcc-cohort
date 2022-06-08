@@ -1,16 +1,13 @@
 import React, {Fragment} from 'react';
 import {Container, Table, Button} from 'react-bootstrap';
-import {config} from '../Constants'
 import {testData} from '../In-Game/in-game-data'
+import {useNavigate} from 'react-router-dom'
 
 function ScoreSummary() {
   const rankedScores = testData.allScores.sort((a, b) => b.score - a.score)
   const numQuestions = testData.numQuestions
 
-  const clickReturn = () => {
-    const url = config.CREATE_OR_JOIN
-    window.location.href = url
-  }
+  const navigate = useNavigate();
 
   return(
   <Container fluid className="bg-dark p-3 border border-2 rounded">
@@ -38,7 +35,7 @@ function ScoreSummary() {
           })}
         </tbody>
     </Table>
-    <Button data-cy="return-btn" variant="success" className="mx-1" onClick={clickReturn}>Return</Button>
+    <Button data-cy="return-btn" variant="success" className="mx-1" onClick={()=>{navigate("/create-or-join")}}>Return</Button>
   </Container>
   );
 }
