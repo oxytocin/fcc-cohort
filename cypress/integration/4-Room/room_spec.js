@@ -19,8 +19,10 @@ describe('Checks Room functionality', ()=> {
         cy.visit('/')
     })
 
-    it('is testable at least', ()=> {
-        cy.contains('Room').should('exist');
+    it('Displays all elements', ()=> {
+        cy.contains('Room Code').should('be.visible');
+        cy.contains('form').should('be.visible')
+        cy.contains('Users Joined').should('be.visible')
     })
 
 });

@@ -19,7 +19,7 @@ describe('Checks Summary Page display', ()=> {
 
         cy.get('[data-cy="table"]').children()
         .each(($child, index) => {
-            expect($child, contents[index])
+            expect($child, contents[index]) // not sure about assertion method here
         })
     })
 
@@ -28,14 +28,14 @@ describe('Checks Summary Page display', ()=> {
 
         cy.get('[data-cy="table-headers"]').children()
         .each(($child, index) => {
-            expect($child, headers[index])
+            expect($child, headers[index]) // not sure about assertion method here
         })
     })
 
-    it('Displays all participants in table body', ()=> {
+    it.skip('Displays all participants in table body', ()=> {
         cy.get('[data-cy="table-body"]').children()
-        .should('have.length', 'how to collect users???')
-    })  // mock this out
+        .should('have.length', 'how to count users in table')
+    })
 
     // check that usernames are displayed in table body
     //
@@ -45,8 +45,8 @@ describe('Checks Summary Page display', ()=> {
 
     it('Displays "Return to Room" button', ()=> {
         cy.get('[data-cy="return-btn"]')
-        .contains('button', 'Return to Room').should('exist').click()
+        .contains('button', 'Return to Room').click()
 
-        cy.location('pathname').should('eq', 'create-or-join')
+        cy.location('pathname').should('include', '/create-or-join')
     })
 });

@@ -20,7 +20,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       }).then(({ body }) => {
         cy.log(body)
         const userItem = {
-          bonanza_token: id_token,
+          "bonanza-token": id_token,
           user: {
             googleId: body.sub,
             email: body.email,

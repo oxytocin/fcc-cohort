@@ -8,15 +8,9 @@ describe('Checks login is functioning correctly', ()=> {
     })
 
     it('App loads to the homepage', ()=> {
-        cy.contains('Flashcard Bonanza').should('exist');
-
-        cy.contains('Connect').should('exist');
-
+        cy.contains('Log in with Google').should('be.visible');
+        cy.get('[data-cy="connect"]').should('have.text', 'Log in with Google')
         cy.location('pathname').should('eq', '/')
-    })
-
-    it('Connect button is displayed', ()=> {
-        cy.get('[data-cy="connect"]').should('have.text', 'Connect')
     })
 
     it('Google Login is working', ()=> {

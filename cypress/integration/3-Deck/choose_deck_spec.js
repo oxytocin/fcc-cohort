@@ -5,8 +5,8 @@ import deckChoice from '../../fixtures/deckChoice.json'
 describe('Cannot access if not signed in', ()=> {
 
     it('Throws 404 if not signed in (Choose a Deck - as host)', ()=> {
-        cy.intercept('/choose-a-deck-set').as('shouldFail')
-        cy.visit('/choose-a-deck-set')
+        cy.intercept('/set-choice').as('shouldFail')
+        cy.visit('/set-choice')
 
         cy.wait('@shouldFail').its('response.statusCode').should('eq', 404)
         expect('this test').to.be('failing') // fix pathname
@@ -17,31 +17,18 @@ describe('Choose Deck Page', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
 
-        cy.intercept('api/for-deck-call', {fixture: 'deckChoice.json'}).as('deckStub') // fix intercept method
+        cy.intercept('api/for-deck-call', {fixture: 'deckChoice.json'}).as('deckStub') // fix intercept and stub method
 
-        cy.visit('/choose-a-deck-set').wait('@deckStub')
-    })
-
-    it('is testable at least', ()=> {
-        cy.contains('Choose a Deck...').should('exist');
+        cy.visit('/set-choice').wait('@deckStub')
     })
 
     describe('Page elements are displayed', ()=> {
 
-        it('Displays Create New Deck button', ()=> {
-            cy.contains('Create New Deck').should(($btn)=> {
-                expect($btn).to.have.text('Create New Deck')
-                expect($btn).to.have.attr('button')
-                expect($btn).to.have.attr('href').equal.to('/some-edit-deck-page')
-            })
-        })
+        it('Displays "Create New Deck" button and preview of Decks', ()=> {
+            cy.contains('Choose a Deck...').should('be.visible').and('have.attr', 'button')
 
-        it('Displays a list of previously created decks', ()=> {
-            // mock some data?
             cy.get('[data-cy="all-decks"]').should('have.length.gt', 0)
-        })
 
-        it('Verify attributes of each Deck', ()=> {
             cy.get('[data-cy="all-decks"]').children()
             .should('have.attr', "title", "content")
         })
@@ -53,11 +40,10 @@ describe('Choose Deck Page', ()=> {
 
         it('Verify Create New Deck button path', ()=> {
             cy.contains('Create New Deck').click()
-            cy.location('pathname').should('include', '/some-edit-deck-page')
+            cy.location('pathname').should('include', '/some-edit-deck-page') // fix this with edit-deck path
         })
 
         it('Hovering over a deck gives options: Create Room, Edit Deck, Delete Deck', ()=> {
-            // must have some data in here
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
             cy.contains('Create Room').should('be.visible')
             cy.contains('Edit Deck').should('be.visible')
@@ -67,19 +53,20 @@ describe('Choose Deck Page', ()=> {
         it('Verify Deck Edit option', ()=> {
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
             cy.contains('Edit Deck').click({force: true})
-            cy.location('pathname').should('include', '/some-edit-deck-page-with-this-deck-id')
+            cy.location('pathname').should('include', '/some-edit-deck-page-with-this-deck-id') // fix this with edit-deck path
         })
 
         it('Verify Deck Delete option', ()=> {
+            cy.get('[data-cy="all-decks"]').select(1).should('have.text', 'This is a title')
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
             cy.contains('Delete Deck').click({force: true})
-            cy.get('[data-cy="all-decks"]').select(1).should('not.exist') // need a better way to check the specific deletion -- update later
+            cy.get('[data-cy="all-decks"]').select(1).should('not.have.text', 'This is a title')
         })
 
         it('Verify Create Room option', ()=> {
             cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
             cy.contains('Create Room').click({force: true})
-            cy.location('pathname').should('include', '/some-room-pathname')
+            cy.location('pathname').should('include', '/waiting-room')
         })
     })
 });

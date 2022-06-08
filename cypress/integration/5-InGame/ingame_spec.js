@@ -16,13 +16,13 @@ describe('Checks In-game functionality', ()=> {
 
     describe('All initial elements load', ()=> {
         it('Displays displays all elements', ()=> {
-            cy.get('[data-cy="ques-num"]').should('exist').and('contain.text', 'Question')
-            cy.get('[data-cy="timer"]').should('exist').and('contain.text', 'sec...')
-            cy.get('[data-cy="progress"]').should('exist')
-            cy.get('[data-cy="score"]').should('exist').and('contain.text', 'Score:')
-            cy.get('[data-cy="question"]').should('exist').and('not.be.empty')
+            cy.get('[data-cy="ques-num"]').should('be.visible').and('contain.text', 'Question')
+            cy.get('[data-cy="timer"]').should('be.visisble').and('contain.text', 'sec...')
+            cy.get('[data-cy="progress"]').should('be.visible')
+            cy.get('[data-cy="score"]').should('be.visible').and('contain.text', 'Score:')
+            cy.get('[data-cy="question"]').should('be.visible').and('not.be.empty')
             cy.get('[data-cy="answers"]').children()
-            .should('exist').and('have.length.within', 1, 6)
+            .should('be.visible').and('have.length.within', 1, 6)
         })
     })
 
