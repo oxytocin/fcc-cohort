@@ -1,11 +1,21 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
 
+describe('Cannot access if not signed in', ()=> {
+    it.skip('Throws 404 if not signed in', ()=> {
+        cy.intercept('/summary') // need to mock created room id?
+        cy.visit('/summary')
+
+        cy.wait('@shouldFail').its('response.statusCode').should('eq', 404)
+        expect('this test').to.be('failing') // fix pathname
+    })
+})
+
 describe('Checks Summary Page display', ()=> {
 
     beforeEach(() => {
         cy.loginByGoogleApi()
-        cy.intercept('', {fixture: 'finalScores.json'}).as('scoresStub') // fix intercept method)
+        //cy.intercept('', {fixture: 'finalScores.json'}).as('scoresStub') // fix intercept method)
         cy.visit('/summary')
     })
 
@@ -15,11 +25,11 @@ describe('Checks Summary Page display', ()=> {
     })
 
     it('Displays a summary table', ()=> {
-        const contents = ["thead", "tbody", "tfoot"]
+        const contents = ["thead", "tbody"]
 
         cy.get('[data-cy="table"]').children()
         .each(($child, index) => {
-            expect($child, contents[index]) // not sure about assertion method here
+            expect($child, contents[index])
         })
     })
 
@@ -28,7 +38,7 @@ describe('Checks Summary Page display', ()=> {
 
         cy.get('[data-cy="table-headers"]').children()
         .each(($child, index) => {
-            expect($child, headers[index]) // not sure about assertion method here
+            expect($child, headers[index])
         })
     })
 
@@ -43,9 +53,9 @@ describe('Checks Summary Page display', ()=> {
     // check that scores are displayed in desc order
     //
 
-    it('Displays "Return to Room" button', ()=> {
+    it('Displays "Return" button', ()=> {
         cy.get('[data-cy="return-btn"]')
-        .contains('button', 'Return to Room').click()
+        .should('have.text', 'Return').click()
 
         cy.location('pathname').should('include', '/create-or-join')
     })

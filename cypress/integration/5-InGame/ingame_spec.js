@@ -2,6 +2,16 @@
 /// <reference types="cypress" />
 import ingameData from '../../fixtures/ingameData.json'
 
+describe('Cannot access if not signed in', ()=> {
+    it.skip('Throws 404 if not signed in', ()=> {
+        cy.intercept('/in-game') // need to mock created room id?
+        cy.visit('/in-game')
+
+        cy.wait('@shouldFail').its('response.statusCode').should('eq', 404)
+        expect('this test').to.be('failing') // fix pathname
+    })
+})
+
 describe('Checks In-game functionality', ()=> {
 
     beforeEach(() => {
@@ -17,7 +27,7 @@ describe('Checks In-game functionality', ()=> {
     describe('All initial elements load', ()=> {
         it('Displays displays all elements', ()=> {
             cy.get('[data-cy="ques-num"]').should('be.visible').and('contain.text', 'Question')
-            cy.get('[data-cy="timer"]').should('be.visisble').and('contain.text', 'sec...')
+            cy.get('[data-cy="timer"]').should('exist').and('contain.text', 'sec...')
             cy.get('[data-cy="progress"]').should('be.visible')
             cy.get('[data-cy="score"]').should('be.visible').and('contain.text', 'Score:')
             cy.get('[data-cy="question"]').should('be.visible').and('not.be.empty')
@@ -29,13 +39,13 @@ describe('Checks In-game functionality', ()=> {
     describe('In-game mechanics work as expected', ()=> {
         const userTimer = 0.5 + 10 // to be taken from fixture data
 
-        it('can mark and unmark answer choice boxes', ()=> {
-            cy.get('input#A').click({force: true}).should('be.checked')
+        it('Can mark and unmark answer choice boxes', ()=> {
+            cy.get('input#A').realClick().should('be.checked')
             cy.wait(250)
-            cy.get('input#A').click({force: true}).should('be.not.checked')
+            cy.get('input#A').realClick().should('be.not.checked')
         })
 
-        it('timer counts down', ()=> {
+        it('Timer counts down', ()=> {
             cy.get('[data-cy="timer"]').invoke('text')
                 .then((text1) => {
                     const initTimer= parseFloat(text1)
@@ -47,7 +57,7 @@ describe('Checks In-game functionality', ()=> {
                 })
         })
 
-        it('updates user score on correct answer only', ()=> {
+        it('User score increments on correct answer', ()=> {
             // figure out how to find correct answers if shuffled
             // cy.get('[data-cy="answers"]').each(($ele) => {
             //     if ($ele.text === /value2correct/) {
@@ -70,7 +80,7 @@ describe('Checks In-game functionality', ()=> {
             cy.contains('h2', 'B').should('have.class', 'bg-success')
         })
 
-        it('increments user score on correct answer', ()=> {
+        it('User score does not increment on incorrect answer', ()=> {
             // figure out how to find false answers if shuffled and mark one
 
             cy.contains('false').click({force: true})
