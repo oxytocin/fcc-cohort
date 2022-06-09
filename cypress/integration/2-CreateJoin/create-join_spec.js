@@ -4,7 +4,7 @@ import jwtDecode from "jwt-decode"
 import {bonanza_token} from "../../../src/Constants"
 
 describe('Cannot access if not signed in', ()=> {
-    it('Throws 404 if not signed in', ()=> {
+    it.skip('Throws 404 if not signed in', ()=> {
         cy.intercept('/create-or-join').as('shouldFail')
         cy.visit('/create-or-join')
 

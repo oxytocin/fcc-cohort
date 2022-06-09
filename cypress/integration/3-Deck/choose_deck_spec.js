@@ -47,27 +47,27 @@ describe('Choose Deck Page', ()=> {
         })
 
         it('Hovering over a deck gives options: Create Room, Edit Deck, Delete Deck', ()=> {
-            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Create Room').should('be.visible')
             cy.contains('Edit Deck').should('be.visible')
             cy.contains('Delete Deck').should('be.visible')
         })
 
         it('Verify Deck Edit option', ()=> {
-            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Edit Deck').click({force: true})
             cy.location('pathname').should('include', '/some-edit-deck-page-with-this-deck-id') // fix this with edit-deck path
         })
 
         it('Verify Deck Delete option', ()=> {
-            cy.get('[data-cy="all-decks"]').select(1).should('have.text', 'This is a title')
-            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.get('[data-cy="all-decks"]').children().eq(0).should('have.text', 'This is a title')
+            cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Delete Deck').click({force: true})
-            cy.get('[data-cy="all-decks"]').select(1).should('not.have.text', 'This is a title')
+            cy.get('[data-cy="all-decks"]').children().eq(0).should('not.have.text', 'This is a title')
         })
 
         it('Verify Create Room option', ()=> {
-            cy.get('[data-cy="all-decks"]').select(1).trigger('mouseover')
+            cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Create Room').click({force: true})
             cy.location('pathname').should('include', '/waiting-room')
         })

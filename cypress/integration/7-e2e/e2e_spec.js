@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
 
-describe('User completes a session', ()=> {
+describe.skip('User completes a session', ()=> {
     it('User logs in', ()=> {
         cy.loginByGoogleApi()
         cy.visit('/').then(() => {
