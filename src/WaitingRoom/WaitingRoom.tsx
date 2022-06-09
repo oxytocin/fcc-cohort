@@ -1,9 +1,13 @@
 import React from 'react';
-import {Form, Button, InputGroup, Col, Row, Tooltip, OverlayTrigger} from "react-bootstrap";
+import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
+import {useLocation} from "react-router-dom";
 
 function WaitingRoom() {
+    const location = useLocation();
+    //@ts-ignore
+    const roomID = location.state.roomID;
     const renderTooltip = (props: any) => (
         <Tooltip id="button-tooltip" {...props}>
             Copied!
@@ -25,7 +29,7 @@ function WaitingRoom() {
                     <Form.Label htmlFor="inlineFormInput" visuallyHidden>Clipboard</Form.Label>
                     <Col xs="auto">
                         <Form.Group>
-                            <Form.Control id="inlineFormInput" type="text" readOnly placeholder="Hello"/>
+                            <Form.Control id="inlineFormInput" type="text" readOnly placeholder={roomID}/>
                         </Form.Group>
                     </Col>
                     <Col xs="auto">
