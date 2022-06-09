@@ -1,0 +1,7 @@
+.question-block {
+    display: block;
+    max-width: 25%;
+}
+.question-list {
+    text-align: left;
+}
