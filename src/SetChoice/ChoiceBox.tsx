@@ -15,7 +15,7 @@ export const ChoiceBox: React.FC<{ title: string, content: string, id:number, de
                     {content}
                 </Card.Text>
                 <Card.Link href="#">Start Game</Card.Link>
-                <Card.Link onClick={()=>navigate(`/edit-deck#${id}`)} className="text-success" href="#">Edit Deck</Card.Link><br/>
+                <Card.Link onClick={()=>navigate(`/edit-deck?id=${id}`)} className="text-success" href="#">Edit Deck</Card.Link><br/>
                 <Card.Link onClick={()=>del()} className="text-danger" href="#">Delete Deck</Card.Link>
             </Card.Body>
         </Card>

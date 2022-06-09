@@ -16,7 +16,6 @@ export const SetChoice: React.FC = () => {
     const [choices, setChoices] = useState(placeHolder);
 
 
-
     async function fetchUserDecks() {
         let response;
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
@@ -68,14 +67,14 @@ export const SetChoice: React.FC = () => {
 
     return (
         <div className={"container mt-5"}>
-            {/*<Container>*/}
-            <Row data-cy="all-decks">
-                {choices.map(value => (
-                    <ChoiceBox title={value.title} content={value.content} key={value.id} id={value.id}
-                               del={() => deleteById(value.id)}/>
-                ))}
-            </Row>
-            {/*</Container>*/}
+            <Container>
+                <Row data-cy="all-decks">
+                    {choices.map(value => (
+                        <ChoiceBox title={value.title} content={value.content} key={value.id} id={value.id}
+                                   del={() => deleteById(value.id)}/>
+                    ))}
+                </Row>
+            </Container>
         </div>
     );
 };
