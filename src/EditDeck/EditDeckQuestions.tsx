@@ -40,7 +40,7 @@ interface Answers {
 
 
 
-export const EditDeck: React.FC = () => {
+export const EditDeckQuestions: React.FC = () => {
     
     let initQuestions: Questions[] = []
     deckData.FlashCards.forEach((value) => initQuestions.push({question: value.Question}))

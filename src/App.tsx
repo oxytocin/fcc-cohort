@@ -10,7 +10,7 @@ import OauthRedirect from "./OAuthRedirect/OauthRedirect";
 import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
-import { EditDeck } from './EditDeck/EditDeck';
+import { EditDeckQuestions } from './EditDeck/EditDeckQuestions';
 
 function App() {
     document.title = "Flashcard Bonanza";
@@ -25,7 +25,7 @@ function App() {
                 <Route path="/in-game" element={<PrivateRoute><InGame/></PrivateRoute>}/>
                 <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
                 <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
-                <Route path="/edit-deck" element={<PrivateRoute><EditDeck/></PrivateRoute>}/>
+                <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
             </Routes>
         </div>
     );
