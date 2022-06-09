@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, ButtonToolbar, Form} from 'react-bootstrap';
 import jwtDecode from "jwt-decode";
-import {bonanza_token} from "../Constants";
+import {config, bonanza_token} from "../Constants";
 import {useNavigate} from 'react-router-dom'
 
 function CreateOrJoin() {
@@ -9,6 +9,7 @@ function CreateOrJoin() {
     const decoded:{"firstName":string} = jwtDecode(token)
     let user = decoded.firstName
     const navigate = useNavigate();
+
     return (
         <>
             <header data-cy="header" className="CreateOrJoinHeader">Flashcard Bonanza</header>
