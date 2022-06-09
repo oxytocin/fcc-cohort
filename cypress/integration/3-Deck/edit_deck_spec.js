@@ -17,11 +17,11 @@ describe.skip('Cannot access if not signed in', ()=> {
 describe.skip('Edit Deck (Add/edit questions)', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
-        cy.visit('/some-edit-deck-path') // fix pathname
+        cy.visit('/edit-deck') // fix pathname
     })
 
     it('is testable at least', ()=> {
-        cy.contains('Edit_deck_tests_go_here').should('exist');
+        cy.contains('Deck').should('exist');
     })
 
     describe('Page elements are displayed', ()=> {
