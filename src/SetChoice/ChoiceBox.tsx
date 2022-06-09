@@ -2,7 +2,7 @@ import React from "react";
 import {Card} from "react-bootstrap";
 
 
-export const ChoiceBox: React.FC<{ title: string, content: string }> = ({title, content}) => {
+export const ChoiceBox: React.FC<{title: string, content: string}> = ({title, content}) => {
     return (
 
         <Card border="dark" style={{ width: '18rem' }} className="m-2">
@@ -12,8 +12,8 @@ export const ChoiceBox: React.FC<{ title: string, content: string }> = ({title, 
                 <Card.Text data-cy="card-content">
                     {content}
                 </Card.Text>
-                <Card.Link href="#">Card Link</Card.Link>
-                <Card.Link href="#">Another Link</Card.Link>
+                <Card.Link href="#">Create Room</Card.Link>
+                <Card.Link href="#">Edit Deck</Card.Link>
             </Card.Body>
         </Card>
     );
