@@ -69,7 +69,7 @@ describe('Navbar is visible after login', ()=> {
             .should('not.be.be.visible')            
         })
 
-        it('Dropdown displays "Log Out" option', ()=> {
+        it('Dropdown displays "Log Out" option that works', ()=> {
             cy.get('[data-cy="nav-logout"]')
             .should('have.text', 'Log Out')
 

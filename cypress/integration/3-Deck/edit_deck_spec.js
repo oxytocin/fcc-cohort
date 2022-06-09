@@ -3,7 +3,7 @@
 
 // this needs a lot of attention
 
-describe('Cannot access if not signed in', ()=> {
+describe.skip('Cannot access if not signed in', ()=> {
 
     it('Throws 404 if not signed in (Add/edit)', ()=> {
         cy.intercept('/some-edit-deck').as('shouldFail')
@@ -14,7 +14,7 @@ describe('Cannot access if not signed in', ()=> {
     })
 })
 
-describe('Edit Deck (Add/edit questions)', ()=> {
+describe.skip('Edit Deck (Add/edit questions)', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi()
         cy.visit('/some-edit-deck-path') // fix pathname

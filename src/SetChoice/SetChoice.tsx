@@ -8,10 +8,11 @@ interface Choice {
     content: string;
 }
 
-const placeHolder: Choice[] = [];
-const [choices, setChoices] = useState(placeHolder);
+
 
 export const SetChoice: React.FC = () => {
+    const placeHolder: Choice[] = [];
+    const [choices, setChoices] = useState(placeHolder);
     async function fetchUserDecks() {
         let response;
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
