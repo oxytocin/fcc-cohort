@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {config} from "../Constants"
+import {config, bonanza_token} from "../Constants"
 import {useNavigate} from "react-router-dom"
 
 function OauthRedirect() {
@@ -26,7 +26,7 @@ function OauthRedirect() {
                 return;
             }
             const data = await response.json();
-            localStorage.setItem("bonanza-token", data.token);
+            localStorage.setItem(bonanza_token, data.token);
             window.location.href = config.CREATE_OR_JOIN;
         }
         fetchToken();
