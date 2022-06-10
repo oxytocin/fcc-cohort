@@ -9,6 +9,8 @@ function OauthRedirect() {
         const urlParams = new URLSearchParams(queryString);
         const code = urlParams.get("code");
         const url = config.OAUTH_BACKEND_REDIRECT_URL;
+        console.log("auth info:",config.OAUTH_BACKEND_REDIRECT_URL)
+
         async function fetchToken() {
             let response;
             try {

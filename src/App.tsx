@@ -10,7 +10,7 @@ import OauthRedirect from "./OAuthRedirect/OauthRedirect";
 import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
-import { EditDeckQuestions } from './EditDeck/EditDeckQuestions';
+import {EditDeckQuestions} from './EditDeck/EditDeckQuestions';
 
 function App() {
     document.title = "Flashcard Bonanza";
