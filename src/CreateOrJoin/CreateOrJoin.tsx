@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, ButtonToolbar, Form} from 'react-bootstrap';
 import jwtDecode from "jwt-decode";
-import {config, bonanza_token} from "../Constants";
+import {bonanza_token} from "../Constants";
 import {useNavigate} from 'react-router-dom'
 
 function CreateOrJoin() {
