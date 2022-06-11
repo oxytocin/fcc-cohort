@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
@@ -6,25 +6,40 @@ import {useLocation} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
 
 function WaitingRoom() {
-    const location = useLocation();
-    //@ts-ignore
-    const roomID = location.state.roomID;  // state passed in from setChoice
     const renderTooltip = (props: any) => (
         <Tooltip id="button-tooltip" {...props}>
             Copied!
         </Tooltip>
     );
 
-    function copyId(e: React.MouseEvent) {
+    async function copyId(e: React.MouseEvent) {
         e.preventDefault();
         // I know I shouldn't do "any" but I don't know what else to do
         const el: any = document.getElementById("inlineFormInput");
-        navigator.clipboard.writeText(el.placeholder)
+        await navigator.clipboard.writeText(el.placeholder)
     }
 
-    const token = localStorage.getItem(bonanza_token)
-    const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
-    ws.onmessage = e => {console.log(e)}  // MessageEvent
+    const [userNames, setUserNames] = useState<string[]>();
+    const location = useLocation();
+    //@ts-ignore
+    const roomID = location.state.roomID;  // state passed in from setChoice
+
+    useEffect(() => {
+        const token = localStorage.getItem(bonanza_token)
+        const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
+
+        function updateUserNames(dataFromBackend: string) {
+            const usersJson = JSON.parse(dataFromBackend);
+            let userNamesArr: string[] = [];
+            for (let [_, value] of Object.entries(usersJson)) {
+                //@ts-ignore
+                userNamesArr.push(value);
+            }
+            setUserNames(userNamesArr);
+        }
+
+        ws.onmessage = (e: MessageEvent) => {updateUserNames(e.data)}
+    }, [])
 
     return (
         <div className="WaitingRoom"> 
@@ -48,6 +63,7 @@ function WaitingRoom() {
             </Form>
             <div className="usersJoinedDiv">
                 <h3 className="waitingRoomText mt-5">Users Joined</h3>
+                <p className="waitingRoomText">{userNames}</p>
             </div>
         </div>
     )
