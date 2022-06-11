@@ -3,11 +3,12 @@ import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger} from "react-bootstr
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation} from "react-router-dom";
+import {bonanza_token, config} from "../Constants";
 
 function WaitingRoom() {
     const location = useLocation();
     //@ts-ignore
-    const roomID = location.state.roomID;
+    const roomID = location.state.roomID;  // state passed in from setChoice
     const renderTooltip = (props: any) => (
         <Tooltip id="button-tooltip" {...props}>
             Copied!
@@ -20,6 +21,10 @@ function WaitingRoom() {
         const el: any = document.getElementById("inlineFormInput");
         navigator.clipboard.writeText(el.placeholder)
     }
+
+    const token = localStorage.getItem(bonanza_token)
+    const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
+    ws.onmessage = e => {console.log(e)}  // MessageEvent
 
     return (
         <div className="WaitingRoom"> 
