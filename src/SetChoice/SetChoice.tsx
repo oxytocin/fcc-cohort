@@ -2,14 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {ChoiceBox} from "./ChoiceBox";
 import {Container, Row} from "react-bootstrap";
 import {config, bonanza_token} from "../Constants";
-import {useNavigate} from "react-router-dom";
 
 interface Choice {
     title: string;
     content: string;
-    id: number
+    id: number;
 }
-
 
 export const SetChoice: React.FC = () => {
     const placeHolder: Choice[] = [];

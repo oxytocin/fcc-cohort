@@ -5,6 +5,7 @@ import {ExistingDecks} from "./ExistingDecks";
 import {UpdateDeck} from "./UpdateDeck";
 import {Deck} from "../types/BackendModels";
 import {bonanza_token, config} from "../Constants";
+import {FlashCard} from "../types/BackendModels";
 
 const nullDeck: Deck = {
     ID: 0,

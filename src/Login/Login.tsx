@@ -1,13 +1,16 @@
 import React from "react";
 import {bonanza_token, config} from "../Constants"
 import {Button} from "react-bootstrap";
+import jwtDecode from "jwt-decode";
 
 // Curl version of how to use the bearer. basically you'll just need to add this to a header
 // curl localhost:8088/restricted -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NjE5NTcxMzZ9.RB3arc4-OyzASAaUhC2W3ReWaXAt_z2Fd3BN4aWTgEY"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
-    const localToken = localStorage.getItem(bonanza_token)
-    if (localToken != undefined && localToken !== ""){
+    const token = localStorage.getItem(bonanza_token) ?? "";
+    const decoded:{"exp":string} = jwtDecode(token);
+    const expiration = parseInt(decoded.exp);
+    if (token != undefined && token !== "" && Date.now() < expiration * 1000){
         window.location.href = config.CREATE_OR_JOIN
     }
 
