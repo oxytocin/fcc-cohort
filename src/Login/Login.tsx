@@ -8,10 +8,18 @@ import jwtDecode from "jwt-decode";
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
     const token = localStorage.getItem(bonanza_token) ?? "";
-    const decoded:{"exp":string} = jwtDecode(token);
-    const expiration = parseInt(decoded.exp);
-    if (token != undefined && token !== "" && Date.now() < expiration * 1000){
-        window.location.href = config.CREATE_OR_JOIN
+
+    function tokenValid(token: string): boolean {
+        if (token === undefined || token === "") {
+            return false;
+        }
+        const decoded:{"exp":string} = jwtDecode(token);
+        const expiration = parseInt(decoded.exp);
+        return (Date.now() < expiration * 1000);
+    }
+
+    if (tokenValid(token)) {
+        window.location.href = config.CREATE_OR_JOIN;
     }
 
     const connectClick = () => {
