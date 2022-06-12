@@ -29,11 +29,11 @@ function WaitingRoom() {
         const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
 
         function updateUserNames(dataFromBackend: string) {
-            const usersJson = JSON.parse(dataFromBackend);
+            const userObjects = JSON.parse(dataFromBackend);
             let userNamesArr: string[] = [];
-            for (let [_, value] of Object.entries(usersJson)) {
-                //@ts-ignore
-                userNamesArr.push(value);
+            for (let i=0; i<userObjects.length; i++) {
+                userNamesArr.push(userObjects[i].username);
+                // TODO: get the user id from the id key, if needed
             }
             setUserNames(userNamesArr);
         }
