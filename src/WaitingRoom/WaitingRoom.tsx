@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger} from "react-bootstrap";
+import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
 
 function WaitingRoom() {
@@ -38,8 +38,10 @@ function WaitingRoom() {
             setUserNames(userNamesArr);
         }
 
-        ws.onmessage = (e: MessageEvent) => {updateUserNames(e.data)}
+        ws.onmessage = (e: MessageEvent) => {updateUserNames(e.data);}
     }, [])
+
+    const navigate = useNavigate();
 
     return (
         <div className="WaitingRoom"> 
@@ -60,6 +62,23 @@ function WaitingRoom() {
                         </InputGroup>
                     </Col>
                 </Row>
+            </Form>
+            <Form>
+            <h5 className="mt-5">Time per question</h5>
+            <Row className="align-items-center mt-2">
+                <Col xs="auto">
+                    <Form.Group>
+                        <Form.Control id="inlineFormInput2" type="text" placeholder="Time in seconds"/>
+                    </Form.Group>
+                </Col>
+                <Col xs="auto">
+                    <InputGroup>
+                        <InputGroup.Text>Seconds</InputGroup.Text>
+                    </InputGroup>
+                </Col>
+            </Row>
+            {/*TODO: probably have to pass some state to the in-game component*/}
+            <Button variant="dark" className="mt-2" onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>
             </Form>
             <div className="usersJoinedDiv">
                 <h3 className="waitingRoomText mt-5">Users Joined</h3>
