@@ -1,41 +1,98 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
+import ingameData from '../../fixtures/ingameData.json'
+
+describe('Cannot access if not signed in', ()=> {
+    it.skip('Throws 404 if not signed in', ()=> {
+        cy.intercept('/in-game') // need to mock created room id?
+        cy.visit('/in-game')
+
+        cy.wait('@shouldFail').its('response.statusCode').should('eq', 404)
+        expect('this test').to.be('failing') // fix pathname
+    })
+})
 
 describe('Checks In-game functionality', ()=> {
 
     beforeEach(() => {
+        cy.loginByGoogleApi()
+        // cy.intercept('/in-game',
+        //     {
+        //         statusCode: 200,
+        //         body: ''
+        //     }).as('flashCards')
         cy.visit('/in-game')
     })
 
     describe('All initial elements load', ()=> {
-        it('Displays question progress', ()=> {
-            cy.get('[data-cy="ques-num"]').should('exist').and('contain.text', 'Question')
-        })
-
-        it('Displays a countdown timer', ()=> {
+        it('Displays displays all elements', ()=> {
+            cy.get('[data-cy="ques-num"]').should('be.visible').and('contain.text', 'Question')
             cy.get('[data-cy="timer"]').should('exist').and('contain.text', 'sec...')
-        })
-
-        it('Displays a progress bar', ()=> {
-            cy.get('[data-cy="progress"]').should('exist')
-        })
-
-        it('Displays user score', ()=> {
-            cy.get('[data-cy="score"]').should('exist').and('contain.text', 'Score:')
-        })
-
-        it('Displays a question', ()=> {
-            cy.get('[data-cy="question"]').should('exist').and('not.be.empty')
-        })
-
-        it('Displays answer choices', ()=> {
+            cy.get('[data-cy="progress"]').should('be.visible')
+            cy.get('[data-cy="score"]').should('be.visible').and('contain.text', 'Score:')
+            cy.get('[data-cy="question"]').should('be.visible').and('not.be.empty')
             cy.get('[data-cy="answers"]').children()
-            .should('exist').and('have.length.at.most', 4)
+            .should('be.visible').and('have.length.within', 1, 6)
         })
     })
 
     describe('In-game mechanics work as expected', ()=> {
+        const userTimer = 0.5 + 10 // to be taken from fixture data
 
+        it('Can mark and unmark answer choice boxes', ()=> {
+            cy.get('input#A').realClick().should('be.checked')
+            cy.wait(250)
+            cy.get('input#A').realClick().should('be.not.checked')
+        })
+
+        it('Timer counts down', ()=> {
+            cy.get('[data-cy="timer"]').invoke('text')
+                .then((text1) => {
+                    const initTimer= parseFloat(text1)
+
+                    cy.wait(1500)
+
+                    cy.get('[data-cy="timer"]').invoke('text')
+                        .then(parseFloat).should('be.lt', initTimer)
+                })
+        })
+
+        it('User score increments on correct answer', ()=> {
+            // figure out how to find correct answers if shuffled
+            // cy.get('[data-cy="answers"]').each(($ele) => {
+            //     if ($ele.text === /value2correct/) {
+            //         return $ele
+            //     }
+            // }).click({force: true})
+            //.contains(/correct/).click({force: true})
+            cy.get('input#A, input#B').click({force: true, multiple: true})
+            cy.contains('h2', 'A').should('not.have.class', 'bg-success')
+            cy.contains('h2', 'B').should('not.have.class', 'bg-success')
+            //cy.get('input#B').click({force: true})
+            cy.get('[data-cy="score"]').invoke('text').then((score) => {
+                expect(score).to.equal('Score: 0')
+
+                cy.wait(userTimer * 1000)
+                cy.get('[data-cy="score"]').invoke('text').should('eq', 'Score: 1')
+            })
+
+            cy.contains('h2', 'A').should('have.class', 'bg-success')
+            cy.contains('h2', 'B').should('have.class', 'bg-success')
+        })
+
+        it('User score does not increment on incorrect answer', ()=> {
+            // figure out how to find false answers if shuffled and mark one
+
+            cy.contains('false').click({force: true})
+            cy.get('[data-cy="score"]').invoke('text').then((score) => {
+                expect(score).to.equal('Score: 0')
+
+                cy.wait(userTimer * 1000)
+                cy.get('[data-cy="score"]').invoke('text').should('eq', 'Score: 0')
+            })
+
+            cy.contains('false').should('not.have.class', 'bg-success')
+        })
 
     })
 

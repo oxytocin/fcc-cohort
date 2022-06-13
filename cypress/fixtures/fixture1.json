@@ -1,3 +1,0 @@
-{
-    "oauth_dev_url": "https:`/`/accounts.google.com/o/oauth2/v2/auth?client_id=849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com&redirect_uri=http:`/`/127.0.0.1:3000/oauth-redirect&response_type=code&scope=openid profile email"
-}
