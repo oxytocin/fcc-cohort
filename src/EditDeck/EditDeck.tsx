@@ -35,19 +35,19 @@ export const EditDeck: React.FC = () => {
             }
         );
     }
-    useEffect(() => {
-        let deckId = searchParams.get("id");
-        if (deckId != null) {
-            let res = Number(deckId)
-            if (!isNaN(res)) {
-                setSelectedCard(res)
-            }
-        } else {
-            setSelectedCard(null);
-        }
+    // useEffect(() => {
+    //     let deckId = searchParams.get("id");
+    //     if (deckId != null) {
+    //         let res = Number(deckId)
+    //         if (!isNaN(res)) {
+    //             setSelectedCard(res)
+    //         }
+    //     } else {
+    //         setSelectedCard(null);
+    //     }
 
-        // updateDecks();
-    }, [])
+    //     // updateDecks();
+    // }, [])
     // const selectedDeck = allDecks.find(value => value.ID == selectedDeckId)
     return (
         <Container>

@@ -45,43 +45,36 @@ function WaitingRoom() {
 
     return (
         <div className="WaitingRoom"> 
-            <h1>Room Code</h1>
-            <Form>
-                <Row className="align-items-center">
-                    <Form.Label htmlFor="inlineFormInput" visuallyHidden>Clipboard</Form.Label>
-                    <Col xs="auto">
-                        <Form.Group>
-                            <Form.Control id="inlineFormInput" type="text" readOnly placeholder={roomID}/>
-                        </Form.Group>
-                    </Col>
-                    <Col xs="auto">
-                        <InputGroup>
-                            <OverlayTrigger trigger="click" placement="right" overlay={renderTooltip}>
-                                <InputGroup.Text><input type="image" src={clipboard} onClick={copyId}/></InputGroup.Text>
-                            </OverlayTrigger>
-                        </InputGroup>
-                    </Col>
-                </Row>
-            </Form>
-            <Form>
-            <h5 className="mt-5">Time per question</h5>
-            <Row className="align-items-center mt-2">
-                <Col xs="auto">
-                    <Form.Group>
-                        <Form.Control id="inlineFormInput2" type="text" placeholder="Time in seconds"/>
-                    </Form.Group>
-                </Col>
-                <Col xs="auto">
+            <h1 className="fw-bold mb-3">Room Code</h1>
+            <Col xs="auto">
+                <Form className="align-items-center m-2">
                     <InputGroup>
-                        <InputGroup.Text>Seconds</InputGroup.Text>
+                    <Form.Label htmlFor="inlineFormInput" visuallyHidden>Clipboard</Form.Label>                   
+                    <Form.Group>
+                        <Form.Control id="inlineFormInput" type="text" readOnly placeholder={roomID}/>
+                    </Form.Group>
+                    
+                        <OverlayTrigger trigger="click" placement="bottom" overlay={renderTooltip}>
+                            <InputGroup.Text><input type="image" src={clipboard} onClick={copyId}/></InputGroup.Text>
+                        </OverlayTrigger>
                     </InputGroup>
-                </Col>
-            </Row>
+                </Form>
+            </Col>
+            <Col xs="auto">
+                <Form className="align-items-center mt-2">
+                    <h5 className="mt-5 fw-bold">Time per question</h5>
+                    <InputGroup>
+                        <Form.Group>
+                            <Form.Control id="inlineFormInput2" type="text" placeholder="Time in seconds"/>
+                        </Form.Group>
+                        <InputGroup.Text className="bg-secondary text-light">Seconds</InputGroup.Text>
+                    </InputGroup>
+                </Form>
+            </Col>
             {/*TODO: probably have to pass some state to the in-game component*/}
-            <Button variant="dark" className="mt-2" onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>
-            </Form>
+            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>          
             <div className="usersJoinedDiv">
-                <h3 className="waitingRoomText mt-5">Users Joined</h3>
+                <h3 className="waitingRoomText mt-4">Users Joined</h3>
                 <p className="waitingRoomText">{userNames}</p>
             </div>
         </div>

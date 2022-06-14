@@ -84,7 +84,7 @@ function InGame() {
             if (card === data.Cards.length - 1) {
                 return <span><Spinner animation="border" variant="light" className="mx-2"/></span>
             } else {
-                return <span data-cy="buffer" >Next Question: {seconds}</span>;
+                return <span data-cy="buffer">Next Question: {seconds}</span>;
             }
         }
     };
@@ -98,8 +98,8 @@ function InGame() {
                     <h3 data-cy="ques-num" className="text-start">Question {card+1} of {data.Cards.length}</h3>
                     <h4 data-cy="score" className="text-start">Score: {userScore}</h4>
                     </Col>
-                <Col md={{span:3, offset:5}}>
-                    <h3 className="rounded rounded-pill bg-dark text-white">
+                <Col md={{span:4, offset:4}}>
+                    <h3 className="rounded rounded-pill bg-dark text-white p-1">
                         <Countdown key={card} date={userTime} renderer={timer}/>
                     </h3>
                 </Col>

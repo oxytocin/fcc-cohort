@@ -1,4 +1,4 @@
-import {config} from "../../src/Constants"
+import { config, bonanza_token } from "../../src/Constants"
 
 Cypress.Commands.add('loginByGoogleApi', () => {
   cy.session('oauth', ()=> {
@@ -20,20 +20,45 @@ Cypress.Commands.add('loginByGoogleApi', () => {
         url: 'https://www.googleapis.com/oauth2/v3/userinfo',
         headers: { Authorization: `Bearer ${access_token}` },
       }).then(({ body }) => {
-        cy.log(body)
-        const userItem = {
-          token: id_token,
-          user: {
-            googleId: body.sub,
-            email: body.email,
-            givenName: body.given_name,
-            familyName: body.family_name,
-            imageUrl: body.picture,
-          },
+        // ping back end
+        const queryUrl = `${config.REDIRECT_URL}?client_id=${config.CLIENT_ID}` +
+            `&redirect_uri=${config.OAUTH_FRONTEND_REDIRECT_URL}&response_type=${config.RESPONSE_TYPE}`
+        const urlParams = new URLSearchParams(queryUrl);
+        const code = urlParams.get("code");
+        const backUrl = config.OAUTH_BACKEND_REDIRECT_URL;
+
+        async function fetchToken() {
+        let response;
+
+        try { 
+            response = await fetch(backUrl, {
+            method: "POST",
+            mode: "cors",
+            body: code
+          })
+        } catch (e) {
+          console.error("Failed to fetch last token");
+          return;
         }
-          // must figure out a way to ping the backend login to generate bonanza-specific token
-          // JSON.stringify(userItem) <-- original setItem here
-        window.localStorage.setItem('bonanza-token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6ZmFsc2UsImV4cCI6MTY1NTA4NDQyMiwiZmlyc3ROYW1lIjoiSm9obiIsImlkIjoyLCJsYXN0TmFtZSI6IkRvZSIsInVzZXJuYW1lIjoiZmxhc2hjYXJkLmJvbmFuemEudGVzdEBnbWFpbC5jb20ifQ.TKslas_OL-9pqJp6MmIcJ-Bg-C8RHTwpPim2P0U_G0w")
+        const data = await response.json();
+        localStorage.setItem(bonanza_token, data.token);
+      }
+      fetchToken();
+        // default Oauth process located below, modified last Request above to match out app
+        // cy.log(body)
+        // const userItem = {
+        //   token: id_token,
+        //   user: {
+        //     googleId: body.sub,
+        //     email: body.email,
+        //     givenName: body.given_name,
+        //     familyName: body.family_name,
+        //     imageUrl: body.picture,
+        //   },
+        // }
+        //
+        //   // JSON.stringify(userItem) <-- original setItem here
+        // window.localStorage.setItem('bonanza-token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6ZmFsc2UsImV4cCI6MTY1NTc0MzEwMiwiZmlyc3ROYW1lIjoiSm9obiIsImlkIjoyLCJsYXN0TmFtZSI6IkRvZSIsInVzZXJuYW1lIjoiZmxhc2hjYXJkLmJvbmFuemEudGVzdEBnbWFpbC5jb20ifQ.zDhlZw1HS06IQhxrxWeGkQN7RatCKu5JX5xccRtmEGk")
         cy.visit('/create-or-join')
       })
     })
