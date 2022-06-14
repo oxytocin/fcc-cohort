@@ -26,7 +26,7 @@ function CreateOrJoin() {
                 <Col sm={7}>
                     <InputGroup size="lg" className="m-1">
                         <FormControl id="roomID" type="text" placeholder="Room ID" className="border border-dark rounded" />
-                        <Button onClick={()=>{navigate("/waiting-room", {state: {roomID: getRoomID()}})}} data-cy="join-btn" variant="dark" size="lg">Join room</Button>                    
+                        <Button onClick={()=>{navigate("/waiting-room", {state: {roomID: getRoomID(), isAdmin: false}})}} data-cy="join-btn" variant="dark" size="lg">Join room</Button>
                     </InputGroup>
                 </Col>
             </Row>

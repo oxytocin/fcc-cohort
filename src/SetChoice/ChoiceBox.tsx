@@ -39,7 +39,7 @@ export const ChoiceBox: React.FC<{ title: string, content: string, id:number, de
                 <Card.Link onClick={
                     async () => {
                         const ID = await createNewRoom();
-                        navigate("/waiting-room", {state: {roomID: ID}})
+                        navigate("/waiting-room", {state: {roomID: ID, isAdmin: true}})
                     }
                 } href="#">Start Game</Card.Link>
                 <Card.Link onClick={()=>navigate(`/edit-deck?id=${id}`)} className="text-success" href="#">Edit Deck</Card.Link><br/>

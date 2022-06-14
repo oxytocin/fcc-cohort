@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Form, InputGroup, Col, Row, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
+import {Form, InputGroup, Col, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation, useNavigate} from "react-router-dom";
@@ -23,6 +23,11 @@ function WaitingRoom() {
     const location = useLocation();
     //@ts-ignore
     const roomID = location.state.roomID;  // state passed in from setChoice
+    //@ts-ignore
+    const isAdmin = location.state.isAdmin;
+    const startButtonStyle = {
+        display: isAdmin ? "inline-block" : "none"
+    }
 
     useEffect(() => {
         const token = localStorage.getItem(bonanza_token)
@@ -72,7 +77,7 @@ function WaitingRoom() {
                 </Form>
             </Col>
             {/*TODO: probably have to pass some state to the in-game component*/}
-            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>          
+            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" style={startButtonStyle} onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>
             <div className="usersJoinedDiv">
                 <h3 className="waitingRoomText mt-4">Users Joined</h3>
                 <p className="waitingRoomText">{userNames}</p>
