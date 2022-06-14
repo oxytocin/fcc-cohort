@@ -29,9 +29,16 @@ function WaitingRoom() {
         display: isAdmin ? "inline-block" : "none"
     }
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const token = localStorage.getItem(bonanza_token)
         const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
+
+        ws.onclose = () => {
+            alert("Connection dropped. You may have tried to join a room that does not exist");
+            navigate("/create-or-join")
+        }
 
         function updateUserNames(dataFromBackend: string) {
             const userObjects = JSON.parse(dataFromBackend);
@@ -45,8 +52,6 @@ function WaitingRoom() {
 
         ws.onmessage = (e: MessageEvent) => {updateUserNames(e.data);}
     }, [])
-
-    const navigate = useNavigate();
 
     return (
         <div className="WaitingRoom"> 
