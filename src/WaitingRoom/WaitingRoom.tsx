@@ -44,7 +44,7 @@ function WaitingRoom() {
             const json = JSON.parse(dataFromBackend);
             switch (json["message_type"]) {
                 case "initial-connection":
-                    // TODO: later on, I think we should be able to get the deck fro here
+                    // TODO: later on, I think we should be able to get the deck from here
                     break;
                 case "user-joined":
                     const userObjects = json["contents"];
