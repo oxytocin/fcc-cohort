@@ -40,17 +40,25 @@ function WaitingRoom() {
             navigate("/create-or-join")
         }
 
-        function updateUserNames(dataFromBackend: string) {
-            const userObjects = JSON.parse(dataFromBackend);
-            let userNamesArr: string[] = [];
-            for (let i=0; i<userObjects.length; i++) {
-                userNamesArr.push(userObjects[i].username);
-                // TODO: get the user id from the id key, if needed
+        function handleMessage(dataFromBackend: string) {
+            const json = JSON.parse(dataFromBackend);
+            switch (json["message_type"]) {
+                case "initial-connection":
+                    // TODO: later on, I think we should be able to get the deck fro here
+                    break;
+                case "user-joined":
+                    const userObjects = json["contents"];
+                    let userNamesArr: string[] = [];
+                    for (let i=0; i<userObjects.length; i++) {
+                        userNamesArr.push(userObjects[i].username);
+                    }
+                    setUserNames(userNamesArr);
+                    console.log(userNamesArr);
+                    break;
             }
-            setUserNames(userNamesArr);
         }
 
-        ws.onmessage = (e: MessageEvent) => {updateUserNames(e.data);}
+        ws.onmessage = (e: MessageEvent) => {handleMessage(e.data);}
     }, [])
 
     return (
@@ -82,7 +90,10 @@ function WaitingRoom() {
                 </Form>
             </Col>
             {/*TODO: probably have to pass some state to the in-game component*/}
-            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" style={startButtonStyle} onClick={() => {navigate("/in-game")}}><b>Start Game</b></Button>
+            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" style={startButtonStyle} onClick={() => {
+                //@ts-ignore
+                navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value}})
+            }}><b>Start Game</b></Button>
             <div className="usersJoinedDiv">
                 <h3 className="waitingRoomText mt-4">Users Joined</h3>
                 <p className="waitingRoomText">{userNames}</p>
