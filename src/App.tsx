@@ -11,6 +11,7 @@ import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
 import {EditDeckQuestions} from './EditDeck/EditDeckQuestions';
+import {LoadAndEditDeck} from "./EditDeck/LoadAndEditDeck";
 
 function App() {
     document.title = "Flashcard Bonanza";
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
                 <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
                 <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
+                <Route path="/load-deck" element={<PrivateRoute><LoadAndEditDeck/></PrivateRoute>}/>
             </Routes>
         </div>
     );

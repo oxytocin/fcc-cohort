@@ -11,19 +11,6 @@ interface Questions {
     question: string
 }
 
-/*
-OK none of this really makes sense to me.
-
-What I want is to have a component that has individual openable components that allow you to update or edit them
-
-not some kind of global state one
-
-
-
-
-
-
- */
 export const EditDeckQuestions: React.FC = () => {
 
     let initQuestions: Questions[] = []
@@ -60,10 +47,7 @@ export const EditDeckQuestions: React.FC = () => {
                     </InputGroup>
                     <h2>Flashcard Questions</h2>
                     <AccordionItem eventKey="1">
-                        <QuestionList questions={questions} deck={deckDesc}/>
-                    </AccordionItem>
-                    <AccordionItem eventKey="2">
-                        <EditQuestion editQuestion={toEdit.question} answers={toEdit.answers}/>
+                        <QuestionList flashcards={null} deckDescription={deckDesc}/>
                     </AccordionItem>
                 </Accordion>
                 <p>Done Editing?</p>
