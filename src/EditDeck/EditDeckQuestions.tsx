@@ -11,7 +11,19 @@ interface Questions {
     question: string
 }
 
+/*
+OK none of this really makes sense to me.
 
+What I want is to have a component that has individual openable components that allow you to update or edit them
+
+not some kind of global state one
+
+
+
+
+
+
+ */
 export const EditDeckQuestions: React.FC = () => {
 
     let initQuestions: Questions[] = []
