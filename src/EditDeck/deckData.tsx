@@ -1,4 +1,6 @@
-export const deckData = {
+import {Deck} from "../types/BackendModels";
+
+export const deckData: Deck = {
     "ID": 2,
     "CreatedAt": "0001-01-01T00:00:00Z",
     "UpdatedAt": "0001-01-01T00:00:00Z",
@@ -21,7 +23,7 @@ export const deckData = {
                     "name": "answer1",
                     "value": "testValue correct",
                     "isCorrect": true,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 8,
@@ -31,7 +33,7 @@ export const deckData = {
                     "name": "answer4",
                     "value": "testValue incorrect",
                     "isCorrect": false,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 6,
@@ -41,7 +43,7 @@ export const deckData = {
                     "name": "answer2",
                     "value": "testValue correct",
                     "isCorrect": true,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 7,
@@ -51,7 +53,7 @@ export const deckData = {
                     "name": "answer3",
                     "value": "testValue incorrect",
                     "isCorrect": false,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 }
             ]
         },
@@ -71,7 +73,7 @@ export const deckData = {
                     "name": "answer1",
                     "value": "testValue correct",
                     "isCorrect": true,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 8,
@@ -81,7 +83,7 @@ export const deckData = {
                     "name": "answer4",
                     "value": "testValue incorrect",
                     "isCorrect": false,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 6,
@@ -91,7 +93,7 @@ export const deckData = {
                     "name": "answer2",
                     "value": "testValue correct",
                     "isCorrect": true,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 },
                 {
                     "ID": 7,
@@ -101,7 +103,7 @@ export const deckData = {
                     "name": "answer3",
                     "value": "testValue incorrect",
                     "isCorrect": false,
-                    "flashCardId ": 2
+                    "flashCardId": 2
                 }
             ]
         }
