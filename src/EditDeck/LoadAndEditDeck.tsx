@@ -4,6 +4,7 @@ import {Deck} from "../types/BackendModels";
 import {Accordion, Button, Container} from "react-bootstrap";
 import AccordionItem from "react-bootstrap/AccordionItem";
 import {QuestionList} from "./QuestionList";
+import {DeckElement} from "./DeckElement";
 
 
 export const LoadAndEditDeck: React.FC = () => {
@@ -33,19 +34,13 @@ export const LoadAndEditDeck: React.FC = () => {
 
     return (
         <Container>
-            <Accordion>
-                <h2>Flashcard Questions</h2>
-                {decks?.map((value, idx) => {
-                    const index = idx.toString();
-                    return (
-                        <AccordionItem eventKey={index}>
-                            <QuestionList flashcards={value.FlashCards} deckDescription={value.Description}/>
-                        </AccordionItem>
-                    )
-                })}
-
-            </Accordion>
-            <Button onClick={()=>alert("joe goes woo hoo")} variant="success" type="submit">Save Deck and Return</Button>
+            <button onClick={() => getDecks()}>REFRESH</button>
+            <h2>Flashcard Questions</h2>
+            {decks?.map(
+                (deck, idx) => <DeckElement deck={deck} idx={idx}/>
+            )}
+            <Button onClick={() => alert("joe goes woo hoo")}
+                    variant="success" type="submit">Save Deck and Return</Button>
         </Container>
     )
 }
