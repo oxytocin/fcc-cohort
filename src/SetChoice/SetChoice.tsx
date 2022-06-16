@@ -16,10 +16,9 @@ export const SetChoice: React.FC = () => {
 
     async function fetchUserDecks() {
         let response;
-        const endpoint = `api/deck/owner`
         const token = localStorage.getItem(bonanza_token);
         try {
-            response = await fetchFromBackend(endpoint, {
+            response = await fetchFromBackend(config.DECK_OWNER_ENDPOINT, {
                 method: "GET", mode: "cors", headers: {
                     "Authorization": `Bearer ${token}`,
                 }
@@ -43,10 +42,9 @@ export const SetChoice: React.FC = () => {
     }, [])
 
     const deleteById = async (id: number) => {
-        const endpoint = `api/deck/${id}`;
         const token = localStorage.getItem(bonanza_token);
         try {
-            await fetchFromBackend(endpoint, {
+            await fetchFromBackend(`${config.DECK_ENDPOINT}/${id}`, {
                 method: "DELETE", mode: "cors", headers: {
                     "Authorization": `Bearer ${token}`,
                 }

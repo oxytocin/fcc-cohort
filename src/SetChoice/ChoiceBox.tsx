@@ -5,11 +5,10 @@ import {useNavigate} from "react-router-dom";
 import {fetchFromBackend} from "../utils";
 
 async function createNewRoom() {
-    const endpoint = `api/room/create`;
     const token = localStorage.getItem(bonanza_token);
     let response;
     try {
-        response = await fetchFromBackend(endpoint, {
+        response = await fetchFromBackend(config.CREATE_ROOM_ENDPOINT, {
             method: "POST", mode: "cors", headers: {
                 "Authorization": `Bearer ${token}`
             }

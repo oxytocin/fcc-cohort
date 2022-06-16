@@ -6,6 +6,10 @@ const prod_frontend_host_location = "https://flashcard-bonanza-frontend.herokuap
 const prod_backend_host_location = "https://flashcard-bonanza-backend.herokuapp.com"
 const prod_websocket_location = "ws://flashcard-bonanza-backend.herokuapp.com"
 const choose_deck_path = "/set-choice"
+const create_room_endpoint = "api/room/create"
+const deck_owner_endpoint = "api/deck/owner"
+const deck_endpoint = "api/deck"
+const login_endpoint = "login"
 
 const redirect_url = "https://accounts.google.com/o/oauth2/v2/auth"
 const client_id="849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com"
@@ -21,6 +25,10 @@ const prod = {
     CLIENT_ID:`${client_id}`,
     RESPONSE_TYPE:`${response_type}`,
     CHOOSE_SET_PATH: choose_deck_path,
+    CREATE_ROOM_ENDPOINT: create_room_endpoint,
+    DECK_OWNER_ENDPOINT: deck_owner_endpoint,
+    DECK_ENDPOINT: deck_endpoint,
+    LOGIN_ENDPOINT: login_endpoint,
 }
 
 const dev = {
@@ -33,6 +41,10 @@ const dev = {
     CLIENT_ID:`${client_id}`,
     RESPONSE_TYPE:`${response_type}`,
     CHOOSE_SET_PATH: choose_deck_path,
+    CREATE_ROOM_ENDPOINT: create_room_endpoint,
+    DECK_OWNER_ENDPOINT: deck_owner_endpoint,
+    DECK_ENDPOINT: deck_endpoint,
+    LOGIN_ENDPOINT: login_endpoint,
 }
 
 export const config = process.env.NODE_ENV === "production" ? prod : dev;

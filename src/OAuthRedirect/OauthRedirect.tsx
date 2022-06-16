@@ -13,9 +13,8 @@ function OauthRedirect() {
 
         async function fetchToken() {
             let response;
-            const endpoint = "login";
             try {
-                response = await fetchFromBackend(endpoint, {
+                response = await fetchFromBackend(config.LOGIN_ENDPOINT, {
                     method: "POST", mode: "cors", body: code
                 })
             } catch (e) {
