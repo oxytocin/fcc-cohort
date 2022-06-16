@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {ChoiceBox} from "./ChoiceBox";
 import {Container, Row} from "react-bootstrap";
 import {config, bonanza_token} from "../Constants";
+import {fetchFromBackend} from "../utils";
 
 interface Choice {
     title: string;
@@ -13,25 +14,17 @@ export const SetChoice: React.FC = () => {
     const placeHolder: Choice[] = [];
     const [choices, setChoices] = useState(placeHolder);
 
-
     async function fetchUserDecks() {
         let response;
-        const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
         const token = localStorage.getItem(bonanza_token);
         try {
-            response = await fetch(url, {
+            response = await fetchFromBackend(config.DECK_OWNER_ENDPOINT, {
                 method: "GET", mode: "cors", headers: {
                     "Authorization": `Bearer ${token}`,
                 }
-            });
+            })
         } catch (e) {
-            alert("Network error encountered");
-            console.error(e);
-            return [{title: "", content: ""}];
-        }
-        if (response.status >= 400 && response.status < 600) {
-            alert("Server error encountered")
-            return [{title: "", content: ""}];
+            return [{title: "", content: ""}]
         }
         const decks = await response.json();
         let allChoices: Choice[] = [];
@@ -48,19 +41,19 @@ export const SetChoice: React.FC = () => {
         fetchUserDecks().then(value => console.log("decks pulled"));
     }, [])
 
-    const deleteById = (id: number) => {
-        const url = `${config.BACKEND_HOST_LOCATION}/api/deck/${id}`;
+    const deleteById = async (id: number) => {
         const token = localStorage.getItem(bonanza_token);
-        fetch(url, {
-            method: "DELETE", mode: "cors", headers: {
-                "Authorization": `Bearer ${token}`,
-            }
-        }).then(res => {
-            const newChoices = choices.filter(value => value.id !== id);
-            setChoices(newChoices);
-        }).catch(err => {
-            alert("there was an error removing this deck")
-        });
+        try {
+            await fetchFromBackend(`${config.DECK_ENDPOINT}/${id}`, {
+                method: "DELETE", mode: "cors", headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            })
+        } catch (e) {
+            alert("Error removing deck");
+        }
+        const newChoices = choices.filter(value => value.id !== id);
+        setChoices(newChoices);
     };
 
     return (

@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {config, bonanza_token} from "../Constants"
 import {useNavigate} from "react-router-dom"
+import {fetchFromBackend} from "../utils";
 
 function OauthRedirect() {
     const navigate = useNavigate();
@@ -8,22 +9,15 @@ function OauthRedirect() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const code = urlParams.get("code");
-        const url = config.OAUTH_BACKEND_REDIRECT_URL;
         console.log("auth info:",config.OAUTH_BACKEND_REDIRECT_URL)
 
         async function fetchToken() {
             let response;
             try {
-                response = await fetch(url, {
+                response = await fetchFromBackend(config.LOGIN_ENDPOINT, {
                     method: "POST", mode: "cors", body: code
-                });
+                })
             } catch (e) {
-                alert("Network error encountered while logging in.");
-                navigate("/");
-                return;
-            }
-            if (response.status >= 400 && response.status < 600) {
-                alert("Server error encountered while logging in.")
                 navigate("/");
                 return;
             }
