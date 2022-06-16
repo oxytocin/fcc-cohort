@@ -2,23 +2,19 @@ import React from "react";
 import {Card} from "react-bootstrap";
 import {bonanza_token, config} from "../Constants";
 import {useNavigate} from "react-router-dom";
+import {fetchFromBackend} from "../utils";
 
 async function createNewRoom() {
-    let response;
-    const url = `${config.BACKEND_HOST_LOCATION}/api/room/create`;
+    const endpoint = `api/room/create`;
     const token = localStorage.getItem(bonanza_token);
+    let response;
     try {
-        response = await fetch(url, {
+        response = await fetchFromBackend(endpoint, {
             method: "POST", mode: "cors", headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
     } catch (e) {
-        alert("Network error encountered");
-        return;
-    }
-    if (response.status >= 400 && response.status < 600) {
-        alert("Server error encountered");
         return;
     }
     const roomID = await response.text();

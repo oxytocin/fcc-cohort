@@ -5,6 +5,7 @@ const dev_websocket_location = "ws://127.0.0.1"
 const prod_frontend_host_location = "https://flashcard-bonanza-frontend.herokuapp.com"
 const prod_backend_host_location = "https://flashcard-bonanza-backend.herokuapp.com"
 const prod_websocket_location = "ws://flashcard-bonanza-backend.herokuapp.com"
+const choose_deck_path = "/set-choice"
 
 const redirect_url = "https://accounts.google.com/o/oauth2/v2/auth"
 const client_id="849784468632-n9upp7q0umm82uecp5h3pfdervht7sjg.apps.googleusercontent.com"
@@ -19,6 +20,7 @@ const prod = {
     REDIRECT_URL: `${redirect_url}`,
     CLIENT_ID:`${client_id}`,
     RESPONSE_TYPE:`${response_type}`,
+    CHOOSE_SET_PATH: choose_deck_path,
 }
 
 const dev = {
@@ -30,6 +32,7 @@ const dev = {
     REDIRECT_URL: `${redirect_url}`,
     CLIENT_ID:`${client_id}`,
     RESPONSE_TYPE:`${response_type}`,
+    CHOOSE_SET_PATH: choose_deck_path,
 }
 
 export const config = process.env.NODE_ENV === "production" ? prod : dev;

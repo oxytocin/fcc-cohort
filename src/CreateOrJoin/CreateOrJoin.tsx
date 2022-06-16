@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, InputGroup, FormControl, Row, Col, ButtonToolbar, Form} from 'react-bootstrap';
 import jwtDecode from "jwt-decode";
-import {bonanza_token} from "../Constants";
+import {bonanza_token, config} from "../Constants";
 import {useNavigate} from 'react-router-dom'
 
 function CreateOrJoin() {
@@ -21,7 +21,7 @@ function CreateOrJoin() {
             <h3 data-cy="greeting" className="mb-4 fst-italic fw-light">Welcome, {user}! What would you like to do?</h3>
             <Row>
                 <Col sm={5}>
-                    <Button onClick={()=>{navigate("/set-choice")}} data-cy="host-btn" variant="dark" size="lg" className="m-1 col-12">Host room</Button> {/* Am I a bad boy for hardcoding this path? */}
+                    <Button onClick={()=>{navigate(config.CHOOSE_SET_PATH)}} data-cy="host-btn" variant="dark" size="lg" className="m-1 col-12">Host room</Button> {/* Am I a bad boy for hardcoding this path? */}
                 </Col>
                 <Col sm={7}>
                     <InputGroup size="lg" className="m-1">
