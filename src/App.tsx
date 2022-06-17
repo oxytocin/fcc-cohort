@@ -27,7 +27,6 @@ function App() {
                 <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
                 <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
                 <Route path="/edit-deck" element={<PrivateRoute><LoadAndEditDeck/></PrivateRoute>}/>
-                {/*<Route path="/load-deck" element={<PrivateRoute><LoadAndEditDeck/></PrivateRoute>}/>*/}
             </Routes>
         </div>
     );
