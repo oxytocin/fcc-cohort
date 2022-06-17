@@ -20,7 +20,7 @@ async function createNewRoom() {
     return roomID;
 }
 
-export const ChoiceBox: React.FC<{ title: string, content: string, id:number, del: Function }> = ({title, content,id,del}) => {
+export const ChoiceBox: React.FC<{ title: string, content: string, deckID: number, del: Function }> = ({title, content, deckID, del}) => {
     const navigate = useNavigate();
 
     return (
@@ -33,11 +33,11 @@ export const ChoiceBox: React.FC<{ title: string, content: string, id:number, de
                 </Card.Text>
                 <Card.Link onClick={
                     async () => {
-                        const ID = await createNewRoom();
-                        navigate("/waiting-room", {state: {roomID: ID, isAdmin: true}})
+                        const roomID = await createNewRoom();
+                        navigate("/waiting-room", {state: {roomID: roomID, isAdmin: true, deckID: deckID}})
                     }
                 } href="#">Start Game</Card.Link>
-                <Card.Link onClick={()=>navigate(`/edit-deck?id=${id}`)} className="text-success" href="#">Edit Deck</Card.Link><br/>
+                <Card.Link onClick={()=>navigate(`/edit-deck?id=${deckID}`)} className="text-success" href="#">Edit Deck</Card.Link><br/>
                 <Card.Link onClick={()=>del()} className="text-danger" href="#">Delete Deck</Card.Link>
             </Card.Body>
         </Card>
