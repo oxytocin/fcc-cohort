@@ -112,7 +112,6 @@ function WaitingRoom() {
                     </InputGroup>
                 </Form>
             </Col>
-            {/*TODO: probably have to pass some state to the in-game component*/}
             <Button
                 disabled={!deckLoaded}
                 variant="outline-dark"
