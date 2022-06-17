@@ -61,7 +61,7 @@ export const SetChoice: React.FC = () => {
             <Container>
                 <Row data-cy="all-decks">
                     {choices.map(value => (
-                        <ChoiceBox title={value.title} content={value.content} key={value.id} id={value.id}
+                        <ChoiceBox title={value.title} content={value.content} key={value.id} deckID={value.id}
                                    del={() => deleteById(value.id)}/>
                     ))}
                 </Row>

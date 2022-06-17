@@ -4,6 +4,8 @@ import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
+import {fetchFromBackend} from "../utils"
+import {Deck} from "../types/BackendModels"
 
 function WaitingRoom() {
     const renderTooltip = (props: any) => (
@@ -19,21 +21,44 @@ function WaitingRoom() {
         await navigator.clipboard.writeText(el.placeholder)
     }
 
+    const [deck, setDeck] = useState<Deck>();
+    const [deckLoaded, setDeckLoaded] = useState<boolean>(false);
     const [userNames, setUserNames] = useState<string[]>();
     const location = useLocation();
+    //@ts-ignore
+    const deckID = location.state.deckID;
     //@ts-ignore
     const roomID = location.state.roomID;  // state passed in from setChoice
     //@ts-ignore
     const isAdmin = location.state.isAdmin;
     const startButtonStyle = {
-        display: isAdmin ? "inline-block" : "none"
+        display: isAdmin ? "inline-block" : "none",
     }
-
+    const token = localStorage.getItem(bonanza_token)
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem(bonanza_token)
         const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
+
+        async function fetchDeck() {
+            let response;
+            const endpoint = `${config.DECK_ENDPOINT}/${deckID}`;
+            try {
+                response = await fetchFromBackend(endpoint, {
+                    method: "GET", mode: "cors", headers: {
+                        "Authorization": `Bearer ${token}`,
+                    }
+                })
+            } catch (e) {
+                navigate("/create-or-join");
+                return;
+            }
+            const data = await response.json();
+            setDeck(data);
+            setDeckLoaded(true);
+        }
+
+        fetchDeck();
 
         ws.onclose = () => {
             alert("Connection dropped. You may have tried to join a room that does not exist");
@@ -44,7 +69,6 @@ function WaitingRoom() {
             const json = JSON.parse(dataFromBackend);
             switch (json["message_type"]) {
                 case "initial-connection":
-                    // TODO: later on, I think we should be able to get the deck from here
                     break;
                 case "user-joined":
                     const userObjects = json["contents"];
@@ -53,7 +77,6 @@ function WaitingRoom() {
                         userNamesArr.push(userObjects[i].username);
                     }
                     setUserNames(userNamesArr);
-                    console.log(userNamesArr);
                     break;
             }
         }
@@ -90,10 +113,18 @@ function WaitingRoom() {
                 </Form>
             </Col>
             {/*TODO: probably have to pass some state to the in-game component*/}
-            <Button variant="outline-dark" className="mt-5 border-2 col-8" size="lg" style={startButtonStyle} onClick={() => {
-                //@ts-ignore
-                navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value}})
-            }}><b>Start Game</b></Button>
+            <Button
+                disabled={!deckLoaded}
+                variant="outline-dark"
+                className="mt-5 border-2 col-8"
+                size="lg"
+                style={startButtonStyle}
+                onClick={() => {
+                    //@ts-ignore
+                    navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
+                }}>
+                <b>Start Game</b>
+            </Button>
             <div className="usersJoinedDiv">
                 <h3 className="waitingRoomText mt-4">Users Joined</h3>
                 <p className="waitingRoomText">{userNames}</p>
