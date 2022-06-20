@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { ToastContext } from "./App";
 import {config} from "./Constants";
 
 export async function fetchFromBackend(endpoint: string, options: {}) {
@@ -15,4 +17,16 @@ export async function fetchFromBackend(endpoint: string, options: {}) {
         throw new Error("ServerError");
     }
     return response;
+}
+
+export function changeText() {
+    const toastContext = useContext(ToastContext);
+    toastContext.toastText = "lol";
+}
+
+export function Dummy() {
+    const toastContext = useContext(ToastContext);
+    return (
+        <p>{toastContext.toastText}</p>
+    )
 }

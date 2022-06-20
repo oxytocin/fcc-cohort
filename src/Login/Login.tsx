@@ -2,11 +2,13 @@ import React from "react";
 import {bonanza_token, config} from "../Constants"
 import {Button} from "react-bootstrap";
 import jwtDecode from "jwt-decode";
+import { changeText } from "../utils";
 
 // Curl version of how to use the bearer. basically you'll just need to add this to a header
 // curl localhost:8088/restricted -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NjE5NTcxMzZ9.RB3arc4-OyzASAaUhC2W3ReWaXAt_z2Fd3BN4aWTgEY"
 // so just add the header 'Authorization' and then use the value 'Bearer <token>'
 const Login = () => {
+    changeText()
     const token = localStorage.getItem(bonanza_token) ?? "";
 
     function tokenValid(token: string): boolean {
