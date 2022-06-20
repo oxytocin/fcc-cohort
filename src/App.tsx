@@ -11,7 +11,7 @@ import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
 import {EditDeckQuestions} from './EditDeck/EditDeckQuestions';
-import {ToastAlert} from "./utils";
+import {ToastAlert} from "./ToastAlert/ToastAlert";
 
 export const ToastContext = React.createContext({
     toastText: "",

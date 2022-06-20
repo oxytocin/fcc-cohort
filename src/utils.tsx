@@ -1,6 +1,3 @@
-import {useContext} from "react";
-import {Toast} from "react-bootstrap";
-import {ToastContext} from "./App";
 import {config} from "./Constants";
 
 export async function fetchFromBackend(endpoint: string, options: {}) {
@@ -17,22 +14,7 @@ export async function fetchFromBackend(endpoint: string, options: {}) {
     return response;
 }
 
-export function ToastAlert() {
-    const toastContext = useContext(ToastContext);
-    return (
-        <Toast show={toastContext.toastShow} onClose={() => {
-                toastContext.setToastShow(false);
-            }
-        }>
-            <Toast.Header>
-                <strong className="me-auto">Alert</strong>
-            </Toast.Header>
-            <Toast.Body>{toastContext.toastText}</Toast.Body>
-        </Toast>
-    )
-}
-
-export function showToast(text: string, toastContext: any) {
-    toastContext.setToastText(text);
+export function showToast(toastText: string, toastContext: any) {
+    toastContext.setToastText(toastText);
     toastContext.setToastShow(true);
 }
