@@ -38,10 +38,9 @@ function WaitingRoom() {
     const token = localStorage.getItem(bonanza_token)
     const navigate = useNavigate();
     const toastContext = useContext(ToastContext);
+    const [ws, setWs] = useState<WebSocket>();
 
     useEffect(() => {
-        const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
-
         async function fetchDeck() {
             let response;
             const endpoint = `${config.DECK_ENDPOINT}/${deckID}`;
@@ -63,12 +62,15 @@ function WaitingRoom() {
 
         fetchDeck();
 
-        ws.onclose = () => {
-            alert("Connection dropped. You may have tried to join a room that does not exist");
-            navigate("/create-or-join")
-        }
+        setWs(new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`))
+    }, [])
+
+    useEffect(() => {
+        // react will update ws when it feels like it, so better not jump the gun
+        if (ws === undefined) {return;}
 
         function handleMessage(dataFromBackend: string) {
+            console.log(dataFromBackend);
             const json = JSON.parse(dataFromBackend);
             switch (json["message_type"]) {
                 case "initial-connection":
@@ -83,9 +85,13 @@ function WaitingRoom() {
                     break;
             }
         }
+        ws.onclose = () => {
+            alert("Connection dropped. You may have tried to join a room that does not exist");
+            navigate("/create-or-join")
+        }
 
         ws.onmessage = (e: MessageEvent) => {handleMessage(e.data);}
-    }, [])
+    }, [ws])
 
     return (
         <div className="WaitingRoom"> 
@@ -122,8 +128,12 @@ function WaitingRoom() {
                 size="lg"
                 style={startButtonStyle}
                 onClick={() => {
-                    //@ts-ignore
-                    navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
+                    if (ws === undefined) {return;}
+                    const toSend = JSON.stringify(
+                        {action: "LOAD", deckId: deckID}
+                    )
+                    ws.send(toSend);
+                    //navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
                 }}>
                 <b>Start Game</b>
             </Button>
