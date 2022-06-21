@@ -6,8 +6,11 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
 import {fetchFromBackend} from "../utils"
 import {Deck} from "../types/BackendModels"
+import useToastContext from "../ToastAlert/ToastContextHook";
 
 function WaitingRoom() {
+    const addToast = useToastContext();
+
     const renderTooltip = (props: any) => (
         <Tooltip id="button-tooltip" {...props}>
             Copied!
@@ -19,6 +22,9 @@ function WaitingRoom() {
         // I know I shouldn't do "any" but I don't know what else to do
         const el: any = document.getElementById("inlineFormInput");
         await navigator.clipboard.writeText(el.placeholder)
+
+        addToast("Great, now invite your friends!")
+
     }
 
     const [deck, setDeck] = useState<Deck>();
@@ -61,7 +67,8 @@ function WaitingRoom() {
         fetchDeck();
 
         ws.onclose = () => {
-            alert("Connection dropped. You may have tried to join a room that does not exist");
+            addToast("Connection dropped. You may have tried to join a room that does not exist")
+            //alert("Connection dropped. You may have tried to join a room that does not exist");
             navigate("/create-or-join")
         }
 

@@ -11,23 +11,16 @@ import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
 import {EditDeckQuestions} from './EditDeck/EditDeckQuestions';
-import {ToastAlert} from "./ToastAlert/ToastAlert";
+import { ToastContextProvider } from "./ToastAlert/ToastAlert";
 
-export const ToastContext = React.createContext({
-    toastText: "",
-    toastShow: false,
-    setToastText: (text: string) => {},
-    setToastShow: (value: boolean) => {}
-});
 
 function App() {
     document.title = "Flashcard Bonanza";
-    const [toastText, setToastText] = React.useState<string>("");
-    const [toastShow, setToastShow] = React.useState<boolean>(false);
+
     return (
         <div data-cy="app" className="App">
             <HeaderNav/>
-            <ToastContext.Provider value={{toastText: toastText, toastShow: toastShow, setToastText: setToastText, setToastShow: setToastShow}}>
+            <ToastContextProvider>
                 <Routes>
                     <Route path="/" element={<Login/>}/>
                     <Route path="/oauth-redirect" element={<OauthRedirect/>}/>
@@ -38,8 +31,7 @@ function App() {
                     <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
                     <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
                 </Routes>
-                <ToastAlert/>
-            </ToastContext.Provider>
+            </ToastContextProvider>
         </div>
     );
 }
