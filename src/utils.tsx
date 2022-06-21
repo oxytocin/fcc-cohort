@@ -6,13 +6,15 @@ export async function fetchFromBackend(endpoint: string, options: {}) {
     try {
         response = await fetch(url, options);
     } catch (e) {
-        // TODO: toast
-        document.body.appendChild(document.createElement("DIV"))
         throw e;
     }
     if (response.status >= 400 && response.status < 600) {
-        // TODO: toast
         throw new Error("ServerError");
     }
     return response;
+}
+
+export function showToast(toastText: string, toastContext: any) {
+    toastContext.setToastText(toastText);
+    toastContext.setToastShow(true);
 }

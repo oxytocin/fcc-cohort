@@ -1,4 +1,3 @@
-import React from "react";
 import {bonanza_token, config} from "../Constants"
 import {Button} from "react-bootstrap";
 import jwtDecode from "jwt-decode";
