@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {Form, InputGroup, Col, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
-import {fetchFromBackend} from "../utils"
+import {fetchFromBackend, showToast} from "../utils"
 import {Deck} from "../types/BackendModels"
+import { ToastContext } from '../App';
 
 function WaitingRoom() {
     const renderTooltip = (props: any) => (
@@ -36,6 +37,7 @@ function WaitingRoom() {
     }
     const token = localStorage.getItem(bonanza_token)
     const navigate = useNavigate();
+    const toastContext = useContext(ToastContext);
 
     useEffect(() => {
         const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
@@ -50,6 +52,7 @@ function WaitingRoom() {
                     }
                 })
             } catch (e) {
+                showToast("There was an error connecting to the room", toastContext);
                 navigate("/create-or-join");
                 return;
             }

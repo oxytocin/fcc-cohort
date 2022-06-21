@@ -17,7 +17,7 @@ export const HeaderNav: React.FC = () => {
         <Navbar bg="light" expand="md" fixed="top">
             <Container data-cy="nav-container">
                 {/* This is the mobile element, will do a 'hamburger' button */}
-                <Navbar.Brand data-cy="nav-home" href="#home">Flashcard Bonanza</Navbar.Brand>
+                <Navbar.Brand data-cy="nav-home" href="/">Flashcard Bonanza</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse data-cy="nav-collapse" id="basic-navbar-nav">
                     <Nav className="d-block d-sm-block d-md-none">
