@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {ChoiceBox} from "./ChoiceBox";
 import {Container, Row} from "react-bootstrap";
 import {config, bonanza_token} from "../Constants";
-import {fetchFromBackend} from "../utils";
+import {fetchFromBackend, showToast} from "../utils";
+import { ToastContext } from '../App';
 
 interface Choice {
     title: string;
@@ -11,6 +12,7 @@ interface Choice {
 }
 
 export const SetChoice: React.FC = () => {
+    const toastContext = useContext(ToastContext);
     const placeHolder: Choice[] = [];
     const [choices, setChoices] = useState(placeHolder);
 
@@ -24,6 +26,7 @@ export const SetChoice: React.FC = () => {
                 }
             })
         } catch (e) {
+            showToast("Error fetching decks", toastContext);
             return [{title: "", content: ""}]
         }
         const decks = await response.json();
@@ -50,6 +53,7 @@ export const SetChoice: React.FC = () => {
                 }
             })
         } catch (e) {
+            showToast("Error removing deck", toastContext);
             alert("Error removing deck");
         }
         const newChoices = choices.filter(value => value.id !== id);

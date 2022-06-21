@@ -1,15 +1,16 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import {config, bonanza_token} from "../Constants"
 import {useNavigate} from "react-router-dom"
-import {fetchFromBackend} from "../utils";
+import {fetchFromBackend, showToast} from "../utils";
+import {ToastContext} from "../App";
 
 function OauthRedirect() {
     const navigate = useNavigate();
+    const toastContext = useContext(ToastContext);
     useEffect(() => {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const code = urlParams.get("code");
-        console.log("auth info:",config.OAUTH_BACKEND_REDIRECT_URL)
 
         async function fetchToken() {
             let response;
@@ -18,6 +19,7 @@ function OauthRedirect() {
                     method: "POST", mode: "cors", body: code
                 })
             } catch (e) {
+                showToast("There was an error logging in", toastContext);
                 navigate("/");
                 return;
             }
