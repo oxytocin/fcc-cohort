@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
 import {Deck} from "../types/BackendModels";
-import {Button, Col, Container, Row} from "react-bootstrap";
-import {DeckElement} from "./DeckElement";
+import {Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
 import {DeckList} from "./DeckList";
 import {SelectedDeck} from "./SelectedDeck";
@@ -19,28 +18,28 @@ let nullDeck: Deck = {
     UpdatedAt: "",
 };
 
-const getDeckOrDefault = (decks: Array<Deck> | null, currentDeckId: string | null): Deck => {
+const getDeckOrDefault = (decks: Map<number, Deck> | null, currentDeckId: string | null): Deck => {
     let id = 0;
 
     if (currentDeckId) {
         id = Number(currentDeckId);
     }
-    if (decks){
-        for (let i = 0; i < decks.length; i++) {
-            if (decks[i].ID === id){
-                return decks[i];
-            }
-        }
+
+    if (decks && !isNaN(id) && decks.has(id)) {
+        // @ts-ignore
+        return decks.get(id);
     }
 
     return nullDeck;
 }
 
 export const LoadAndEditDeck: React.FC = () => {
-    let [searchParams, setSearchParams] = useSearchParams();
-    const [decks, setDecks] = useState<Array<Deck> | null>(null)
-    const selectedDeck = getDeckOrDefault(decks, searchParams.get("id"));
-    console.log("what's the selected deck? ",selectedDeck);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let [searchParams, _] = useSearchParams();
+    const [decks, setDecks] = useState<Map<number, Deck> | null>(null)
+    const [deckKeys, setDeckKeys] = useState<Array<number>>([]);
+    const [selectedDeck, setSelectedDeck] = useState(getDeckOrDefault(decks, searchParams.get("id")))
+
     const getDecks = () => {
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
         const token = localStorage.getItem(bonanza_token);
@@ -50,12 +49,25 @@ export const LoadAndEditDeck: React.FC = () => {
                 }
             }
         ).then<Array<Deck>>(res => res.json()
-        ).then(data => {
-                console.log("TESTING", data);
-                setDecks(data)
+        ).then((data?: Deck[]) => {
+                let keys: Array<number> = [];
+                let mappedData = new Map<deckId, Deck>();
+                if (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        let e = data[i];
+                        keys.push(e.ID);
+                        mappedData.set(e.ID, e);
+                    }
+                }
+                // we're going to sort them based upon the values
+                keys.sort((x, y) => x - y);
+
+                setDeckKeys(keys);
+                setDecks(mappedData)
             }
         ).catch(err => {
-                console.log("error is: ", err);
+                console.error("error is: ", err);
+                alert(err);
             }
         );
     }
@@ -67,10 +79,10 @@ export const LoadAndEditDeck: React.FC = () => {
         <Container fluid>
             <Row>
                 <Col xs={2} m={6}>
-                    <DeckList decks={decks} refresh={getDecks}/>
+                    <DeckList decks={decks} deckKeys={deckKeys} refresh={getDecks} chooseDeck={setSelectedDeck}/>
                 </Col>
                 <Col xs={10} md={6}>
-                    <SelectedDeck selectedDeck={selectedDeck} refresh={getDecks}/>
+                    <SelectedDeck selectedDeck={selectedDeck} refresh={getDecks} allDecks={decks} setDecks={setDecks}/>
                 </Col>
 
             </Row>

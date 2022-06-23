@@ -1,20 +1,45 @@
 import React from "react";
 import {Deck} from "../types/BackendModels";
 
-export const DeckList: React.FC<{ decks: Array<Deck> | null, refresh: Function }> = ({decks, refresh}) => (
-    <>
-        <button onClick={() => refresh()}>REFRESH</button>
-        <h2>Flashcard Questions</h2>
-        {decks?.map((value, index) => (
-            <div key={value.ID}>
-                {value.Description} - {value.ID} -- {index}
-                <br/>
-                {value.FlashCards?.map((card, idx) =>(
-                    <div key="{card.ID}">
-                        {card.Question}
+type deckId = number;
+
+interface DeckList {
+    decks: Map<deckId, Deck> | null,
+    deckKeys: Array<number>,
+    refresh: Function,
+    chooseDeck: Function
+}
+
+export const DeckList: React.FC<DeckList> = ({decks, deckKeys, refresh, chooseDeck}) => {
+    const getDeckOutput = (decks: Map<deckId, Deck> | null, id: number): JSX.Element => {
+        if (decks) {
+            let deck = decks.get(id);
+            if (deck) {
+                return (
+                    <div key={id}>
+                        <button onClick={() => chooseDeck(deck)}>
+                            {deck.ID} -- {deck.Description}
+                        </button>
                     </div>
-                ))}
-            </div>
-        ))}
-    </>
-)
+                )
+            }
+        }
+        return <></>
+    }
+
+    let output: JSX.Element[] = [];
+
+    if (decks != null) {
+        deckKeys.map(id => {
+            output.push(getDeckOutput(decks, id))
+        })
+    }
+    return (
+        <>
+            <button onClick={() => refresh()}>REFRESH</button>
+            <h2>Flashcard Questions</h2>
+            <br/>
+            {output}
+        </>
+    )
+}
