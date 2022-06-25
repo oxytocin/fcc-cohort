@@ -7,17 +7,21 @@ interface DeckList {
     decks: Map<deckId, Deck> | null,
     deckKeys: Array<number>,
     refresh: Function,
-    chooseDeck: Function
+    chooseDeck: Function,
+    updateSearchParams: Function
 }
 
-export const DeckList: React.FC<DeckList> = ({decks, deckKeys, refresh, chooseDeck}) => {
+export const DeckList: React.FC<DeckList> = ({decks, deckKeys, refresh, chooseDeck, updateSearchParams}) => {
     const getDeckOutput = (decks: Map<deckId, Deck> | null, id: number): JSX.Element => {
         if (decks) {
             let deck = decks.get(id);
             if (deck) {
                 return (
                     <div key={id}>
-                        <button onClick={() => chooseDeck(deck)}>
+                        <button onClick={() => {
+                            chooseDeck(deck);
+                            updateSearchParams({"id": id});
+                        }}>
                             {deck.ID} -- {deck.Description}
                         </button>
                     </div>

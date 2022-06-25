@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Accordion, Button, Container, Form, FormControl, InputGroup} from "react-bootstrap";
 import AccordionItem from 'react-bootstrap/esm/AccordionItem';
 import {QuestionList} from './QuestionList';
-import {EditQuestion} from './EditQuestion';
 
 import {deckData} from './deckData';
 

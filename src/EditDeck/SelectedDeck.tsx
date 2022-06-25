@@ -1,8 +1,11 @@
-import React from "react";
-import {Deck} from "../types/BackendModels";
-import {Button, Form} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import {Deck, FlashCard} from "../types/BackendModels";
+import {Button, Col, Form, FormControl, Row} from "react-bootstrap";
+import {IdHeader} from "./formElements/IdHeader";
+import {FormDescription} from "./formElements/FormDescription";
+import {FlashcardAccordion} from "./formElements/FlashcardAccordion";
 
-interface SelectedDeck {
+interface SelectedDeckInterface {
     selectedDeck: Deck,
     refresh: Function,
     allDecks: Map<number, Deck> | null,
@@ -10,8 +13,10 @@ interface SelectedDeck {
 }
 
 
-export const SelectedDeck: React.FC<SelectedDeck> = ({selectedDeck, refresh, allDecks, setDecks}) => {
-    // We need to be able to edit the current de
+export const SelectedDeck: React.FC<SelectedDeckInterface> = ({selectedDeck, refresh, allDecks, setDecks}) => {
+    const [description, setDescription] = useState<string>("")
+    const ownerId = selectedDeck.OwnerId;
+    const [flashcards, setFlashcards] = useState<Array<FlashCard>>([]);
     /*
         Need the following
 
@@ -21,19 +26,31 @@ export const SelectedDeck: React.FC<SelectedDeck> = ({selectedDeck, refresh, all
         4. Should there be a state that handles changes? Like upon a change we update certain things but only
 event: MouseEvent<HTMLButtonElement>
      */
+
+    useEffect(() => {
+        setDescription(selectedDeck.Description);
+
+        if (selectedDeck.FlashCards !== null && selectedDeck.FlashCards) {
+            setFlashcards(selectedDeck.FlashCards);
+        }
+
+    }, [selectedDeck])
+
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        console.log(selectedDeck.ID.toString());
     }
 
     return (
         <>
             <Form>
-                <Form.Label>Deck ID</Form.Label>
-                <Form.Control placeholder={selectedDeck.ID.toString()} disabled/>
-                <Button variant="primary" type="submit" onClick={(e) => handleSubmit(e)}>
-                    Submit
-                </Button>
+                <IdHeader id={selectedDeck.ID} ownerId={ownerId}/>
+                <FormDescription description={description} setDescription={setDescription}/>
+                <FlashcardAccordion flashCards={flashcards}/>
+                <Button
+                    variant="primary"
+                    type="submit"
+                    onClick={(e) => handleSubmit(e)}
+                >Submit</Button>
             </Form>
         </>
     )
