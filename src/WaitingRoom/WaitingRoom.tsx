@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Form, InputGroup, Col, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
+import {showToast} from '../utils';
+import {ToastContext} from "../App";
 
 function WaitingRoom() {
     const renderTooltip = (props: any) => (
@@ -18,6 +20,8 @@ function WaitingRoom() {
         const el: any = document.getElementById("inlineFormInput");
         await navigator.clipboard.writeText(el.placeholder)
     }
+
+    const toastContext = useContext(ToastContext);
 
     const [userNames, setUserNames] = useState<string[]>();
     const location = useLocation();
@@ -62,7 +66,7 @@ function WaitingRoom() {
             }
         }
         ws.onclose = () => {
-            alert("Connection dropped. You may have tried to join a room that does not exist");
+            showToast("Connection dropped. You may have tried to join a room that does not exist", toastContext);
             navigate("/create-or-join")
         }
 
