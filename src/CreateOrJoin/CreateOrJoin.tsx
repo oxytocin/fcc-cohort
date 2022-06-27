@@ -1,5 +1,4 @@
-import React from 'react';
-import {Button, InputGroup, FormControl, Row, Col, ButtonToolbar, Form} from 'react-bootstrap';
+import {Button, InputGroup, FormControl, Row, Col} from 'react-bootstrap';
 import jwtDecode from "jwt-decode";
 import {bonanza_token, config} from "../Constants";
 import {useNavigate} from 'react-router-dom'
@@ -11,9 +10,9 @@ function CreateOrJoin() {
     const navigate = useNavigate();
 
     function getRoomID() {
-        //@ts-ignore
-        return document.getElementById("roomID").value;
-        }
+        const roomIDElement = document.getElementById("roomID") as HTMLInputElement;
+        return roomIDElement.value;
+    }
 
     return (
         <>
