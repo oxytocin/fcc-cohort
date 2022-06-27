@@ -54,7 +54,6 @@ export const SetChoice: React.FC = () => {
             })
         } catch (e) {
             showToast("Error removing deck", toastContext);
-            alert("Error removing deck");
         }
         const newChoices = choices.filter(value => value.id !== id);
         setChoices(newChoices);
