@@ -1,12 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Form, InputGroup, Col, Tooltip, OverlayTrigger, Button} from "react-bootstrap";
 import clipboard from "../icons/clipboard.svg";
 import './WaitingRoom.css'
 import {useLocation, useNavigate} from "react-router-dom";
 import {bonanza_token, config} from "../Constants";
-import {fetchFromBackend, showToast} from "../utils"
-import {Deck} from "../types/BackendModels"
-import { ToastContext } from '../App';
 
 function WaitingRoom() {
     const renderTooltip = (props: any) => (
@@ -22,8 +19,6 @@ function WaitingRoom() {
         await navigator.clipboard.writeText(el.placeholder)
     }
 
-    const [deck, setDeck] = useState<Deck>();
-    const [deckLoaded, setDeckLoaded] = useState<boolean>(false);
     const [userNames, setUserNames] = useState<string[]>();
     const location = useLocation();
     //@ts-ignore
@@ -37,36 +32,16 @@ function WaitingRoom() {
     }
     const token = localStorage.getItem(bonanza_token)
     const navigate = useNavigate();
-    const toastContext = useContext(ToastContext);
+    const [ws, setWs] = useState<WebSocket>();
+    const [deck, setDeck] = useState();
 
     useEffect(() => {
-        const ws = new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`)
+        setWs(new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`))
+    }, [])
 
-        async function fetchDeck() {
-            let response;
-            const endpoint = `${config.DECK_ENDPOINT}/${deckID}`;
-            try {
-                response = await fetchFromBackend(endpoint, {
-                    method: "GET", mode: "cors", headers: {
-                        "Authorization": `Bearer ${token}`,
-                    }
-                })
-            } catch (e) {
-                showToast("There was an error connecting to the room", toastContext);
-                navigate("/create-or-join");
-                return;
-            }
-            const data = await response.json();
-            setDeck(data);
-            setDeckLoaded(true);
-        }
-
-        fetchDeck();
-
-        ws.onclose = () => {
-            alert("Connection dropped. You may have tried to join a room that does not exist");
-            navigate("/create-or-join")
-        }
+    useEffect(() => {
+        // don't want this to run before ws has actually updated
+        if (ws === undefined) {return;}
 
         function handleMessage(dataFromBackend: string) {
             const json = JSON.parse(dataFromBackend);
@@ -81,11 +56,24 @@ function WaitingRoom() {
                     }
                     setUserNames(userNamesArr);
                     break;
+                case "questions":
+                    setDeck(json.deck);
+                    break;
             }
+        }
+        ws.onclose = () => {
+            alert("Connection dropped. You may have tried to join a room that does not exist");
+            navigate("/create-or-join")
         }
 
         ws.onmessage = (e: MessageEvent) => {handleMessage(e.data);}
-    }, [])
+    }, [ws])
+
+    useEffect(() => {
+        if (deck === undefined) {return;}
+        //@ts-ignore
+        navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
+    }, [deck])
 
     return (
         <div className="WaitingRoom"> 
@@ -116,14 +104,16 @@ function WaitingRoom() {
                 </Form>
             </Col>
             <Button
-                disabled={!deckLoaded}
                 variant="outline-dark"
                 className="mt-5 border-2 col-8"
                 size="lg"
                 style={startButtonStyle}
                 onClick={() => {
-                    //@ts-ignore
-                    navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
+                    if (ws === undefined) {return;}
+                    const toSend = JSON.stringify(
+                        {action: "LOAD", deckId: deckID}
+                    )
+                    ws.send(toSend);
                 }}>
                 <b>Start Game</b>
             </Button>
