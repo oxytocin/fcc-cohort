@@ -16,8 +16,7 @@ function WaitingRoom() {
 
     async function copyId(e: React.MouseEvent) {
         e.preventDefault();
-        // I know I shouldn't do "any" but I don't know what else to do
-        const el: any = document.getElementById("inlineFormInput");
+        const el = document.getElementById("inlineFormInput") as HTMLInputElement;
         await navigator.clipboard.writeText(el.placeholder)
     }
 
