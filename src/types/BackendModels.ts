@@ -15,7 +15,7 @@ export interface FlashCard {
     DeletedAt?: string;
     Question: string;
     DeckId: number;
-    Answers?: Array<Answer>
+    Answers: Array<Answer>
 }
 
 export interface Answer {

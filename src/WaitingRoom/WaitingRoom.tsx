@@ -75,8 +75,11 @@ function WaitingRoom() {
 
     useEffect(() => {
         if (deck === undefined) {return;}
-        //@ts-ignore
-        navigate("/in-game", {state: {timeLimit: document.getElementById("inlineFormInput2").value, deck: deck}})
+        const timeInput = document.getElementById("inlineFormInput2") as HTMLInputElement;
+        const timeLimit = parseInt(timeInput.value) * 1000;
+        navigate("/in-game", {state: {
+            timeLimit: timeLimit, flashCards: deck
+        }})
     }, [deck])
 
     return (
