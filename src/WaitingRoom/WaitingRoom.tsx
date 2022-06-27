@@ -22,15 +22,17 @@ function WaitingRoom() {
     }
 
     const toastContext = useContext(ToastContext);
-
+    const [timeLimit, setTimeLimit] = useState<number>();
     const [userNames, setUserNames] = useState<string[]>();
-    const location = useLocation();
-    //@ts-ignore
-    const deckID = location.state.deckID;
-    //@ts-ignore
-    const roomID = location.state.roomID;  // state passed in from setChoice
-    //@ts-ignore
-    const isAdmin = location.state.isAdmin;
+    interface LocationStateInterface {
+        roomID: string,
+        isAdmin: boolean,
+        deckID: string
+    }
+    const locationState = useLocation().state as LocationStateInterface;
+    const deckID = locationState.deckID;
+    const roomID = locationState.roomID;
+    const isAdmin = locationState.isAdmin;
     const startButtonStyle = {
         display: isAdmin ? "inline-block" : "none",
     }
@@ -75,8 +77,6 @@ function WaitingRoom() {
 
     useEffect(() => {
         if (deck === undefined) {return;}
-        const timeInput = document.getElementById("inlineFormInput2") as HTMLInputElement;
-        const timeLimit = parseInt(timeInput.value) * 1000;
         navigate("/in-game", {state: {
             timeLimit: timeLimit, flashCards: deck
         }})
@@ -117,6 +117,12 @@ function WaitingRoom() {
                 style={startButtonStyle}
                 onClick={() => {
                     if (ws === undefined) {return;}
+                    const timeInput = document.getElementById("inlineFormInput2") as HTMLInputElement;
+                    if (Number.isNaN(parseInt(timeInput.value))) {
+                        showToast("Time per question must be a number.", toastContext);
+                        return;
+                    }
+                    setTimeLimit(parseInt(timeInput.value) * 1000);
                     const toSend = JSON.stringify(
                         {action: "LOAD", deckId: deckID}
                     )
