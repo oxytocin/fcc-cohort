@@ -20,25 +20,40 @@ export const ToastContext = React.createContext({
     setToastShow: (value: boolean) => {}
 });
 
+let ws: WebSocket | undefined;
+export const GameContext = React.createContext({
+    ws: ws,
+    setWs: (ws: WebSocket) => {},
+    finalScores: [{username: "", score: NaN}],
+    setFinalScores: (score: any) => {},
+    totalQuestions: NaN,
+    setTotalQuestions: (totalQuestions: number) => {}
+});
+
 function App() {
     document.title = "Flashcard Bonanza";
     const [toastText, setToastText] = React.useState<string>("");
     const [toastShow, setToastShow] = React.useState<boolean>(false);
+    const [ws, setWs] = React.useState<WebSocket | undefined>();
+    const [finalScores, setFinalScores] = React.useState([]);
+    const [totalQuestions, setTotalQuestions] = React.useState(NaN);
     return (
         <div data-cy="app" className="App">
             <HeaderNav/>
             <ToastContext.Provider value={{toastText: toastText, toastShow: toastShow, setToastText: setToastText, setToastShow: setToastShow}}>
-                <Routes>
-                    <Route path="/" element={<Login/>}/>
-                    <Route path="/oauth-redirect" element={<OauthRedirect/>}/>
-                    <Route path="/create-or-join" element={<PrivateRoute><CreateOrJoin/></PrivateRoute>}/>
-                    <Route path="/set-choice" element={<PrivateRoute><SetChoice/></PrivateRoute>}/>
-                    <Route path="/in-game" element={<PrivateRoute><InGame/></PrivateRoute>}/>
-                    <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
-                    <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
-                    <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
-                </Routes>
-                <ToastAlert/>
+                <GameContext.Provider value={{ws: ws, setWs: setWs, finalScores: finalScores, setFinalScores: setFinalScores, totalQuestions: totalQuestions, setTotalQuestions: setTotalQuestions}}>
+                    <Routes>
+                        <Route path="/" element={<Login/>}/>
+                        <Route path="/oauth-redirect" element={<OauthRedirect/>}/>
+                        <Route path="/create-or-join" element={<PrivateRoute><CreateOrJoin/></PrivateRoute>}/>
+                        <Route path="/set-choice" element={<PrivateRoute><SetChoice/></PrivateRoute>}/>
+                        <Route path="/in-game" element={<PrivateRoute><InGame/></PrivateRoute>}/>
+                        <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
+                        <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
+                        <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
+                    </Routes>
+                    <ToastAlert/>
+                </GameContext.Provider>
             </ToastContext.Provider>
         </div>
     );

@@ -1,9 +1,11 @@
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useState, useRef, useContext} from 'react';
 import {ProgressBar, Container, Card, Row, Col, Spinner, Stack, ToggleButton} from 'react-bootstrap';
 import Countdown from 'react-countdown';
 import {displayCorrect, unmarkCorrect, checkAns}from './in-game-funcs';
 import {useLocation} from "react-router-dom";
 import {FlashCard} from "../types/BackendModels";
+import {useNavigate} from "react-router-dom";
+import {GameContext} from "../App";
 
 const alphabet = ["A","B","C","D","E","F"];
 const ansHeader = document.getElementsByClassName("Answer-card-header");
@@ -25,8 +27,24 @@ function InGame() {
     checkedRef.current = checkedState;
     const correctAns = flashCards[card].Answers.map(item => item.isCorrect); // user answers are checked against this
     const bufferTime = userTime + 5000; // default buffer time between questions
+    const navigate = useNavigate();
+    const gameContext = useContext(GameContext);
 
-    //// https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
+    useEffect(() => {
+        //@ts-ignore
+        gameContext.ws.onmessage = (e: MessageEvent) => {
+            const json = JSON.parse(e.data);
+            let finalScores: Array<any> = gameContext.finalScores;
+            finalScores.push({
+                username: json.username,
+                score: json.score,
+            });
+            gameContext.setFinalScores(finalScores);
+            navigate("/summary");
+        }
+    }, [])
+
+    // https://www.freecodecamp.org/news/how-to-work-with-multiple-checkboxes-in-react/
     const handleOnChange = (position: number) => {
         const updatedCheckedState = checkedState.map((item, index) =>
               index === position ? !item : item
@@ -78,12 +96,12 @@ function InGame() {
 
     const buffer = ({seconds, completed }: {seconds:number, completed:boolean}) => {
         if (completed) {
-
-                // at this point, we have run out of cards and the session is over
-                // SEND THIS TO THE BACKEND: {finalScore: userScore,
-                //                            numQuestions: flashCards.length}
-                // SEND USER TO SUMMARY PAGE
-
+            // at this point, we have run out of cards and the session is over
+            const toSend = JSON.stringify({
+                action: "SUBMIT", message: userScore.toString()
+            });
+            //@ts-ignore
+            gameContext.ws.send(toSend);  // triggers onmessage, sends user to summary
             return <span><Spinner animation="border" variant="light" className="mx-2"/></span>;
         } else {
                 // if the card count has reached the deck length display a loading spinner, else display "Next Question"
