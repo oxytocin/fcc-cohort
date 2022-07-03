@@ -22,6 +22,32 @@ export const copyDeck = (old: Deck): Deck => {
     };
 };
 
+export const copyFlashcard = (old: FlashCard | null): FlashCard => {
+    if (old === null || old === undefined) {
+        return {
+            ID: 0,
+            Answers: undefined,
+            CreatedAt: "",
+            DeckId: 0,
+            DeletedAt: undefined,
+            Question: "",
+            UpdatedAt: ""
+        };
+    }
+    const newCard: FlashCard = {
+        ID: old.ID,
+        DeckId: old.DeckId,
+        Question: old.Question,
+        CreatedAt: old.CreatedAt,
+        DeletedAt: old.DeletedAt,
+        UpdatedAt: old.UpdatedAt,
+        Answers: copyAnswers(old.Answers),
+    }
+
+    return newCard;
+}
+
+
 export const copyFlashcards = (old: Array<FlashCard> | null): Array<FlashCard> | null => {
     if (old == null) {
         return null;
