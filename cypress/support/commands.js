@@ -1,7 +1,8 @@
 import { config, bonanza_token } from "../../src/Constants"
+import deckData from './../fixtures/deckData.json'
 
 Cypress.Commands.add('loginByGoogleApi', () => {
-  cy.session('oauth', ()=> {
+  //cy.session('oauth', ()=> {
     cy.log('Logging in to Google')
     cy.request({
       method: 'POST',
@@ -14,7 +15,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       },
     }).then(({ body }) => {
       const { access_token, id_token } = body
-      console.log(body.access_token)
+      //console.log(body.access_token)
       cy.request({
         method: 'GET',
         url: 'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -27,42 +28,44 @@ Cypress.Commands.add('loginByGoogleApi', () => {
         const code = urlParams.get("code");
         const backUrl = config.OAUTH_BACKEND_REDIRECT_URL;
 
-        async function fetchToken() {
-        let response;
+        cy.request({
+          method: 'POST',
+          url: backUrl,
+          mode: 'cors',
+          body: code
+        }).then(({ body }) => {
+          //console.log(body.token)
+          localStorage.setItem(bonanza_token, body.token);
+        })
 
-        try { 
-            response = await fetch(backUrl, {
-            method: "POST",
-            mode: "cors",
-            body: code
-          })
-        } catch (e) {
-          console.error("Failed to fetch last token");
-          return;
-        }
-        const data = await response.json();
-        localStorage.setItem(bonanza_token, data.token);
-      }
-      fetchToken();
-        // default Oauth process located below, modified last Request above to match out app
-        // cy.log(body)
-        // const userItem = {
-        //   token: id_token,
-        //   user: {
-        //     googleId: body.sub,
-        //     email: body.email,
-        //     givenName: body.given_name,
-        //     familyName: body.family_name,
-        //     imageUrl: body.picture,
-        //   },
-        // }
-        //
-        //   // JSON.stringify(userItem) <-- original setItem here
-        // window.localStorage.setItem('bonanza-token', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6ZmFsc2UsImV4cCI6MTY1NTc0MzEwMiwiZmlyc3ROYW1lIjoiSm9obiIsImlkIjoyLCJsYXN0TmFtZSI6IkRvZSIsInVzZXJuYW1lIjoiZmxhc2hjYXJkLmJvbmFuemEudGVzdEBnbWFpbC5jb20ifQ.zDhlZw1HS06IQhxrxWeGkQN7RatCKu5JX5xccRtmEGk")
         cy.visit('/create-or-join')
       })
     })
-  })
+ // })
 })
+
+function waitingRoomSetup() {
+  cy.log('Setting up in-game data')
+  // intercept fetchUserDecks, stub
+  cy.intercept('api/deck/owner', {body: deckData}).as('deckStub')
+  cy.visit('/set-choice')
+  // Select the first deck 'Start Game' button
+  cy.contains('Start Game').click({force: true})
+  // NEED TO SETUP WEBSOCKET MOCKS FROM HERE ON.....  
+}
+
+Cypress.Commands.add('waitingRoomSetup', ()=> {
+  waitingRoomSetup()
+})
+
+// Cypress.Commands.add('ingameSetup', ()=> {
+//   cy.log('Setting up in-game data')
+//   // intercept fetchUserDecks, stub
+//   cy.intercept('api/deck/owner', {body: deckData}).as('deckStub')
+//   cy.visit('/set-choice')
+//   // Select the first deck 'Start Game' button
+//   cy.contains('Start Game').click({force: true})
+
+// })
 
   

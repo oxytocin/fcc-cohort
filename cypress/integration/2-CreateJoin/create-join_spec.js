@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
 import jwtDecode from "jwt-decode"
-import {bonanza_token} from "../../../src/Constants"
+import {bonanza_token, config} from "../../../src/Constants"
 
 describe('Cannot access if not signed in', ()=> {
     it.skip('Throws 404 if not signed in', ()=> {
@@ -40,11 +40,30 @@ describe('Create or Join room', ()=> {
         cy.location('pathname').should('contain', '/set-choice')
     });
 
-    it('Display and verify Join room button', ()=> {
+    it('Join Room fails with invalid Room ID', ()=> {
         cy.get('input').invoke('attr', 'placeholder').should('contain', 'Room ID')
         cy.get('input').type('123456789')
 
-        cy.get('[data-cy="join-btn"]').click() // need to intercept here?
-        cy.location('pathname').should('contain', '/waiting-room') //
+        cy.get('[data-cy="join-btn"]').click()
+        cy.location('pathname').should('contain', '/create-or-join')
     })
+
+    // cypress is limited to one user instance at a time. Unable to replicate this functionality
+    // it.skip('Join Room with valid Room ID directs to Waiting Room', ()=> {
+    //     cy.get('input').invoke('attr', 'placeholder').should('contain', 'Room ID')
+    //     cy.intercept({
+    //         method: 'POST',
+    //         url: config.BACKEND_HOST_LOCATION+'/login/2'}, (res) => {
+    //             let user2 = res.body.token
+    //             cy.request({
+    //                 method: 'POST',
+    //                 url: config.BACKEND_HOST_LOCATION+'/api/room/create',
+    //             })
+    //         })
+
+    //     cy.get('input').type('123456789')
+
+    //     cy.get('[data-cy="join-btn"]').click() // need to intercept here?
+    //     cy.location('pathname').should('contain', '/create-or-join') //
+    // })
 });

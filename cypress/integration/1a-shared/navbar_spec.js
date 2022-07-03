@@ -12,14 +12,14 @@ describe('Navbar not displayed if user is not logged in', ()=> {
 describe('Navbar is visible after login', ()=> {
 
     beforeEach(() => {
-        cy.loginByGoogleApi()
+        cy.loginByGoogleApi({log: false})
         cy.visit('/create-or-join')
     });
 
     it('Displays app name as a link to homepage', ()=> {
         cy.get('[data-cy="nav-home"]')
         .should('have.text', 'Flashcard Bonanza')
-        .and('have.attr', 'href').and('eq', '#home')
+        .and('have.attr', 'href').and('eq', '/')
 
         cy.get('[data-cy="nav-home"]').click()
         cy.location('pathname').should('contain', '/create-or-join')
@@ -70,10 +70,14 @@ describe('Navbar is visible after login', ()=> {
         })
 
         it('Dropdown displays "Log Out" option that works', ()=> {
-            cy.get('[data-cy="nav-logout"]')
+            cy.get('[data-cy="nav-dropdown"]')
+            .find('a')
+            .click()
+            
+            cy.get('[data-cy="dropdown-logout"]')
             .should('have.text', 'Log Out')
 
-            cy.get('[data-cy="nav-logout"]')
+            cy.get('[data-cy="dropdown-logout"]')
             .click({force: true})
 
             cy.location('pathname').should('eq', '/')          
