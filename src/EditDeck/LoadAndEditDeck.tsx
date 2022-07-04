@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
-import {copyDeck, copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
+import {Answer, copyDeck, copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
 import {DeckList} from "./DeckList";
@@ -18,30 +18,26 @@ let nullDeck: Deck = {
     UpdatedAt: "",
 };
 
-//
-// const getDeckOrDefault = (decks: Map<number, Deck> | null, currentDeckId: string | null): Deck => {
-//     let id = 0;
-//
-//     if (currentDeckId) {
-//         id = Number(currentDeckId);
-//         if (decks && !isNaN(id) && decks.has(id)) {
-//             // @ts-ignore
-//             return decks.get(id);
-//         }
-//     }
-//
-//     return nullDeck;
-// }
+function getIdOrZero(id: string | null): number {
+    if (id) {
+        const temp = parseInt(id, 10);
+        if (!isNaN(temp)) {
+            return temp;
+        }
+    }
 
+    return 0;
+}
 
 export const LoadAndEditDeck: React.FC = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     const [decks, setDecks] = useState<Map<number, Deck>>(new Map())
     const [deckKeys, setDeckKeys] = useState<Array<number>>([]);
-    const [selectedDeckId, setSelectedDeckId] = useState(0);
-
-    const deckId = searchParams.get("id")
-    // const [selectedDeck, setSelectedDeck] = useState(nullDeck);
+    const setSelectedDeckId = (id: number) => {
+        setSearchParams({id: id.toString()})
+        return searchParams.get("id");
+    };
+    const selectedDeckId = getIdOrZero(searchParams.get("id"));
 
     const selectedDeck = useMemo(() => {
         return decks.get(selectedDeckId)
@@ -81,7 +77,6 @@ export const LoadAndEditDeck: React.FC = () => {
                 setDeckKeys(keys);
                 setDecks(mappedData)
 
-                // setSelectedDeck(getDeckOrDefault(mappedData, searchParams.get("id")))
             }
         ).catch(err => {
                 console.error("error is: ", err);
@@ -116,7 +111,6 @@ export const LoadAndEditDeck: React.FC = () => {
         setDecks(new Map(decks));
     }
 
-    // const selectedDeckOutput = selectedDeck ? <>{deckOutput(selectedDeck)}</> : <>Please select Deck</>;
     return (
         <Container fluid>
             <Row>
@@ -129,14 +123,6 @@ export const LoadAndEditDeck: React.FC = () => {
                     <Container>
                         {selectedDeck && <DeckEdit deck={copyDeck(selectedDeck)} updateDeck={updateDeck}/>}
                     </Container>
-                    {/*<div>{selectedDeck && selectedDeck.Description}</div>*/}
-
-                    {/*<SelectedDeck*/}
-                    {/*    selectedDeck={copyDeck(selectedDeck)}*/}
-                    {/*    refresh={getDecks}*/}
-                    {/*    allDecks={decks}*/}
-                    {/*    setDecks={setDecks}*/}
-                    {/*/>*/}
                 </Col>
 
             </Row>
@@ -153,9 +139,9 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
     const [currentDeck, setCurrentDeck] = useState(deck);
     const [updated, setUpdated] = useState(false);
     const description = currentDeck.Description;
-    const updateDeckAndStatus = (deck: Deck) => {
-        setCurrentDeck(deck);
-        setUpdated(true);
+    const updateStatefulDeckAndUpdateStatus = (deckFunc: Function) => {
+        setCurrentDeck(deckFunc(currentDeck, setUpdated));
+        // setUpdated(true);
     }
     useEffect(() => {
         setCurrentDeck(deck);
@@ -181,8 +167,12 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     <input type="text"
                            value={description}
                            onChange={(event) => {
-                               const newDeck = {...currentDeck, Description: event.target.value}
-                               updateDeckAndStatus(newDeck);
+                               // const newDeck = {...currentDeck, Description: event.target.value}
+                               updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                                   setUpdated(true);
+                                   const newDeck = {...oldDeck, Description: event.target.value}
+                                   return newDeck;
+                               })
                            }}
                     />
                 </Col>
@@ -196,6 +186,10 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].ID === id) {
                                 cards[i] = newCard;
+                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                                    setUpdated(true);
+                                    return {...oldDeck};
+                                });
                                 setUpdated(true);
                             }
                         }
@@ -216,24 +210,83 @@ interface FlashCardEditInterface {
 }
 
 const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc}) => {
-    const [currentCard, setCurrentCard] = useState(flashcard);
-    const [updated, setUpdated] = useState(false);
-    const question = currentCard.Question;
-    useEffect(() => {
-        setCurrentCard(flashcard);
-    }, [flashcard])
+    const question = flashcard.Question;
 
     return (
-        <Row className="text-start" key={flashcard.ID}>
-            <Col sm={2} className="text-start">
-                <span>Flashcard ID: {flashcard.ID}</span>
-            </Col>
-            <Col sm={10}>
-                Question: <input type="text" value={question} onChange={event => {
-                const qUpdate = event.target.value;
-                setCurrentCard({...currentCard, Question: qUpdate});
-            }}/>
-            </Col>
-        </Row>
+        <>
+            <Row className="text-start mb-3" key={flashcard.ID}>
+                <Col sm={2} className="text-start">
+                    <span>Flashcard ID: {flashcard.ID}</span>
+                </Col>
+                <Col sm={10}>
+                    Question: <input type="text" value={question} onChange={
+                    event => {
+                        const qUpdate = event.target.value;
+                        const newCard = {...flashcard, Question: qUpdate}
+                        updateDeckFunc(newCard);
+
+                    }
+                }/>
+                </Col>
+            </Row>
+            {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
+                const id = answer.ID;
+                const answerName = answer.name;
+                const updateAnswerFunc = (newAnswer: Answer) => {
+                    for (let i = 0; i < allAnswers.length; i++) {
+                        if (allAnswers[i].ID === id) {
+                            allAnswers[i] = newAnswer;
+                            const newCard = {...flashcard};
+                            updateDeckFunc(newCard);
+
+                        }
+                    }
+                }
+
+
+                return (
+                    <>
+                        <Row className="mb-3">
+                            <Col sm={2} className="text-start">
+                                Answer ID: {id}
+                            </Col>
+                            <Col sm={10} className="text-start">
+                                Answer:
+                                <input type="text" value={answerName} onChange={
+                                    event => {
+                                        const nameUpdate = event.target.value;
+                                        const newAnswer = {...answer, name: nameUpdate};
+                                        updateAnswerFunc(newAnswer);
+
+                                    }
+                                }/>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Col sm={10} className="text-start">
+                                <textarea value={answer.value}  style={{width:"100%"}} onChange={(event)=>{
+                                    const newText = event.target.value;
+                                    const newAnswer = {...answer, value:newText};
+                                    updateAnswerFunc(newAnswer);
+                                }}/>
+                            </Col>
+                            <Col sm={2} className="text-start">
+                                {answer.isCorrect === true
+                                    ? <input type="checkbox" checked onChange={() => {
+                                        const newAnswer = {...answer, isCorrect: false};
+                                        updateAnswerFunc(newAnswer)
+                                    }}/>
+                                    : <input type="checkbox" onChange={() => {
+                                        const newAnswer = {...answer, isCorrect: true};
+                                        updateAnswerFunc(newAnswer)
+                                    }}/>
+                                }
+
+                            </Col>
+                        </Row>
+                    </>
+                )
+            })}
+        </>
     )
 }

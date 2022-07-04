@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {Deck, FlashCard} from "../types/BackendModels";
 import {Button, Col, Form, FormControl, Row} from "react-bootstrap";
-import {IdHeader} from "./formElements/IdHeader";
-import {FormDescription} from "./formElements/FormDescription";
-import {FlashcardAccordion} from "./formElements/FlashcardAccordion";
+// import {IdHeader} from "./formElements/IdHeader";
+// import {FormDescription} from "./formElements/FormDescription";
+// import {FlashcardAccordion} from "./formElements/FlashcardAccordion";
 
 interface SelectedDeckInterface {
     selectedDeck: Deck,
@@ -43,9 +43,6 @@ event: MouseEvent<HTMLButtonElement>
     return (
         <>
             <Form>
-                <IdHeader id={selectedDeck.ID} ownerId={ownerId}/>
-                <FormDescription description={description} setDescription={setDescription}/>
-                <FlashcardAccordion flashCards={flashcards}/>
                 <Button
                     variant="primary"
                     type="submit"
