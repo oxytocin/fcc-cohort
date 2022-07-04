@@ -6,7 +6,16 @@
   align-items: center;
   height: 100vh;
   flex-direction: column;
-  margin-top: -85px;
+  margin-top: -80px;
+}
+
+@media (max-height: 630px) {
+    .App {
+      height: auto;
+    }
+    body {
+        padding-top: 170px;
+    }
 }
 
 .Login-header {
