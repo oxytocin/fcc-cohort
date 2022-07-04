@@ -1,9 +1,10 @@
-.WaitingRoom {
+.SetChoice {
     text-align: center;
     font-family: Arial;
     display: flex;
     justify-content: top;
     align-items: center;
+    height: 100vh;
     flex-direction: column;
-    margin-top: 100px;
+    margin-top: 50px;
 }

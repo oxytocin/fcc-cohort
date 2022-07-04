@@ -4,6 +4,7 @@ import {Container, Row} from "react-bootstrap";
 import {config, bonanza_token} from "../Constants";
 import {fetchFromBackend, showToast} from "../utils";
 import { ToastContext } from '../App';
+import "./SetChoice.css";
 
 interface Choice {
     title: string;
@@ -60,15 +61,17 @@ export const SetChoice: React.FC = () => {
     };
 
     return (
-        <div className={"container mt-5"}>
-            <Container>
-                <Row data-cy="all-decks">
-                    {choices.map(value => (
-                        <ChoiceBox title={value.title} content={value.content} key={value.id} deckID={value.id}
-                                   del={() => deleteById(value.id)}/>
-                    ))}
-                </Row>
-            </Container>
+        <div className="SetChoice">
+            <div className={"container mt-5"}>
+                <Container>
+                    <Row data-cy="all-decks">
+                        {choices.map(value => (
+                            <ChoiceBox title={value.title} content={value.content} key={value.id} deckID={value.id}
+                                    del={() => deleteById(value.id)}/>
+                        ))}
+                    </Row>
+                </Container>
+            </div>
         </div>
     );
 };

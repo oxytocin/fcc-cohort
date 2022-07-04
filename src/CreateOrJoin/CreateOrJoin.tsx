@@ -2,6 +2,7 @@ import {Button, InputGroup, FormControl, Row, Col} from 'react-bootstrap';
 import jwtDecode from "jwt-decode";
 import {bonanza_token, config} from "../Constants";
 import {useNavigate} from 'react-router-dom'
+import "./CreateOrJoin.css"
 
 function CreateOrJoin() {
     let token = localStorage.getItem(bonanza_token) ?? ""
@@ -15,7 +16,7 @@ function CreateOrJoin() {
     }
 
     return (
-        <>
+        <div className="CreateOrJoin">
             <header data-cy="header" className="CreateOrJoinHeader fw-bold">Flashcard Bonanza</header>
             <h3 data-cy="greeting" className="mb-4 fst-italic fw-light">Welcome, {user}! What would you like to do?</h3>
             <Row>
@@ -29,7 +30,7 @@ function CreateOrJoin() {
                     </InputGroup>
                 </Col>
             </Row>
-        </>
+        </div>
     );
 }
 

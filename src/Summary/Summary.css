@@ -1,9 +1,8 @@
-.WaitingRoom {
-    text-align: center;
+.Summary {
     font-family: Arial;
     display: flex;
     justify-content: top;
     align-items: center;
     flex-direction: column;
-    margin-top: 100px;
+    margin-top: 150px;
 }

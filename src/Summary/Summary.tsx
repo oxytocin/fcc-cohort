@@ -2,6 +2,7 @@ import {Fragment, useContext} from 'react';
 import {Container, Table, Button} from 'react-bootstrap';
 import {useNavigate} from 'react-router-dom'
 import {GameContext} from "../App";
+import "./Summary.css";
 
 function ScoreSummary() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function ScoreSummary() {
   const totalQuestions = gameContext.totalQuestions;
 
   return(
-    <Container fluid className="bg-dark p-3 border border-2 rounded">
+    <Container fluid className="bg-dark p-3 border border-2 rounded Summary">
 
       <h1 data-cy="summary" className="text-white mb-3">Score Summary</h1>
       <Table data-cy="table" size="sm" striped hover responsive="sm" className="table table-secondary w-75 mx-auto">

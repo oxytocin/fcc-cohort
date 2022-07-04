@@ -6,6 +6,7 @@ import {useLocation} from "react-router-dom";
 import {FlashCard} from "../types/BackendModels";
 import {useNavigate} from "react-router-dom";
 import {GameContext} from "../App";
+import "./InGame.css";
 
 const alphabet = ["A","B","C","D","E","F"];
 const ansHeader = document.getElementsByClassName("Answer-card-header");
@@ -114,7 +115,7 @@ function InGame() {
     };
 
     return (
-    <div className="pt-5">
+    <div className="InGame pt-5">
         <Container fluid="md">
             <Row className="mt-md-5 pt-5" > {/* Progress and Timer */}
                 <Col md={4}>

@@ -114,7 +114,7 @@ function WaitingRoom() {
             </Col>
             <Button
                 variant="outline-dark"
-                className="mt-5 border-2 col-8"
+                className="mt-2 mb-4 border-2 col-2"
                 size="lg"
                 style={startButtonStyle}
                 onClick={() => {
@@ -132,9 +132,9 @@ function WaitingRoom() {
                 }}>
                 <b>Start Game</b>
             </Button>
-            <div className="usersJoinedDiv">
-                <h3 className="waitingRoomText mt-4">Users Joined</h3>
-                <p className="waitingRoomText">{userNames}</p>
+            <div className="p-1 bg-dark text-light">
+                <h3 className="mt-4">Users Joined</h3>
+                <p>{userNames}</p>
             </div>
         </div>
     )
