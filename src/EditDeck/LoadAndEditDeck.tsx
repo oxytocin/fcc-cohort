@@ -3,6 +3,8 @@ import {bonanza_token, config} from "../Constants";
 import {Answer, copyDeck, copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
+import {data} from "../In-Game/in-game-data";
+import {json} from "stream/consumers";
 
 type deckId = number;
 
@@ -25,7 +27,6 @@ export const LoadAndEditDeck: React.FC = () => {
         return searchParams.get("id");
     };
     const selectedDeckId = getIdOrZero(searchParams.get("id"));
-
     const selectedDeck = useMemo(() => {
         return decks.get(selectedDeckId)
     }, [selectedDeckId, decks])
@@ -42,6 +43,8 @@ export const LoadAndEditDeck: React.FC = () => {
             }
         ).then<Array<Deck>>(res => res.json()
         ).then((data?: Deck[]) => {
+                console.log("returned: ", JSON.stringify(data));
+                console.log("json is", data);
                 let keys: Array<number> = [];
                 let mappedData = new Map<deckId, Deck>();
                 if (data) {
@@ -71,6 +74,24 @@ export const LoadAndEditDeck: React.FC = () => {
             }
         );
     }
+    const saveAndGetDecks = (newDeck: Deck) => {
+        const url = `${config.BACKEND_HOST_LOCATION}/api/deck`;
+        const token = localStorage.getItem(bonanza_token);
+        // console.log("output:",JSON.stringify(newDeck));
+        fetch(url, {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    // 'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(newDeck)
+
+            }
+        ).then(data => console.log(data)
+        ).then(() => getDecks());
+    }
 
     useEffect(getDecks, [])
     const mappedDecks = deckKeys.map(value => {
@@ -79,7 +100,6 @@ export const LoadAndEditDeck: React.FC = () => {
                 return (
                     <Row key={value}>
                         <button onClick={() => {
-                            console.log("setting this value: ", value);
                             setSelectedDeckId(value);
                         }}>{currentDeck.Description}</button>
                     </Row>
@@ -92,10 +112,11 @@ export const LoadAndEditDeck: React.FC = () => {
     )
 
     const updateDeck = (newDeck: Deck) => {
-        // alert("NEED TO CALL API AND SAVE!!!!");
-        console.log("new Deck Description", newDeck.Description);
         decks.set(newDeck.ID, newDeck);
         setDecks(new Map(decks));
+        // We're going to update our local copy of the decks and then get the data again.
+        // This should allow our stuff to be more responsive.
+        saveAndGetDecks(newDeck);
     }
 
     return (
@@ -134,15 +155,12 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
         setUpdated(false);
     }, [deck]);
 
-    if (deck.FlashCards) {
-        console.log(deck.FlashCards[0]);
-    }
-    const addCardToDeck = () =>{
+    const addCardToDeck = () => {
         updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
             setUpdated(true);
             const oldCards = oldDeck.FlashCards ? oldDeck.FlashCards : [];
             oldDeck.FlashCards = [...oldCards, {
-                ID: oldCards.length * 30,
+                ID: oldCards.length * -1,
                 Answers: [],
                 CreatedAt: "",
                 DeckId: 0,
@@ -181,15 +199,14 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                 </Col>
                 <Col sm="2">
                     <Button className="mb-3"
-                    onClick={() => addCardToDeck()}
+                            onClick={() => addCardToDeck()}
                     >Add FlashCard</Button>
                     {updated ? commitButton : <Button variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
             </Row>
             {currentDeck.FlashCards?.map((card, idx, cards) => {
                     const id = card.ID;
-                    const keyId = card.ID === 0? "0-" + idx.toString() : card.ID
-                    console.log("keyId", keyId);
+                    const keyId = card.ID === 0 ? "0-" + idx.toString() : card.ID
                     const updateHigherFunc = (newCard: FlashCard) => {
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].ID === id) {
@@ -210,10 +227,38 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         })
                     }
 
+                    const addAnswer = (flashCardId: number) => {
+                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                            setUpdated(true);
+                            cards
+                                .filter(flashCard => flashCard.ID === id)
+                                .forEach(flashCard => {
+                                    const oldAnswers = flashCard.Answers;
+                                    const newAnswer = {
+                                        // @ts-ignore
+                                        ID: oldAnswers?.length * -1,
+                                        CreatedAt: "",
+                                        UpdatedAt: "",
+                                        DeletedAt: null,
+                                        name: "",
+                                        value: "",
+                                        isCorrect: false,
+                                        flashCardId: flashCardId
+                                    }
+                                    if (oldAnswers) {
+                                        flashCard.Answers = [...oldAnswers, newAnswer];
+                                    } else {
+                                        flashCard.Answers = [newAnswer];
+                                    }
+                                })
+                            return {...oldDeck};
+                        })
+                    }
+
                     return (
                         <div style={{border: "1px solid", padding: "5px"}} key={keyId}>
                             <FlashCardEdit
-                                // key={keyId}
+                                addAnswer={addAnswer}
                                 deleteCard={deleteCard}
                                 flashcard={copyFlashcard(card)}
                                 updateDeckFunc={updateHigherFunc}/>
@@ -229,14 +274,15 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
 interface FlashCardEditInterface {
     flashcard: FlashCard
     deleteCard: Function
+    addAnswer: Function
     updateDeckFunc: Function
 }
 
-const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc, deleteCard}) => {
+const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc, addAnswer, deleteCard}) => {
     const question = flashcard.Question;
     return (
         <>
-            <Row className="text-start mb-3" key={flashcard.ID}>
+            <Row className="text-start mb-3">
                 <Col sm={2} className="text-start">
                     <span>Flashcard ID: {flashcard.ID}</span>
                 </Col>
@@ -251,10 +297,14 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                     <Button className="ms-2"
                             onClick={() => deleteCard()}
                     >Delete Card</Button>
+                    <Button className="ms-2"
+                            onClick={() => addAnswer()}
+                    >Add Answer</Button>
                 </Col>
             </Row>
             {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
                 const id = answer.ID;
+                const keyId = answer.ID === 0 ? "0-" + index.toString() : answer.ID
                 const answerName = answer.name;
                 const updateAnswerFunc = (newAnswer: Answer) => {
                     for (let i = 0; i < allAnswers.length; i++) {
@@ -267,7 +317,7 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                     }
                 }
                 return (
-                    <span key={id}>
+                    <span key={keyId}>
                         <hr/>
                         <Row className="mb-3">
                             <Col sm={2} className="text-start">
