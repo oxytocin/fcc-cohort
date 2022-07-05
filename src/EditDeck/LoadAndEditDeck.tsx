@@ -1,10 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
-import {Answer, copyDeck, copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {copyDeck, copyFlashcard, Deck} from "../types/BackendModels";
+import {Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
-import {data} from "../In-Game/in-game-data";
-import {json} from "stream/consumers";
+import {DeckEdit} from "./DeckEdit";
+
 
 type deckId = number;
 
@@ -75,14 +75,24 @@ export const LoadAndEditDeck: React.FC = () => {
         );
     }
     const saveAndGetDecks = (newDeck: Deck) => {
+        newDeck.FlashCards?.forEach(fc =>{
+            if (fc.ID < 0){
+                fc.ID = 0;
+            }
+            fc.Answers?.forEach(answer =>{
+                if (answer.ID < 0){
+                    answer.ID = 0;
+                }
+            });
+        });
+
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck`;
         const token = localStorage.getItem(bonanza_token);
-        // console.log("output:",JSON.stringify(newDeck));
+
         fetch(url, {
                 method: "PUT",
                 mode: "cors",
                 headers: {
-                    // 'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${token}`,
                 },
@@ -135,225 +145,5 @@ export const LoadAndEditDeck: React.FC = () => {
 
             </Row>
         </Container>
-    )
-}
-
-interface DeckEditInterface {
-    deck: Deck
-    updateDeck: Function
-}
-
-export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
-    const [currentDeck, setCurrentDeck] = useState(deck);
-    const [updated, setUpdated] = useState(false);
-    const description = currentDeck.Description;
-    const updateStatefulDeckAndUpdateStatus = (deckFunc: Function) => {
-        setCurrentDeck(deckFunc(currentDeck, setUpdated));
-    }
-    useEffect(() => {
-        setCurrentDeck(deck);
-        setUpdated(false);
-    }, [deck]);
-
-    const addCardToDeck = () => {
-        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-            setUpdated(true);
-            const oldCards = oldDeck.FlashCards ? oldDeck.FlashCards : [];
-            oldDeck.FlashCards = [...oldCards, {
-                ID: oldCards.length * -1,
-                Answers: [],
-                CreatedAt: "",
-                DeckId: oldDeck.ID,
-                DeletedAt: undefined,
-                Question: "",
-                UpdatedAt: ""
-            }]
-            const newDeck = {...oldDeck}
-            return newDeck;
-        })
-    }
-    const commitButton = (
-        <Button variant={"danger"} onClick={event => {
-            updateDeck(currentDeck);
-            setUpdated(false);
-        }}>
-            Commit Changes
-        </Button>)
-    return (
-        <>
-            <Row className="mb-5 text-start">
-                <Col sm="2"> Deck ID: {currentDeck.ID} </Col>
-                <Col sm="8">
-                    Description:
-                    <input type="text"
-                           className="w-100"
-                           value={description}
-                           onChange={(event) => {
-                               updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                                   setUpdated(true);
-                                   const newDeck = {...oldDeck, Description: event.target.value}
-                                   return newDeck;
-                               })
-                           }}
-                    />
-                </Col>
-                <Col sm="2">
-                    <Button className="mb-3"
-                            onClick={() => addCardToDeck()}
-                    >Add FlashCard</Button>
-                    {updated ? commitButton : <Button variant="success" disabled>No Changes to Commit</Button>}
-                </Col>
-            </Row>
-            {currentDeck.FlashCards?.map((card, idx, cards) => {
-                    const id = card.ID;
-                    const keyId = card.ID === 0 ? "0-" + idx.toString() : card.ID
-                    const updateHigherFunc = (newCard: FlashCard) => {
-                        for (let i = 0; i < cards.length; i++) {
-                            if (cards[i].ID === id) {
-                                cards[i] = newCard;
-                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                                    setUpdated(true);
-                                    return {...oldDeck};
-                                });
-                            }
-                        }
-                    };
-                    const deleteCard = () => {
-
-                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                            setUpdated(true);
-                            oldDeck.FlashCards = cards.filter(value => value.ID !== id);
-                            return {...oldDeck};
-                        })
-                    }
-
-                    const addAnswer = (flashCardId: number) => {
-                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                            setUpdated(true);
-                            cards
-                                .filter(flashCard => flashCard.ID === id)
-                                .forEach(flashCard => {
-                                    const oldAnswers = flashCard.Answers ? flashCard.Answers : [];
-                                    const newAnswer = {
-                                        ID: 0,
-                                        DeletedAt: null,
-                                        name: "",
-                                        value: "",
-                                        isCorrect: false,
-                                        flashCardId: flashCardId
-                                    }
-                                    flashCard.Answers = [...oldAnswers, newAnswer];
-
-                                })
-                            return {...oldDeck};
-                        })
-                    }
-
-                    return (
-                        <div style={{border: "1px solid", padding: "5px"}} key={keyId}>
-                            <FlashCardEdit
-                                addAnswer={addAnswer}
-                                deleteCard={deleteCard}
-                                flashcard={copyFlashcard(card)}
-                                updateDeckFunc={updateHigherFunc}/>
-                        </div>
-                    )
-                }
-            )}
-
-        </>
-    );
-}
-
-interface FlashCardEditInterface {
-    flashcard: FlashCard
-    deleteCard: Function
-    addAnswer: Function
-    updateDeckFunc: Function
-}
-
-const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc, addAnswer, deleteCard}) => {
-    const question = flashcard.Question;
-    return (
-        <>
-            <Row className="text-start mb-3">
-                <Col sm={2} className="text-start">
-                    <span>Flashcard ID: {flashcard.ID}</span>
-                </Col>
-                <Col sm={10}>
-                    Question: <input type="text" value={question} onChange={
-                    event => {
-                        const qUpdate = event.target.value;
-                        const newCard = {...flashcard, Question: qUpdate}
-                        updateDeckFunc(newCard);
-                    }
-                }/>
-                    <Button className="ms-2"
-                            onClick={() => deleteCard()}
-                    >Delete Card</Button>
-                    <Button className="ms-2"
-                            onClick={() => addAnswer()}
-                    >Add Answer</Button>
-                </Col>
-            </Row>
-            {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
-                const id = answer.ID;
-                const keyId = answer.ID === 0 ? "0-" + index.toString() : answer.ID
-                const answerName = answer.name;
-                const updateAnswerFunc = (newAnswer: Answer) => {
-                    for (let i = 0; i < allAnswers.length; i++) {
-                        if (allAnswers[i].ID === id) {
-                            allAnswers[i] = newAnswer;
-                            const newCard = {...flashcard};
-                            updateDeckFunc(newCard);
-
-                        }
-                    }
-                }
-                return (
-                    <span key={keyId}>
-                        <hr/>
-                        <Row className="mb-3">
-                            <Col sm={2} className="text-start">
-                                Answer ID: {id}
-                            </Col>
-                            <Col sm={10} className="text-start">
-                                Answer:
-                                <input type="text" value={answerName} onChange={
-                                    event => {
-                                        const nameUpdate = event.target.value;
-                                        const newAnswer = {...answer, name: nameUpdate};
-                                        updateAnswerFunc(newAnswer);
-
-                                    }
-                                }/>
-                            </Col>
-                        </Row>
-                        <Row className="mb-3">
-                            <Col sm={10} className="text-start">
-                                <textarea value={answer.value} style={{width: "100%"}} onChange={(event) => {
-                                    const newText = event.target.value;
-                                    const newAnswer = {...answer, value: newText};
-                                    updateAnswerFunc(newAnswer);
-                                }}/>
-                            </Col>
-                            <Col sm={2} className="text-start">
-                                {answer.isCorrect === true
-                                    ? <input type="checkbox" checked onChange={() => {
-                                        const newAnswer = {...answer, isCorrect: false};
-                                        updateAnswerFunc(newAnswer)
-                                    }}/>
-                                    : <input type="checkbox" onChange={() => {
-                                        const newAnswer = {...answer, isCorrect: true};
-                                        updateAnswerFunc(newAnswer)
-                                    }}/>
-                                }
-
-                            </Col>
-                        </Row>
-                    </span>
-                )
-            })}
-        </>
     )
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Deck} from "../types/BackendModels";
+import {Deck} from "../../types/BackendModels";
 
 type deckId = number;
 

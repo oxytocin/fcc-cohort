@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, ListGroup, ListGroupItem, OverlayTrigger} from "react-bootstrap";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
-import {FlashCard} from "../types/BackendModels";
+import {FlashCard} from "../../types/BackendModels";
 
 export const QuestionList: React.FC<{ flashcards: Array<FlashCard>| null, deckDescription: string }> =
     ({flashcards, deckDescription}) => {

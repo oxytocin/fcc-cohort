@@ -1,4 +1,4 @@
-import {Deck} from "../types/BackendModels";
+import {Deck} from "../../types/BackendModels";
 
 export const deckData: Deck = {
     "ID": 2,
