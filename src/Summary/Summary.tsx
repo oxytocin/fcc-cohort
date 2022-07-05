@@ -13,7 +13,6 @@ function ScoreSummary() {
 
   return(
     <Container fluid className="bg-dark p-3 border border-2 rounded Summary">
-
       <h1 data-cy="summary" className="text-white mb-3">Score Summary</h1>
       <Table data-cy="table" size="sm" striped hover responsive="sm" className="table table-secondary w-75 mx-auto">
         <thead>

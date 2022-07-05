@@ -14,7 +14,7 @@ export const HeaderNav: React.FC = () => {
         navigate("/");
     }
     return (
-        <Navbar bg="light" expand="md" fixed="top">
+        <Navbar bg="light" expand="md">
             <Container data-cy="nav-container">
                 {/* This is the mobile element, will do a 'hamburger' button */}
                 <Navbar.Brand data-cy="nav-home" href="/">Flashcard Bonanza</Navbar.Brand>
