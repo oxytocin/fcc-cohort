@@ -1,4 +1,4 @@
-const dev_backend_port = ":8080"
+const dev_backend_port = ":9000"
 const dev_frontend_port = ":3000"
 const dev_host_location = "http://127.0.0.1"
 const dev_websocket_location = "ws://127.0.0.1"
