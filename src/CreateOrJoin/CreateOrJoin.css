@@ -1,0 +1,12 @@
+.CreateOrJoin {
+    font-family: Arial;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20vh;
+}
+
+.CreateOrJoinHeader {
+    font-size: 32px;
+    margin-bottom: 50px;
+}

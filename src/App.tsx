@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Login from "./Login/Login"
 import CreateOrJoin from "./CreateOrJoin/CreateOrJoin";
 import {HeaderNav} from "./Header/Navigation";
@@ -38,7 +37,7 @@ function App() {
     const [finalScores, setFinalScores] = React.useState([]);
     const [totalQuestions, setTotalQuestions] = React.useState(NaN);
     return (
-        <div data-cy="app" className="App">
+        <div data-cy="app">
             <HeaderNav/>
             <ToastContext.Provider value={{toastText: toastText, toastShow: toastShow, setToastText: setToastText, setToastShow: setToastShow}}>
                 <GameContext.Provider value={{ws: ws, setWs: setWs, finalScores: finalScores, setFinalScores: setFinalScores, totalQuestions: totalQuestions, setTotalQuestions: setTotalQuestions}}>

@@ -1,8 +1,7 @@
-.WaitingRoom {
-    text-align: center;
+.InGame {
     font-family: Arial;
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: 1vh;
+    text-align: center;
 }
