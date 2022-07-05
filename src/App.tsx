@@ -9,7 +9,7 @@ import OauthRedirect from "./OAuthRedirect/OauthRedirect";
 import {SetChoice} from "./SetChoice/SetChoice";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import WaitingRoom from "./WaitingRoom/WaitingRoom";
-import {EditDeckQuestions} from './EditDeck/EditDeckQuestions';
+import {EditDeck} from "./EditDeck";
 import {ToastAlert} from "./ToastAlert/ToastAlert";
 
 export const ToastContext = React.createContext({
@@ -49,7 +49,7 @@ function App() {
                         <Route path="/in-game" element={<PrivateRoute><InGame/></PrivateRoute>}/>
                         <Route path="/summary" element={<PrivateRoute><ScoreSummary/></PrivateRoute>}/>
                         <Route path="/waiting-room" element={<PrivateRoute><WaitingRoom/></PrivateRoute>}/>
-                        <Route path="/edit-deck" element={<PrivateRoute><EditDeckQuestions/></PrivateRoute>}/>
+                        <Route path="/edit-deck" element={<PrivateRoute><EditDeck/></PrivateRoute>}/>
                     </Routes>
                     <ToastAlert/>
                 </GameContext.Provider>

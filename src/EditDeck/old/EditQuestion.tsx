@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {Button, Row, Col, Form, InputGroup, FormControl} from "react-bootstrap";
 import AccordionBody from 'react-bootstrap/esm/AccordionBody';
 import AccordionHeader from 'react-bootstrap/esm/AccordionHeader';
 
-export const EditQuestion: React.FC<{ editQuestion: string, answers: string[]}> = ({editQuestion, answers}) => {
+export const EditQuestion: React.FC<{ editQuestion: string, answers: string[] }> = ({editQuestion, answers}) => {
     const [btnVariant, setBtnVariant] = useState({variant: "success", addRemove: "+"})
 
 
@@ -14,11 +14,11 @@ export const EditQuestion: React.FC<{ editQuestion: string, answers: string[]}> 
 
     function addAnswer() {
         return (
-        <InputGroup className="mb-3">
-            <ButtonContext />                       
-            <FormControl aria-label="Text input" />
-            <InputGroup.Checkbox aria-label="Checkbox for marking answer correct"/>
-        </InputGroup>)
+            <InputGroup className="mb-3">
+                <ButtonContext/>
+                <FormControl aria-label="Text input"/>
+                <InputGroup.Checkbox aria-label="Checkbox for marking answer correct"/>
+            </InputGroup>)
     }
 
     function handleSubmit() {
@@ -31,14 +31,11 @@ export const EditQuestion: React.FC<{ editQuestion: string, answers: string[]}> 
             <AccordionBody>
                 <Form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3">
-                        <ButtonContext />                       
+                        <ButtonContext/>
                         <FormControl aria-label="Text input"
-                            //key={index} 
-                            type="text"
-                            placeholder="Add an answer choice" 
-                            //value={value}
-                            //onChange={e => setValue(e.target.value)}
-                              />
+                                     type="text"
+                                     placeholder="Add an answer choice"
+                        />
                         <InputGroup.Text>Correct?</InputGroup.Text>
                         <InputGroup.Checkbox aria-label="Checkbox for marking answer correct"/>
                     </InputGroup>
