@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
-import deckChoice from '../../fixtures/deckChoice.json'
+import deckData from '../../fixtures/deckData.json'
+import { config } from '../../../src/Constants'
 
 describe('Cannot access if not signed in', ()=> {
 
@@ -16,9 +17,11 @@ describe('Cannot access if not signed in', ()=> {
 describe('Choose Deck Page', ()=> {
     beforeEach(() => {
         cy.loginByGoogleApi({log: false})
-        cy.intercept('/api/deck/owner', {body: deckChoice.allChoices}).as('deckStub')
+        cy.intercept('api/deck/owner', {body: deckData}).as('deckStub')
 
-        cy.visit('/set-choice').wait('@deckStub', {delay: 100})
+        cy.visit('/set-choice')
+        //${config.BACKEND_HOST_LOCATION}/api/deck/owner
+
     })
 
     describe('Page elements are displayed', ()=> {
@@ -40,14 +43,14 @@ describe('Choose Deck Page', ()=> {
         // beforeEach to mock some data in this block
 
 
-        it('Verify Create New Deck button path', ()=> {
+        it.skip('Verify Create New Deck button path', ()=> {
             cy.contains('Create New Deck').click()
-            cy.location('pathname').should('include', '/some-edit-deck-page') // fix this with edit-deck path
+            cy.location('pathname').should('include', '/edit-deck') // fix this with edit-deck path
         })
 
         it('Hovering over a deck gives options: Create Room, Edit Deck, Delete Deck', ()=> {
             cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
-            cy.contains('Create Room').should('be.visible')
+            cy.contains('Start Game').should('be.visible')
             cy.contains('Edit Deck').should('be.visible')
             cy.contains('Delete Deck').should('be.visible')
         })
@@ -55,19 +58,19 @@ describe('Choose Deck Page', ()=> {
         it('Verify Deck Edit option', ()=> {
             cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Edit Deck').click({force: true})
-            cy.location('pathname').should('include', '/some-edit-deck-page-with-this-deck-id') // fix this with edit-deck path
+            cy.location('pathname').should('include', '/edit-deck') // fix this with edit-deck path
         })
 
         it('Verify Deck Delete option', ()=> {
-            cy.get('[data-cy="all-decks"]').children().eq(0).should('have.text', 'This is a title')
+            cy.get('[data-cy="all-decks"]').children().eq(0).should('include.text', 'Test Deck 1')
             cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
             cy.contains('Delete Deck').click({force: true})
-            cy.get('[data-cy="all-decks"]').children().eq(0).should('not.have.text', 'This is a title')
+            cy.get('[data-cy="all-decks"]').children().eq(0).should('not.include.text', 'Test Deck 1')
         })
 
         it('Verify Create Room option', ()=> {
             cy.get('[data-cy="all-decks"]').children().eq(0).trigger('mouseover')
-            cy.contains('Create Room').click({force: true})
+            cy.contains('Start Game').click({force: true})
             cy.location('pathname').should('include', '/waiting-room')
         })
     })
