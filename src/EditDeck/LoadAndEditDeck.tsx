@@ -3,20 +3,8 @@ import {bonanza_token, config} from "../Constants";
 import {Answer, copyDeck, copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
-import {DeckList} from "./DeckList";
-import {SelectedDeck} from "./SelectedDeck";
 
 type deckId = number;
-
-let nullDeck: Deck = {
-    ID: 0,
-    CreatedAt: "",
-    DeletedAt: null,
-    Description: "nulldeck",
-    FlashCards: null,
-    OwnerId: 0,
-    UpdatedAt: "",
-};
 
 function getIdOrZero(id: string | null): number {
     if (id) {
@@ -25,7 +13,6 @@ function getIdOrZero(id: string | null): number {
             return temp;
         }
     }
-
     return 0;
 }
 
@@ -141,7 +128,6 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
     const description = currentDeck.Description;
     const updateStatefulDeckAndUpdateStatus = (deckFunc: Function) => {
         setCurrentDeck(deckFunc(currentDeck, setUpdated));
-        // setUpdated(true);
     }
     useEffect(() => {
         setCurrentDeck(deck);
@@ -156,7 +142,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
             setUpdated(true);
             const oldCards = oldDeck.FlashCards ? oldDeck.FlashCards : [];
             oldDeck.FlashCards = [...oldCards, {
-                ID: 0,
+                ID: oldCards.length * 30,
                 Answers: [],
                 CreatedAt: "",
                 DeckId: 0,
@@ -164,7 +150,8 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                 Question: "",
                 UpdatedAt: ""
             }]
-            return {...oldDeck};
+            const newDeck = {...oldDeck}
+            return newDeck;
         })
     }
     const commitButton = (
@@ -199,7 +186,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     {updated ? commitButton : <Button variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
             </Row>
-            {deck.FlashCards?.map((card, idx, cards) => {
+            {currentDeck.FlashCards?.map((card, idx, cards) => {
                     const id = card.ID;
                     const keyId = card.ID === 0? "0-" + idx.toString() : card.ID
                     console.log("keyId", keyId);
@@ -224,9 +211,9 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     }
 
                     return (
-                        <div style={{border: "1px solid", padding: "5px"}}>
+                        <div style={{border: "1px solid", padding: "5px"}} key={keyId}>
                             <FlashCardEdit
-                                key={keyId}
+                                // key={keyId}
                                 deleteCard={deleteCard}
                                 flashcard={copyFlashcard(card)}
                                 updateDeckFunc={updateHigherFunc}/>
@@ -241,7 +228,6 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
 
 interface FlashCardEditInterface {
     flashcard: FlashCard
-    // addCard: Function
     deleteCard: Function
     updateDeckFunc: Function
 }
@@ -280,12 +266,8 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                         }
                     }
                 }
-                // const deleteAnswer = () =>{
-                //     const newAllAnswers = allAnswers.filter(value => value.ID !== id);
-                // }
-
                 return (
-                    <>
+                    <span key={id}>
                         <hr/>
                         <Row className="mb-3">
                             <Col sm={2} className="text-start">
@@ -325,7 +307,7 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
 
                             </Col>
                         </Row>
-                    </>
+                    </span>
                 )
             })}
         </>
