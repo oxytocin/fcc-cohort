@@ -163,7 +163,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                 ID: oldCards.length * -1,
                 Answers: [],
                 CreatedAt: "",
-                DeckId: 0,
+                DeckId: oldDeck.ID,
                 DeletedAt: undefined,
                 Question: "",
                 UpdatedAt: ""
@@ -233,23 +233,17 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                             cards
                                 .filter(flashCard => flashCard.ID === id)
                                 .forEach(flashCard => {
-                                    const oldAnswers = flashCard.Answers;
+                                    const oldAnswers = flashCard.Answers ? flashCard.Answers : [];
                                     const newAnswer = {
-                                        // @ts-ignore
-                                        ID: oldAnswers?.length * -1,
-                                        CreatedAt: "",
-                                        UpdatedAt: "",
+                                        ID: 0,
                                         DeletedAt: null,
                                         name: "",
                                         value: "",
                                         isCorrect: false,
                                         flashCardId: flashCardId
                                     }
-                                    if (oldAnswers) {
-                                        flashCard.Answers = [...oldAnswers, newAnswer];
-                                    } else {
-                                        flashCard.Answers = [newAnswer];
-                                    }
+                                    flashCard.Answers = [...oldAnswers, newAnswer];
+
                                 })
                             return {...oldDeck};
                         })

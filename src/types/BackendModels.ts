@@ -105,8 +105,8 @@ export interface FlashCard {
 
 export interface Answer {
     ID: number;
-    CreatedAt: string;
-    UpdatedAt: string;
+    CreatedAt?: string;
+    UpdatedAt?: string;
     DeletedAt?: string | null;
     name: string;
     value: string;
