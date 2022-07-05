@@ -151,6 +151,22 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
     if (deck.FlashCards) {
         console.log(deck.FlashCards[0]);
     }
+    const addCardToDeck = () =>{
+        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+            setUpdated(true);
+            const oldCards = oldDeck.FlashCards ? oldDeck.FlashCards : [];
+            oldDeck.FlashCards = [...oldCards, {
+                ID: 0,
+                Answers: [],
+                CreatedAt: "",
+                DeckId: 0,
+                DeletedAt: undefined,
+                Question: "",
+                UpdatedAt: ""
+            }]
+            return {...oldDeck};
+        })
+    }
     const commitButton = (
         <Button variant={"danger"} onClick={event => {
             updateDeck(currentDeck);
@@ -165,9 +181,9 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                 <Col sm="8">
                     Description:
                     <input type="text"
+                           className="w-100"
                            value={description}
                            onChange={(event) => {
-                               // const newDeck = {...currentDeck, Description: event.target.value}
                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
                                    setUpdated(true);
                                    const newDeck = {...oldDeck, Description: event.target.value}
@@ -177,11 +193,16 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     />
                 </Col>
                 <Col sm="2">
+                    <Button className="mb-3"
+                    onClick={() => addCardToDeck()}
+                    >Add FlashCard</Button>
                     {updated ? commitButton : <Button variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
             </Row>
             {deck.FlashCards?.map((card, idx, cards) => {
                     const id = card.ID;
+                    const keyId = card.ID === 0? "0-" + idx.toString() : card.ID
+                    console.log("keyId", keyId);
                     const updateHigherFunc = (newCard: FlashCard) => {
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].ID === id) {
@@ -190,12 +211,26 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                                     setUpdated(true);
                                     return {...oldDeck};
                                 });
-                                setUpdated(true);
                             }
                         }
                     };
+                    const deleteCard = () => {
+
+                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                            setUpdated(true);
+                            oldDeck.FlashCards = cards.filter(value => value.ID !== id);
+                            return {...oldDeck};
+                        })
+                    }
+
                     return (
-                        <FlashCardEdit flashcard={copyFlashcard(card)} key={id} updateDeckFunc={updateHigherFunc}/>
+                        <div style={{border: "1px solid", padding: "5px"}}>
+                            <FlashCardEdit
+                                key={keyId}
+                                deleteCard={deleteCard}
+                                flashcard={copyFlashcard(card)}
+                                updateDeckFunc={updateHigherFunc}/>
+                        </div>
                     )
                 }
             )}
@@ -206,12 +241,13 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
 
 interface FlashCardEditInterface {
     flashcard: FlashCard
+    // addCard: Function
+    deleteCard: Function
     updateDeckFunc: Function
 }
 
-const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc}) => {
+const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckFunc, deleteCard}) => {
     const question = flashcard.Question;
-
     return (
         <>
             <Row className="text-start mb-3" key={flashcard.ID}>
@@ -224,9 +260,11 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                         const qUpdate = event.target.value;
                         const newCard = {...flashcard, Question: qUpdate}
                         updateDeckFunc(newCard);
-
                     }
                 }/>
+                    <Button className="ms-2"
+                            onClick={() => deleteCard()}
+                    >Delete Card</Button>
                 </Col>
             </Row>
             {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
@@ -242,10 +280,13 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                         }
                     }
                 }
-
+                // const deleteAnswer = () =>{
+                //     const newAllAnswers = allAnswers.filter(value => value.ID !== id);
+                // }
 
                 return (
                     <>
+                        <hr/>
                         <Row className="mb-3">
                             <Col sm={2} className="text-start">
                                 Answer ID: {id}
@@ -264,9 +305,9 @@ const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, updateDeckF
                         </Row>
                         <Row className="mb-3">
                             <Col sm={10} className="text-start">
-                                <textarea value={answer.value}  style={{width:"100%"}} onChange={(event)=>{
+                                <textarea value={answer.value} style={{width: "100%"}} onChange={(event) => {
                                     const newText = event.target.value;
-                                    const newAnswer = {...answer, value:newText};
+                                    const newAnswer = {...answer, value: newText};
                                     updateAnswerFunc(newAnswer);
                                 }}/>
                             </Col>
