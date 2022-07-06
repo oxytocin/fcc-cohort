@@ -53,7 +53,7 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                     const newCard = {...flashcard};
                     updateDeckFunc(newCard);
 
-            }
+                }
 
                 return (
                     <span key={id}>
