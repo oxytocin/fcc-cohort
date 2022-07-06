@@ -37,7 +37,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
         })
     }
     const commitButton = (
-        <Button variant={"danger"} onClick={event => {
+        <Button className="mb-3" variant={"danger"} onClick={event => {
             updateDeck(currentDeck);
             setUpdated(false);
         }}>
