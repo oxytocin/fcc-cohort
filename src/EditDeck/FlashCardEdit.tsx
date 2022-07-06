@@ -48,6 +48,13 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                         }
                     }
                 }
+                const removeAnswerFunc = () => {
+                    flashcard.Answers = allAnswers.filter(value => value.ID !== id);
+                    const newCard = {...flashcard};
+                    updateDeckFunc(newCard);
+
+            }
+
                 return (
                     <span key={id}>
                         <hr/>
@@ -64,6 +71,9 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                                         updateAnswerFunc(newAnswer);
                                     }
                                 }/>
+                                <Button className="ms-2" variant="danger"
+                                        onClick={() => removeAnswerFunc()}
+                                >Remove Answer</Button>
                             </Col>
                         </Row>
                         <Row className="mb-3">

@@ -45,7 +45,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
         </Button>)
     return (
         <>
-            <Row className="mb-5 text-start">
+            <Row className="text-start mb-2">
                 <Col sm="2"> Deck ID: {currentDeck.ID} </Col>
                 <Col sm="8">
                     Description:
@@ -65,7 +65,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     <Button className="mb-3"
                             onClick={() => addCardToDeck()}
                     >Add FlashCard</Button>
-                    {updated ? commitButton : <Button variant="success" disabled>No Changes to Commit</Button>}
+                    {updated ? commitButton : <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
             </Row>
             {currentDeck.FlashCards?.map((card, idx, cards) => {

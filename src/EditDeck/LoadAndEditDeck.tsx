@@ -134,12 +134,12 @@ export const LoadAndEditDeck: React.FC = () => {
     return (
         <Container fluid>
             <Row>
-                <Col xs={2} m={6}>
+                <Col xs="auto" m={6}>
                     <Container>
                         {mappedDecks}
                     </Container>
                 </Col>
-                <Col xs={10} md={6}>
+                <Col xs="auto" md="auto">
                     <Container>
                         {selectedDeck && <DeckEdit deck={copyDeck(selectedDeck)} updateDeck={updateDeck}/>}
                     </Container>
