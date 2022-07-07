@@ -33,7 +33,6 @@ export const SetChoice: React.FC = () => {
         const decks = await response.json();
         let allChoices: Choice[] = [];
         for (let i = 0; i < decks.length; i++) {
-            console.log(decks[i]);
             allChoices.push({
                 title: decks[i].Description, content: decks[i].Description, id: decks[i].ID
             });

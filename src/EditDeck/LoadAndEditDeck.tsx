@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
 import {copyDeck, copyFlashcard, Deck} from "../types/BackendModels";
-import {Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
 import {DeckEdit} from "./DeckEdit";
 
@@ -43,8 +43,6 @@ export const LoadAndEditDeck: React.FC = () => {
             }
         ).then<Array<Deck>>(res => res.json()
         ).then((data?: Deck[]) => {
-                // console.log("returned: ", JSON.stringify(data));
-                // console.log("json is", data);
                 let keys: Array<number> = [];
                 let mappedData = new Map<deckId, Deck>();
                 if (data) {
@@ -75,8 +73,6 @@ export const LoadAndEditDeck: React.FC = () => {
         );
     }
     const saveAndGetDecks = (newDeck: Deck) => {
-        console.log("deck ID: ",newDeck.ID)
-        console.log("deck Cards: ",newDeck.FlashCards)
         newDeck.FlashCards?.forEach(fc =>{
             if (fc.ID < 0){
                 fc.ID = 0;
@@ -101,11 +97,11 @@ export const LoadAndEditDeck: React.FC = () => {
                 body: JSON.stringify(newDeck)
 
             }
-        // ).then(data => console.log(data)
         ).then(() => getDecks());
     }
 
     useEffect(getDecks, [])
+
     const mappedDecks = deckKeys.map(value => {
             const currentDeck = decks.get(value);
             if (currentDeck) {
@@ -118,7 +114,14 @@ export const LoadAndEditDeck: React.FC = () => {
 
                 )
             } else {
-                return (<></>)
+                return (<>
+                    <Button variant="success" onClick={()=>{updateDeck({
+                        Description: "",
+                        FlashCards: null,
+                        ID: 0,
+                        OwnerId: 0
+                    })}}>Add Deck</Button>
+                </>)
             }
         }
     )

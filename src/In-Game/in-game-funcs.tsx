@@ -22,10 +22,8 @@ export function unmarkCorrect (elements: HTMLCollection) {
 export function checkAns(correctArray: boolean[], userAnswer: boolean[]) {
     for (let i = 0; i < correctArray.length; i++) {
         if (!correctArray[i] === (userAnswer[i])) {
-            console.log("incorrect")
             return false
         }
     }
-    console.log("correct!")
     return true
 };

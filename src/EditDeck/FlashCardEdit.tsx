@@ -35,6 +35,19 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                     >Add Answer</Button>
                 </Col>
             </Row>
+            <AnswerMap flashcard={flashcard} updateDeckFunc={updateDeckFunc}/>
+        </>
+    )
+}
+
+interface AnswerMapInterface {
+    flashcard: FlashCard
+    updateDeckFunc: Function
+}
+
+const AnswerMap: React.FC<AnswerMapInterface> = ({flashcard, updateDeckFunc}) => {
+    return (
+        <>
             {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
                 const id = answer.ID;
                 const answerName = answer.name;
@@ -54,54 +67,75 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                     updateDeckFunc(newCard);
 
                 }
-
                 return (
-                    <span key={id}>
-                        <hr/>
-                        <Row className="mb-3">
-                            <Col sm={2} className="text-start">
-                                Answer ID: {id}
-                            </Col>
-                            <Col sm={10} className="text-start">
-                                Answer:
-                                <input type="text" value={answerName} onChange={
-                                    event => {
-                                        const nameUpdate = event.target.value;
-                                        const newAnswer = {...answer, name: nameUpdate};
-                                        updateAnswerFunc(newAnswer);
-                                    }
-                                }/>
-                                <Button className="ms-2" variant="danger"
-                                        onClick={() => removeAnswerFunc()}
-                                >Remove Answer</Button>
-                            </Col>
-                        </Row>
-                        <Row className="mb-3">
-                            <Col sm={10} className="text-start">
-                                <textarea value={answer.value} style={{width: "100%"}} onChange={(event) => {
-                                    const newText = event.target.value;
-                                    const newAnswer = {...answer, value: newText};
-                                    updateAnswerFunc(newAnswer);
-                                }}/>
-                            </Col>
-                            <Col sm={2} className="text-start">
-                                <>Correct?&nbsp;
-                                    {answer.isCorrect === true
-                                        ? <input type="checkbox" checked onChange={() => {
-                                            const newAnswer = {...answer, isCorrect: false};
-                                            updateAnswerFunc(newAnswer)
-                                        }}/>
-                                        : <input type="checkbox" onChange={() => {
-                                            const newAnswer = {...answer, isCorrect: true};
-                                            updateAnswerFunc(newAnswer)
-                                        }}/>
-                                    }
-                                </>
-                            </Col>
-                        </Row>
-                    </span>
+                    <AnswerElement key={id} id={id} answer={answer} answerName={answerName}
+                                   updateAnswerFunc={updateAnswerFunc} removeAnswerFunc={removeAnswerFunc}/>
                 )
+
             })}
-        </>
+        </>)
+}
+
+interface AnswerElementInterface {
+    id: number
+    answer: Answer
+    answerName: string
+    updateAnswerFunc: Function
+    removeAnswerFunc: Function
+}
+
+const AnswerElement: React.FC<AnswerElementInterface> = ({
+                                                             id,
+                                                             answer,
+                                                             answerName,
+                                                             updateAnswerFunc,
+                                                             removeAnswerFunc
+                                                         }) => {
+    const buttonChoice = (isCorrect: boolean) => (isCorrect === true
+            ? <input type="checkbox" checked onChange={() => {
+                const newAnswer = {...answer, isCorrect: false};
+                updateAnswerFunc(newAnswer)
+            }}/>
+            : <input type="checkbox" onChange={() => {
+                const newAnswer = {...answer, isCorrect: true};
+                updateAnswerFunc(newAnswer)
+            }}/>
+    )
+    return (
+        <span key={id}>
+            <hr/>
+            <Row className="mb-3">
+                <Col sm={2} className="text-start">
+                    Answer ID: {id}
+                </Col>
+                <Col sm={10} className="text-start">
+                    Answer:
+                    <input type="text" value={answerName} onChange={
+                        event => {
+                            const nameUpdate = event.target.value;
+                            const newAnswer = {...answer, name: nameUpdate};
+                            updateAnswerFunc(newAnswer);
+                        }
+                    }/>
+                    <Button className="ms-2" variant="danger"
+                            onClick={() => removeAnswerFunc()}
+                    >Remove Answer</Button>
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col sm={10} className="text-start">
+                    <textarea value={answer.value} style={{width: "100%"}} onChange={(event) => {
+                        const newText = event.target.value;
+                        const newAnswer = {...answer, value: newText};
+                        updateAnswerFunc(newAnswer);
+                    }}/>
+                </Col>
+                <Col sm={2} className="text-start">
+                    <>Correct?&nbsp;
+                        {buttonChoice(answer.isCorrect)}
+                    </>
+                </Col>
+            </Row>
+        </span>
     )
 }

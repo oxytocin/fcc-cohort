@@ -25,7 +25,6 @@ const Login = () => {
     const connectClick = () => {
         const url = `${config.REDIRECT_URL}?client_id=${config.CLIENT_ID}` +
             `&redirect_uri=${config.OAUTH_FRONTEND_REDIRECT_URL}&response_type=${config.RESPONSE_TYPE}`
-        console.log("auth info url for redirect: ", url)
         window.location.href = url
 
     }
