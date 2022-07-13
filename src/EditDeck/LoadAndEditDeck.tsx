@@ -1,9 +1,11 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
-import {copyDeck, copyFlashcard, Deck} from "../types/BackendModels";
-import {Col, Container, Row} from "react-bootstrap";
+import {copyDeck, Deck} from "../types/BackendModels";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
 import {DeckEdit} from "./DeckEdit";
+import { fetchFromBackend, showToast } from '../utils';
+import { ToastContext } from '../App';
 
 
 type deckId = number;
@@ -30,10 +32,11 @@ export const LoadAndEditDeck: React.FC = () => {
     const selectedDeck = useMemo(() => {
         return decks.get(selectedDeckId)
     }, [selectedDeckId, decks])
+    const [token, _] = useState(localStorage.getItem(bonanza_token))
+    const toastContext = useContext(ToastContext);
 
     const getDecks = () => {
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
-        const token = localStorage.getItem(bonanza_token);
         fetch(url, {
                 method: "GET",
                 mode: "cors",
@@ -89,7 +92,6 @@ export const LoadAndEditDeck: React.FC = () => {
         });
 
         const url = `${config.BACKEND_HOST_LOCATION}/api/deck`;
-        const token = localStorage.getItem(bonanza_token);
 
         fetch(url, {
                 method: "PUT",
@@ -131,12 +133,38 @@ export const LoadAndEditDeck: React.FC = () => {
         saveAndGetDecks(newDeck);
     }
 
+    const createDeck = async () => {
+        try {
+            await fetchFromBackend(config.DECK_ENDPOINT, {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "Id": 0,
+                    "Description": "New description",
+                    "Flashcards": [],
+                })
+
+            })
+        } catch (e) {
+            showToast("There was an error creating a new deck.", toastContext);
+            return;
+        }
+        getDecks();
+    }
+
     return (
         <Container fluid>
             <Row>
                 <Col xs="auto" m={6}>
                     <Container>
                         {mappedDecks}
+                        <Row>
+                            <Button variant="dark" className="mt-1" onClick={() => {createDeck()}}>New Deck</Button>
+                        </Row>
                     </Container>
                 </Col>
                 <Col xs="auto" md="auto">

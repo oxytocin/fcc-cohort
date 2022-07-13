@@ -1,10 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {ChoiceBox} from "./ChoiceBox";
-import {Container, Row} from "react-bootstrap";
+import {Button, Container, Row} from "react-bootstrap";
 import {config, bonanza_token} from "../Constants";
 import {fetchFromBackend, showToast} from "../utils";
 import { ToastContext } from '../App';
 import "./SetChoice.css";
+import {useNavigate} from "react-router-dom";
 
 interface Choice {
     title: string;
@@ -16,6 +17,7 @@ export const SetChoice: React.FC = () => {
     const toastContext = useContext(ToastContext);
     const placeHolder: Choice[] = [];
     const [choices, setChoices] = useState(placeHolder);
+    const navigate = useNavigate();
 
     async function fetchUserDecks() {
         let response;
@@ -31,9 +33,11 @@ export const SetChoice: React.FC = () => {
             return [{title: "", content: ""}]
         }
         const decks = await response.json();
+        if (decks.length === 0) {
+            showToast("You have no decks. Click \"Manage Decks\" to create one.", toastContext);
+        }
         let allChoices: Choice[] = [];
         for (let i = 0; i < decks.length; i++) {
-            console.log(decks[i]);
             allChoices.push({
                 title: decks[i].Description, content: decks[i].Description, id: decks[i].ID
             });
@@ -42,7 +46,7 @@ export const SetChoice: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchUserDecks().then(value => console.log("decks pulled"));
+        fetchUserDecks().then(_ => console.log("decks pulled"));
     }, [])
 
     const deleteById = async (id: number) => {
@@ -62,6 +66,7 @@ export const SetChoice: React.FC = () => {
 
     return (
         <div className="SetChoice">
+            <Button variant="dark" onClick={() => {navigate("/edit-deck")}}>Manage Decks</Button>
             <div className={"container mt-5"}>
                 <Container>
                     <Row data-cy="all-decks">
