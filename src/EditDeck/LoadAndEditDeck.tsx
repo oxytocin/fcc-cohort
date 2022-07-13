@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {bonanza_token, config} from "../Constants";
 import {copyDeck, Deck} from "../types/BackendModels";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Overlay, Popover, Row} from "react-bootstrap";
 import {useSearchParams} from "react-router-dom";
 import {DeckEdit} from "./DeckEdit";
 import { fetchFromBackend, showToast } from '../utils';
@@ -34,48 +34,52 @@ export const LoadAndEditDeck: React.FC = () => {
     }, [selectedDeckId, decks])
     const [token, _] = useState(localStorage.getItem(bonanza_token))
     const toastContext = useContext(ToastContext);
+    const newDeckRef = useRef(null);  // needed for the tip popover
+    const [userHasNoDecks, setUserHasNoDecks] = useState(false);
 
     const getDecks = () => {
-        const url = `${config.BACKEND_HOST_LOCATION}/api/deck/owner`;
-        fetch(url, {
-                method: "GET",
-                mode: "cors",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                }
-            }
-        ).then<Array<Deck>>(res => res.json()
-        ).then((data?: Deck[]) => {
-                // console.log("returned: ", JSON.stringify(data));
-                // console.log("json is", data);
-                let keys: Array<number> = [];
-                let mappedData = new Map<deckId, Deck>();
-                if (data) {
-                    for (let i = 0; i < data.length; i++) {
-                        let e = data[i];
-                        e.FlashCards?.sort((a, b) => a.ID - b.ID);
-                        if (e.FlashCards) {
-                            for (let j = 0; j < e.FlashCards?.length; j++) {
-
-                                let card = e.FlashCards[j];
-                                card.Answers?.sort((a, b) => a.ID - b.ID);
-                            }
-                        }
-                        keys.push(e.ID);
-                        mappedData.set(e.ID, e);
+        async function fetchDecks() {
+            let res;
+            try {
+                res = await fetchFromBackend(config.DECK_OWNER_ENDPOINT, {
+                    method: "GET",
+                    mode: "cors",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
                     }
+                });
+            } catch (e) {
+                showToast("There was a problem getting decks", toastContext);
+                return;
+            }
+            const data: Deck[] = await res.json();
+            if (data.length === 0) {
+                setUserHasNoDecks(true);
+                return;
+            }
+            setUserHasNoDecks(false);
+            let keys: Array<number> = [];
+            let mappedData = new Map<deckId, Deck>();
+            if (data) {
+                for (let i = 0; i < data.length; i++) {
+                    let e = data[i];
+                    e.FlashCards?.sort((a, b) => a.ID - b.ID);
+                    if (e.FlashCards) {
+                        for (let j = 0; j < e.FlashCards?.length; j++) {
+
+                            let card = e.FlashCards[j];
+                            card.Answers?.sort((a, b) => a.ID - b.ID);
+                        }
+                    }
+                    keys.push(e.ID);
+                    mappedData.set(e.ID, e);
                 }
-                keys.sort((x, y) => x - y);
-
-                setDeckKeys(keys);
-                setDecks(mappedData)
-
             }
-        ).catch(err => {
-                console.error("error is: ", err);
-                alert(err);
-            }
-        );
+            keys.sort((x, y) => x - y);
+            setDeckKeys(keys);
+            setDecks(mappedData)
+        }
+        fetchDecks();
     }
     const saveAndGetDecks = (newDeck: Deck) => {
         console.log("deck ID: ",newDeck.ID)
@@ -111,11 +115,12 @@ export const LoadAndEditDeck: React.FC = () => {
     const mappedDecks = deckKeys.map(value => {
             const currentDeck = decks.get(value);
             if (currentDeck) {
+                const buttonVariant = currentDeck.ID === selectedDeckId ? "secondary" : "outline-secondary"
                 return (
                     <Row key={value}>
-                        <button onClick={() => {
+                        <Button variant={buttonVariant} className="mb-1" onClick={() => {
                             setSelectedDeckId(value);
-                        }}>{currentDeck.Description}</button>
+                        }}>{currentDeck.Description}</Button>
                     </Row>
 
                 )
@@ -157,13 +162,25 @@ export const LoadAndEditDeck: React.FC = () => {
     }
 
     return (
-        <Container fluid>
+        <Container fluid className="mt-1">
             <Row>
                 <Col xs="auto" m={6}>
                     <Container>
                         {mappedDecks}
                         <Row>
-                            <Button variant="dark" className="mt-1" onClick={() => {createDeck()}}>New Deck</Button>
+                            <Button ref={newDeckRef} variant="dark" className="mt-1" onClick={() => {createDeck()}}>New Deck</Button>
+                            <Overlay target={newDeckRef.current} show={userHasNoDecks} placement="bottom">
+                                {(props) => (
+                                    <Popover {...props}>
+                                        <Popover.Header>
+                                            <b>TIP!</b>
+                                        </Popover.Header>
+                                        <Popover.Body>
+                                            Click this button to create your first deck!
+                                        </Popover.Body>
+                                    </Popover>
+                                )}
+                            </Overlay>
                         </Row>
                     </Container>
                 </Col>
