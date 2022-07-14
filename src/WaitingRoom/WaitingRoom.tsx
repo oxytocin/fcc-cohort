@@ -90,11 +90,10 @@ function WaitingRoom() {
             <Col xs="auto">
                 <Form className="align-items-center m-2">
                     <InputGroup>
-                    <Form.Label htmlFor="inlineFormInput" visuallyHidden>Clipboard</Form.Label>                   
-                    <Form.Group>
-                        <Form.Control id="inlineFormInput" type="text" readOnly placeholder={roomID}/>
-                    </Form.Group>
-                    
+                        <Form.Label htmlFor="inlineFormInput" visuallyHidden>Clipboard</Form.Label>
+                        <Form.Group>
+                            <Form.Control id="inlineFormInput" type="text" readOnly placeholder={roomID}/>
+                        </Form.Group>
                         <OverlayTrigger trigger="click" placement="bottom" overlay={renderTooltip}>
                             <InputGroup.Text><input type="image" src={clipboard} onClick={copyId}/></InputGroup.Text>
                         </OverlayTrigger>
