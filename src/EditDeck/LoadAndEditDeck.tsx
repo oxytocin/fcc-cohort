@@ -120,17 +120,7 @@ export const LoadAndEditDeck: React.FC = () => {
                             setSelectedDeckId(value);
                         }}>{currentDeck.Description}</Button>
                     </Row>
-
                 )
-            } else {
-                return (<>
-                    <Button variant="success" onClick={()=>{updateDeck({
-                        Description: "",
-                        FlashCards: null,
-                        ID: 0,
-                        OwnerId: 0
-                    })}}>Add Deck</Button>
-                </>)
             }
         }
     )
