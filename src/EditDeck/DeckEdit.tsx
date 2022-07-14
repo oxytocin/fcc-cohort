@@ -5,14 +5,15 @@ import {FlashCardEdit} from "./FlashCardEdit";
 
 
 interface DeckEditInterface {
-    deck: Deck
-    updateDeck: Function
+    deck: Deck;
+    updateDeck: Function;
 }
 
 export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
     const [currentDeck, setCurrentDeck] = useState(deck);
     const [updated, setUpdated] = useState(false);
     const description = currentDeck.Description;
+
     const updateStatefulDeckAndUpdateStatus = (deckFunc: Function) => {
         setCurrentDeck(deckFunc(currentDeck, setUpdated));
     }
@@ -32,8 +33,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                 DeletedAt: undefined,
                 Question: "",
             }]
-            const newDeck = {...oldDeck}
-            return newDeck;
+            return {...oldDeck};
         })
     }
     const commitButton = (
@@ -54,10 +54,11 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                            value={description}
                            onChange={(event) => {
                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                                   setUpdated(true);
-                                   const newDeck = {...oldDeck, Description: event.target.value}
-                                   return newDeck;
-                               })
+                                       setUpdated(true);
+                                       const newDeck = {...oldDeck, Description: event.target.value}
+                                       return newDeck;
+                                   }
+                               )
                            }}
                     />
                 </Col>
@@ -65,9 +66,25 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     <Button className="mb-3"
                             onClick={() => addCardToDeck()}
                     >Add FlashCard</Button>
-                    {updated ? commitButton : <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
+                    {updated ? commitButton :
+                        <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
             </Row>
+            <FlashcardMap currentDeck={currentDeck}
+                          updateDeckAndStatus={updateStatefulDeckAndUpdateStatus}/>
+        </>
+    );
+};
+
+interface FlashcardMapInterface {
+    currentDeck: Deck;
+    updateDeckAndStatus: Function
+}
+
+const FlashcardMap: React.FC<FlashcardMapInterface> = ({currentDeck, updateDeckAndStatus}) => {
+
+    return (
+        <>
             {currentDeck.FlashCards?.map((card, idx, cards) => {
                     const id = card.ID;
 
@@ -75,7 +92,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         for (let i = 0; i < cards.length; i++) {
                             if (cards[i].ID === id) {
                                 cards[i] = newCard;
-                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                                updateDeckAndStatus((oldDeck: Deck, setUpdated: Function) => {
                                     setUpdated(true);
                                     return {...oldDeck};
                                 });
@@ -83,18 +100,15 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         }
                     };
                     const deleteCard = () => {
-
-                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                            console.log("CARDS: ",oldDeck.FlashCards);
+                        updateDeckAndStatus((oldDeck: Deck, setUpdated: Function) => {
                             setUpdated(true);
                             oldDeck.FlashCards = cards.filter(value => value.ID !== id);
-                            console.log("CARDS: ",oldDeck.FlashCards);
                             return {...oldDeck};
                         })
                     }
 
                     const addAnswer = (flashCardId: number) => {
-                        updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                        updateDeckAndStatus((oldDeck: Deck, setUpdated: Function) => {
                             setUpdated(true);
                             cards
                                 .filter(flashCard => flashCard.ID === id)
@@ -125,7 +139,6 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     )
                 }
             )}
-
         </>
     );
 }
