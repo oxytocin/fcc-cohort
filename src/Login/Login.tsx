@@ -2,6 +2,7 @@ import {bonanza_token, config} from "../Constants"
 import {Button} from "react-bootstrap";
 import jwtDecode from "jwt-decode";
 import "./Login.css";
+import logo from "../assets/logos/black-logo-no-background.png"
 
 // Curl version of how to use the bearer. basically you'll just need to add this to a header
 // curl localhost:8088/restricted -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0NjE5NTcxMzZ9.RB3arc4-OyzASAaUhC2W3ReWaXAt_z2Fd3BN4aWTgEY"
@@ -30,6 +31,7 @@ const Login = () => {
     }
     return (
         <div className="Login">
+            <img src={logo} className="mb-2" style={{maxWidth: "75%", height: "auto"}} alt="Flashcard Bonanza logo" />
             <Button variant="dark" data-cy="connect" onClick={connectClick}>Log in with Google</Button>
         </div>
     )

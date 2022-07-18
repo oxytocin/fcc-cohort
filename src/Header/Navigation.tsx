@@ -2,6 +2,7 @@ import React from 'react';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {useLocation, useNavigate} from 'react-router-dom';
 import account from "../images/account.svg";
+import logo from "../assets/logos/nav-brand.png"
 
 export const HeaderNav: React.FC = () => {
     // Don't show navbar on login page (root)
@@ -14,10 +15,10 @@ export const HeaderNav: React.FC = () => {
         navigate("/");
     }
     return (
-        <Navbar bg="light" expand="md">
+        <Navbar bg="secondary" className="bg-opacity-25" expand="md">
             <Container data-cy="nav-container">
                 {/* This is the mobile element, will do a 'hamburger' button */}
-                <Navbar.Brand data-cy="nav-home" href="/">Flashcard Bonanza</Navbar.Brand>
+                <Navbar.Brand data-cy="nav-home" href="/"><img src={logo} style={{maxWidth: "100px", height: "auto"}} alt="Flashcard Bonanaza nav brand" /></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse data-cy="nav-collapse" id="basic-navbar-nav">
                     <Nav className="d-block d-sm-block d-md-none">

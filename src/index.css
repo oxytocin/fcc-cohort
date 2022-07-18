@@ -1,3 +1,8 @@
+/* Added 7/18 */
+html {
+  height: 100vh;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +10,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Added 7/18 */
+  background: rgb(83,83,83);
+  background: linear-gradient(0deg, rgba(83,83,83,1) 0%, rgba(134,134,134,1) 19%, rgba(255,255,255,1) 100%);
+  height: 100vh;
 }
 
 code {

@@ -3,6 +3,7 @@ import jwtDecode from "jwt-decode";
 import {bonanza_token, config} from "../Constants";
 import {useNavigate} from 'react-router-dom'
 import "./CreateOrJoin.css"
+import logo2 from "../assets/logos/White-logo-no-background.png"
 
 function CreateOrJoin() {
     let token = localStorage.getItem(bonanza_token) ?? ""
@@ -16,9 +17,10 @@ function CreateOrJoin() {
     }
 
     return (
-        <div className="CreateOrJoin">
-            <header data-cy="header" className="CreateOrJoinHeader fw-bold">Flashcard Bonanza</header>
-            <h3 data-cy="greeting" className="mb-4 fst-italic fw-light">Welcome, {user}! What would you like to do?</h3>
+        <div className="CreateOrJoin background">
+            {/* <header data-cy="header" className="CreateOrJoinHeader fw-bold">Flashcard Bonanza</header> */}
+            <img data-cy="display-logo" src={logo2} style={{maxWidth: "50%", minWidth: "240px", height: "auto"}} alt="Flashcard Bonanza logo" />
+            <h3 data-cy="greeting" className="mb-4 mt-3 fst-italic fw-light text-center">Welcome, {user}! What would you like to do?</h3>
             <Row>
                 <Col sm={5}>
                     <Button onClick={()=>{navigate(config.CHOOSE_SET_PATH)}} data-cy="host-btn" variant="dark" size="lg" className="m-1 col-12">Host room</Button> {/* Am I a bad boy for hardcoding this path? */}
