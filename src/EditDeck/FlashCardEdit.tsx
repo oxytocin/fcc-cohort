@@ -27,10 +27,10 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
                         updateDeckFunc(newCard);
                     }
                 }/>
-                    <Button className="ms-2"
+                    <Button className="ms-2 mt-1"
                             onClick={() => deleteCard()}
                     >Delete Card</Button>
-                    <Button className="ms-2"
+                    <Button className="ms-2 mt-1"
                             onClick={() => addAnswer()}
                     >Add Answer</Button>
                 </Col>
@@ -109,7 +109,7 @@ const AnswerElement: React.FC<AnswerElementInterface> = ({
                     Answer ID: {id}
                 </Col>
                 <Col sm={10} className="text-start">
-                    Answer:
+                    Answer: &nbsp;
                     <input type="text" value={answerName} onChange={
                         event => {
                             const nameUpdate = event.target.value;
@@ -117,7 +117,7 @@ const AnswerElement: React.FC<AnswerElementInterface> = ({
                             updateAnswerFunc(newAnswer);
                         }
                     }/>
-                    <Button className="ms-2" variant="danger"
+                    <Button className="ms-2 mt-1" variant="danger"
                             onClick={() => removeAnswerFunc()}
                     >Remove Answer</Button>
                 </Col>

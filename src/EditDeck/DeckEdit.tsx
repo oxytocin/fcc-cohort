@@ -44,7 +44,7 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
             Commit Changes
         </Button>)
     return (
-        <>
+        <div className="border border-dark pe-2 ps-2">
             <Row className="text-start mb-2">
                 <Col sm="2"> Deck ID: {currentDeck.ID} </Col>
                 <Col sm="8">
@@ -61,7 +61,11 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                                )
                            }}
                     />
+                    <Col>
+                        <Button className="mb-4 mt-1" variant="danger">Delete Deck</Button>
+                    </Col>
                 </Col>
+                {/*
                 <Col sm="2">
                     <Button className="mb-3"
                             onClick={() => addCardToDeck()}
@@ -69,10 +73,20 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                     {updated ? commitButton :
                         <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
                 </Col>
+                */}
+            </Row>
+            <Row className="align-items-start">
+                <Col>
+                    <Button className="mb-3 me-1"
+                            onClick={() => addCardToDeck()}
+                    >Add Card</Button>
+                    {updated ? commitButton :
+                        <Button variant="secondary" className="mb-3" disabled>No Changes to Save</Button>}
+                </Col>
             </Row>
             <FlashcardMap currentDeck={currentDeck}
                           updateDeckAndStatus={updateStatefulDeckAndUpdateStatus}/>
-        </>
+        </div>
     );
 };
 
@@ -129,7 +143,7 @@ const FlashcardMap: React.FC<FlashcardMapInterface> = ({currentDeck, updateDeckA
                     }
 
                     return (
-                        <div style={{border: "1px solid", padding: "5px"}} key={id}>
+                        <div key={id} className="border ps-1 pe-1 mb-1">
                             <FlashCardEdit
                                 addAnswer={addAnswer}
                                 deleteCard={deleteCard}
