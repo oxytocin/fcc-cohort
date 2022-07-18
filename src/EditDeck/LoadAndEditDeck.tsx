@@ -20,6 +20,14 @@ function getIdOrZero(id: string | null): number {
     return 0;
 }
 
+function truncateDescription(description: string) {
+    const maxLen = 25;
+    if (description.length <= maxLen+1) {
+        return description;
+    }
+    return description.substring(0, maxLen) + "…";
+}
+
 export const LoadAndEditDeck: React.FC = () => {
     let [searchParams, setSearchParams] = useSearchParams();
     const [decks, setDecks] = useState<Map<number, Deck>>(new Map())
@@ -116,9 +124,9 @@ export const LoadAndEditDeck: React.FC = () => {
                 const buttonVariant = currentDeck.ID === selectedDeckId ? "secondary" : "outline-secondary"
                 return (
                     <Row key={value}>
-                        <Button variant={buttonVariant} className="mb-1" onClick={() => {
+                        <Button variant={buttonVariant} className="mb-1 text-truncate" onClick={() => {
                             setSelectedDeckId(value);
-                        }}>{currentDeck.Description}</Button>
+                        }}>{truncateDescription(currentDeck.Description)}</Button>
                     </Row>
                 )
             }
@@ -163,7 +171,7 @@ export const LoadAndEditDeck: React.FC = () => {
                     <Container>
                         {mappedDecks}
                         <Row>
-                            <Button ref={newDeckRef} variant="dark" className="mt-1" onClick={() => {createDeck()}}>New Deck</Button>
+                            <Button ref={newDeckRef} variant="dark" className="mt-1 mb-1" onClick={() => {createDeck()}}>New Deck</Button>
                             <Overlay target={newDeckRef.current} show={userHasNoDecks} placement="bottom">
                                 {(props) => (
                                     <Popover {...props}>
