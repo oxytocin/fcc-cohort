@@ -21,9 +21,7 @@ function getIdOrZero(id: string | null): number {
 
 export const LoadAndEditDeck: React.FC = () => {
     let [searchParams, setSearchParams] = useSearchParams();
-    // const [decks, setDecks] = useState<Map<number, Deck>>(new Map())
     const [decks, setDecks] = useState<Array<Deck>>([]);
-    // const [deckKeys, setDeckKeys] = useState<Array<number>>([]);
     const toastContext = useContext(ToastContext);
 
 
@@ -36,10 +34,10 @@ export const LoadAndEditDeck: React.FC = () => {
 
     const selectedDeck = useMemo(() => {
         const filtered = decks.filter(value => value.ID === selectedDeckId);
-        if (filtered.length > 0){
+        if (filtered.length > 0) {
             return filtered[0];
         }
-        return {Description: "", FlashCards: [], ID: 0, OwnerId: 0};
+        return null;
     }, [selectedDeckId, decks])
 
     const getDecks = () => {
@@ -57,28 +55,6 @@ export const LoadAndEditDeck: React.FC = () => {
                 if (data) {
                     setDecks(data);
                 }
-                // let keys: Array<number> = [];
-                // let mappedData = new Map<deckId, Deck>();
-                // if (data) {
-                //     for (let i = 0; i < data.length; i++) {
-                //         let e = data[i];
-                //         e.FlashCards?.sort((a, b) => a.ID - b.ID);
-                //         if (e.FlashCards) {
-                //             for (let j = 0; j < e.FlashCards?.length; j++) {
-                //
-                //                 let card = e.FlashCards[j];
-                //                 card.Answers?.sort((a, b) => a.ID - b.ID);
-                //             }
-                //         }
-                //         keys.push(e.ID);
-                //         mappedData.set(e.ID, e);
-                //     }
-                // }
-                // keys.sort((x, y) => x - y);
-                //
-                // setDeckKeys(keys);
-                // setDecks(mappedData)
-
             }
         ).catch(err => {
                 console.error("error is: ", err);
@@ -96,9 +72,15 @@ export const LoadAndEditDeck: React.FC = () => {
             if (fc.ID < 0) {
                 fc.ID = 0;
             }
+            if (fc.DeckId < 0) {
+                fc.DeckId = 0
+            }
             fc.Answers?.forEach(answer => {
                 if (answer.ID < 0) {
                     answer.ID = 0;
+                }
+                if (answer.flashCardId < 0) {
+                    answer.flashCardId = 0;
                 }
             });
         });
@@ -107,7 +89,7 @@ export const LoadAndEditDeck: React.FC = () => {
         const token = localStorage.getItem(bonanza_token);
 
         fetch(url, {
-                method: "PUT",
+                method: (newDeck.ID == 0 ? "POST" : "PUT"),
                 mode: "cors",
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,7 +105,7 @@ export const LoadAndEditDeck: React.FC = () => {
 
     const mappedDecks = decks.map(value => {
             // const currentDeck = decks.get(value);
-        const currentDeckArr = decks.filter(d => d.ID === value.ID )
+            const currentDeckArr = decks.filter(d => d.ID === value.ID)
             if (currentDeckArr.length > 0) {
                 const currentDeck = currentDeckArr[0];
                 return (
@@ -136,22 +118,14 @@ export const LoadAndEditDeck: React.FC = () => {
                 )
             } else {
                 return (<>
-                    <Button variant="success" onClick={() => {
-                        updateDeck({
-                            Description: "",
-                            FlashCards: null,
-                            ID: 0,
-                            OwnerId: 0
-                        })
-                    }}>Add Deck</Button>
                 </>)
             }
         }
     )
 
     const updateDeck = (newDeck: Deck) => {
-        const newDeckArr = decks.map(deck =>{
-            if (deck.ID === newDeck.ID){
+        const newDeckArr = decks.map(deck => {
+            if (deck.ID === newDeck.ID) {
                 return newDeck;
             }
             return deck;
@@ -163,17 +137,24 @@ export const LoadAndEditDeck: React.FC = () => {
         saveAndGetDecks(newDeck);
     }
     const addEmptyDeck = () => {
-        // showToast("Adding Empty Deck", toastContext);
-        const newDeck: Deck = {
-            Description: "New Deck",
-            FlashCards: [],
-            ID: -1,
-            OwnerId: 0
-        };
-        // const newMap = new Map();
-        // newMap.set(newDeck.ID, newDeck);
-        setDecks([newDeck,...decks]);
-        setSelectedDeckId(-1)
+        const res = decks.filter(value => value.ID <= 0)
+        if (res.length === 0) {
+            showToast("Adding Empty Deck", toastContext);
+            const tempDeckId = -1;
+            const newDeck: Deck = {
+                Description: "New Deck",
+                FlashCards: [],
+                ID: tempDeckId,
+                OwnerId: 0
+            };
+            setDecks([newDeck, ...decks]);
+            setSelectedDeckId(tempDeckId)
+
+        } else {
+            showToast("Empty Deck already exists", toastContext);
+        }
+
+
     }
     console.log("decks: ", decks);
     return (
