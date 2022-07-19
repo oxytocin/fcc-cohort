@@ -66,15 +66,6 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         <Col>
                             <Button className="mb-2 mt-1" variant="danger">Delete Deck</Button>
                         </Col>
-                    {/*
-                    <Col sm="2">
-                        <Button className="mb-3"
-                                onClick={() => addCardToDeck()}
-                        >Add FlashCard</Button>
-                        {updated ? commitButton :
-                            <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
-                    </Col>
-                    */}
                 </Row>
                 <Row className="align-items-start">
                     <Col>
