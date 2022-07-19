@@ -171,7 +171,7 @@ export const LoadAndEditDeck: React.FC = () => {
                     <Container>
                         {mappedDecks}
                         <Row>
-                            <Button ref={newDeckRef} variant="dark" className="mt-1 mb-1" onClick={() => {createDeck()}}>New Deck</Button>
+                            <Button ref={newDeckRef} variant="dark" className="mt-1 mb-3" onClick={() => {createDeck()}}>New Deck</Button>
                             <Overlay target={newDeckRef.current} show={userHasNoDecks} placement="bottom">
                                 {(props) => (
                                     <Popover {...props}>

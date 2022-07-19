@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, Row} from "react-bootstrap";
+import {Button, Col, Row, CloseButton} from "react-bootstrap";
 import {Answer, FlashCard} from "../types/BackendModels";
 
 
@@ -15,22 +15,26 @@ export const FlashCardEdit: React.FC<FlashCardEditInterface> = ({flashcard, upda
     const question = flashcard.Question;
     return (
         <>
-            <Row className="text-start mb-3">
-                <Col sm={2} className="text-start">
+            <Row className="align-items-between">
+                <Col className="text-start me-auto">
                     <span>Flashcard ID: {flashcard.ID}</span>
                 </Col>
-                <Col sm={10}>
-                    Question: <input type="text" value={question} onChange={
+                <Col> 
+                    <CloseButton className="float-end"
+                        onClick={() => {deleteCard()}}>
+                    </CloseButton>
+                </Col>
+            </Row>
+            <Row className="text-start mb-3">
+                <Col sm={12} className="mt-1">
+                    Question: <input type="text" className="mb-1" value={question} onChange={
                     event => {
                         const qUpdate = event.target.value;
                         const newCard = {...flashcard, Question: qUpdate}
                         updateDeckFunc(newCard);
                     }
                 }/>
-                    <Button className="ms-2"
-                            onClick={() => deleteCard()}
-                    >Delete Card</Button>
-                    <Button className="ms-2"
+                    <Button className="ms-2" size="sm"
                             onClick={() => addAnswer()}
                     >Add Answer</Button>
                 </Col>
@@ -104,22 +108,24 @@ const AnswerElement: React.FC<AnswerElementInterface> = ({
     return (
         <span key={id}>
             <hr/>
-            <Row className="mb-3">
-                <Col sm={2} className="text-start">
+            <Row className="align-items-between">
+                <Col className="text-start">
                     Answer ID: {id}
                 </Col>
+                <Col>
+                    <CloseButton className="float-end" onClick={() => removeAnswerFunc()}></CloseButton>
+                </Col>
+            </Row>
+            <Row className="mb-3">
                 <Col sm={10} className="text-start">
-                    Answer:
-                    <input type="text" value={answerName} onChange={
+                    Answer: &nbsp;
+                    <input type="text" value={answerName} className="mb-1" onChange={
                         event => {
                             const nameUpdate = event.target.value;
                             const newAnswer = {...answer, name: nameUpdate};
                             updateAnswerFunc(newAnswer);
                         }
                     }/>
-                    <Button className="ms-2" variant="danger"
-                            onClick={() => removeAnswerFunc()}
-                    >Remove Answer</Button>
                 </Col>
             </Row>
             <Row className="mb-3">

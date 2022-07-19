@@ -45,31 +45,38 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
         </Button>)
     return (
         <>
-            <Row className="text-start mb-2">
-                <Col sm="2"> Deck ID: {currentDeck.ID} </Col>
-                <Col sm="8">
-                    Description:
-                    <input type="text"
-                           className="w-100"
-                           value={description}
-                           onChange={(event) => {
-                               updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
-                                       setUpdated(true);
-                                       const newDeck = {...oldDeck, Description: event.target.value}
-                                       return newDeck;
-                                   }
-                               )
-                           }}
-                    />
-                </Col>
-                <Col sm="2">
-                    <Button className="mb-3"
-                            onClick={() => addCardToDeck()}
-                    >Add FlashCard</Button>
-                    {updated ? commitButton :
-                        <Button className="mb-3" variant="success" disabled>No Changes to Commit</Button>}
-                </Col>
-            </Row>
+            <div className="border border-dark ps-1 pe-1 mb-3">
+                <Row className="text-start">
+                    <Col sm="auto" className="mb-1"> Deck ID: {currentDeck.ID} </Col>
+                    <Col sm="auto" className="mb-1">
+                        Description:
+                        <input type="text"
+                            className="w-100"
+                            value={description}
+                            onChange={(event) => {
+                                updateStatefulDeckAndUpdateStatus((oldDeck: Deck, setUpdated: Function) => {
+                                        setUpdated(true);
+                                        const newDeck = {...oldDeck, Description: event.target.value}
+                                        return newDeck;
+                                    }
+                                )
+                            }}
+                        />
+                    </Col>
+                        <Col>
+                            <Button className="mb-2 mt-1" variant="danger">Delete Deck</Button>
+                        </Col>
+                </Row>
+                <Row className="align-items-start">
+                    <Col>
+                        <Button className="mb-3 me-1"
+                                onClick={() => addCardToDeck()}
+                        >Add Card</Button>
+                        {updated ? commitButton :
+                            <Button variant="secondary" className="mb-3" disabled>No Changes to Save</Button>}
+                    </Col>
+                </Row>
+            </div>
             <FlashcardMap currentDeck={currentDeck}
                           updateDeckAndStatus={updateStatefulDeckAndUpdateStatus}/>
         </>
@@ -129,7 +136,7 @@ const FlashcardMap: React.FC<FlashcardMapInterface> = ({currentDeck, updateDeckA
                     }
 
                     return (
-                        <div style={{border: "1px solid", padding: "5px"}} key={id}>
+                        <div key={id} className="border border-dark ps-1 pe-1 mb-1">
                             <FlashCardEdit
                                 addAnswer={addAnswer}
                                 deleteCard={deleteCard}
