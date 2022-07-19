@@ -1,7 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {copyFlashcard, Deck, FlashCard} from "../types/BackendModels";
-import {Button, Col, Row} from "react-bootstrap";
+import {Button, Col, Row, Modal} from "react-bootstrap";
 import {FlashCardEdit} from "./FlashCardEdit";
+import { bonanza_token, config } from '../Constants';
+import { fetchFromBackend, showToast } from '../utils';
+import { ToastContext } from '../App';
 
 
 interface DeckEditInterface {
@@ -13,6 +16,9 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
     const [currentDeck, setCurrentDeck] = useState(deck);
     const [updated, setUpdated] = useState(false);
     const description = currentDeck.Description;
+    const [token, _] = useState(localStorage.getItem(bonanza_token));
+    const toastContext = useContext(ToastContext);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const updateStatefulDeckAndUpdateStatus = (deckFunc: Function) => {
         setCurrentDeck(deckFunc(currentDeck, setUpdated));
@@ -43,8 +49,41 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
         }}>
             Commit Changes
         </Button>)
+
+    const deleteCurrentDeck = async () => {
+        try {
+            const id = currentDeck.ID;
+            await fetchFromBackend(`${config.DECK_ENDPOINT}/${id}`, {
+                method: "DELETE", mode: "cors", headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            })
+        } catch (e) {
+            showToast("Error removing deck", toastContext);
+        }
+        setShowDeleteModal(false);
+        window.location.reload();
+    }
+
     return (
         <>
+            <Modal show={showDeleteModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Warning</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Delete this deck? This cannot be undone.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() =>
+                        setShowDeleteModal(false)}>
+                        No
+                    </Button>
+                    <Button variant="primary" onClick={() =>
+                        deleteCurrentDeck()}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className="border border-dark ps-1 pe-1 mb-3">
                 <Row className="text-start">
                     <Col sm="auto" className="mb-1"> Deck ID: {currentDeck.ID} </Col>
@@ -64,7 +103,10 @@ export const DeckEdit: React.FC<DeckEditInterface> = ({deck, updateDeck}) => {
                         />
                     </Col>
                         <Col>
-                            <Button className="mb-2 mt-1" variant="danger">Delete Deck</Button>
+                            <Button className="mb-2 mt-1" variant="danger"
+                                onClick={() => {setShowDeleteModal(true)}}>
+                                Delete Deck
+                            </Button>
                         </Col>
                 </Row>
                 <Row className="align-items-start">
