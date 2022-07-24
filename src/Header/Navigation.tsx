@@ -21,7 +21,7 @@ export const HeaderNav: React.FC = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse data-cy="nav-collapse" id="basic-navbar-nav">
                     <Nav className="d-block d-sm-block d-md-none">
-                        <Nav.Link data-cy="nav-logout" href="#home">Log Out</Nav.Link>
+                        <Nav.Link onClick={logOut} data-cy="nav-logout" href="#home">Log Out</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
                 {/* this is the original design, but not meant for mobile */}
