@@ -34,7 +34,7 @@ function WaitingRoom() {
     const deckID = locationState.deckID;
     const roomID = locationState.roomID;
     const isAdmin = locationState.isAdmin;
-    const startButtonStyle = {
+    const adminElementsStyle = {
         display: isAdmin ? "inline-block" : "none",
     }
     const token = localStorage.getItem(bonanza_token)
@@ -63,7 +63,8 @@ function WaitingRoom() {
                     setUserNames(userNamesArr);
                     break;
                 case "questions":
-                    setDeck(json.deck);
+                    setDeck(json.deck);  // starts game
+                    setTimeLimit(json.time_per_question);
                     break;
             }
         }
@@ -101,7 +102,7 @@ function WaitingRoom() {
                 </Form>
             </Col>
             <Col xs="auto">
-                <Form className="align-items-center mt-2">
+                <Form className="align-items-center mt-2" style={adminElementsStyle}>
                     <h5 className="mt-5 fw-bold">Time per question</h5>
                     <InputGroup>
                         <Form.Group>
@@ -115,7 +116,7 @@ function WaitingRoom() {
                 variant="outline-dark"
                 className="mt-2 mb-4 border-2 col-2"
                 size="lg"
-                style={startButtonStyle}
+                style={adminElementsStyle}
                 onClick={() => {
                     if (gameContext.ws === undefined) {return;}
                     const timeInput = document.getElementById("inlineFormInput2") as HTMLInputElement;
@@ -123,10 +124,11 @@ function WaitingRoom() {
                         showToast("Time per question must be a number.", toastContext);
                         return;
                     }
-                    setTimeLimit(parseInt(timeInput.value) * 1000);
-                    const toSend = JSON.stringify(
-                        {action: "LOAD", deckId: deckID}
-                    )
+                    const toSend = JSON.stringify({
+                        action: "LOAD",
+                        deckId: deckID,
+                        timePerQuestion: parseInt(timeInput.value) * 1000
+                    })
                     gameContext.ws.send(toSend);
                 }}>
                 <b>Start Game</b>
