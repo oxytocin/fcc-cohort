@@ -42,7 +42,12 @@ function WaitingRoom() {
     const [deck, setDeck] = useState();
 
     useEffect(() => {
-        gameContext.setWs(new WebSocket(`${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`))
+        // reset final scores and total questions so the summary page doesn't
+        // include results from a previous game
+        gameContext.setFinalScores([])
+        gameContext.setTotalQuestions(NaN)
+        const wsUrl = `${config.BACKEND_WS_LOCATION}/ws/${roomID}?token=${token}`;
+        gameContext.setWs(new WebSocket(wsUrl));
     }, [])
 
     useEffect(() => {
