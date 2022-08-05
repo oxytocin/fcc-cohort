@@ -80,7 +80,7 @@ export const copyAnswers = (old: Array<Answer> | undefined): Array<Answer> => {
             CreatedAt: temp.CreatedAt,
             UpdatedAt: temp.UpdatedAt,
             DeletedAt: temp.DeletedAt,
-            name: temp.name,
+            //name: temp.name,
             value: temp.value,
             isCorrect: temp.isCorrect,
             flashCardId: temp.flashCardId
@@ -106,7 +106,7 @@ export interface Answer {
     CreatedAt?: string;
     UpdatedAt?: string;
     DeletedAt?: string | null;
-    name: string;
+    //name: string;
     value: string;
     isCorrect: boolean;
     flashCardId: number;

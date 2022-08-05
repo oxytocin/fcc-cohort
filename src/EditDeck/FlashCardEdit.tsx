@@ -54,7 +54,7 @@ const AnswerMap: React.FC<AnswerMapInterface> = ({flashcard, updateDeckFunc}) =>
         <>
             {flashcard.Answers && flashcard.Answers.map((answer, index, allAnswers) => {
                 const id = answer.ID;
-                const answerName = answer.name;
+                //const answerName = answer.name;
                 const updateAnswerFunc = (newAnswer: Answer) => {
                     for (let i = 0; i < allAnswers.length; i++) {
                         if (allAnswers[i].ID === id) {
@@ -72,7 +72,7 @@ const AnswerMap: React.FC<AnswerMapInterface> = ({flashcard, updateDeckFunc}) =>
 
                 }
                 return (
-                    <AnswerElement key={id} id={id} answer={answer} answerName={answerName}
+                    <AnswerElement key={id} id={id} answer={answer} //answerName={answerName}
                                    updateAnswerFunc={updateAnswerFunc} removeAnswerFunc={removeAnswerFunc}/>
                 )
 
@@ -83,7 +83,7 @@ const AnswerMap: React.FC<AnswerMapInterface> = ({flashcard, updateDeckFunc}) =>
 interface AnswerElementInterface {
     id: number
     answer: Answer
-    answerName: string
+    //answerName: string
     updateAnswerFunc: Function
     removeAnswerFunc: Function
 }
@@ -91,7 +91,7 @@ interface AnswerElementInterface {
 const AnswerElement: React.FC<AnswerElementInterface> = ({
                                                              id,
                                                              answer,
-                                                             answerName,
+                                                             //answerName,
                                                              updateAnswerFunc,
                                                              removeAnswerFunc
                                                          }) => {
@@ -116,16 +116,16 @@ const AnswerElement: React.FC<AnswerElementInterface> = ({
                     <CloseButton className="float-end" onClick={() => removeAnswerFunc()}></CloseButton>
                 </Col>
             </Row>
-            <Row className="mb-3">
+            <Row className="mb-1">
                 <Col sm={10} className="text-start">
                     Answer: &nbsp;
-                    <input type="text" value={answerName} className="mb-1" onChange={
-                        event => {
-                            const nameUpdate = event.target.value;
-                            const newAnswer = {...answer, name: nameUpdate};
-                            updateAnswerFunc(newAnswer);
-                        }
-                    }/>
+                    {/*<input type="text" value={answerName} className="mb-1" onChange={*/}
+                        {/*event => {*/}
+                            {/*const nameUpdate = event.target.value;*/}
+                            {/*const newAnswer = {...answer, name: nameUpdate};*/}
+                            {/*updateAnswerFunc(newAnswer);*/}
+                        {/*}}*/}
+                    {/*}}/>*/}
                 </Col>
             </Row>
             <Row className="mb-3">
